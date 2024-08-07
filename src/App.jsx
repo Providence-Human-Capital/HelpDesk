@@ -23,6 +23,8 @@ import {
 } from '@chakra-ui/react';
 import Hardware from './components/hardware';
 import Email from './components/email';
+import General from './components/general';
+import Transfer from './components/transfer';
 
 export default function Requisition() {
 
@@ -68,6 +70,8 @@ export default function Requisition() {
 
         {showPage === 'hardware' ? <Hardware /> : ''}
         {showPage === 'email' ? <Email /> : ''}
+        {showPage === 'general' ? <General /> : ''}
+        {showPage === 'transfer' ? <Transfer /> : ''}
 
 
       </Container>
