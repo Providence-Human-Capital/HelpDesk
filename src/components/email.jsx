@@ -105,13 +105,25 @@ export default function email() {
             <VStack align="start" mt='6'>
                 <Text mb={4} fontSize={{ md: "3xl", base: "2xl" }}>Email Requisition Form</Text>
 
-                <FormControl isRequired id="hardware">
-                    <Text as='u' fontSize={{ md: 'xl' }}>Select Domain</Text>
+                
+                <FormControl id="name">
+                <FormLabel htmlFor='name'>Requested By:</FormLabel>
+                <Input id='name' type='name' placeholder="Enter Requester's Full Name"  mb="5" w={"50%"} />
+
+                <FormLabel htmlFor='department'>Department Name:</FormLabel>
+                <Input id='department' type='text' placeholder='Enter your Department Name'  mb="5" w={"50%"} />
+                <Stack spacing={4} />
+
+                <FormLabel htmlFor='email'>Personal Email Address:</FormLabel>
+                <Input id='email' type='text' placeholder='Enter your Personal Email Address'  mb="5" w={"50%"} />
+                <Stack spacing={4} />
+
+                    <Text mt={"5"} as='u' fontSize={{ md: 'xl' }} >Select Domain</Text>
                     <RadioGroup onChange={DomainChoice} value={domain}>
                         <VStack spacing={1} mt='2' align='left'>
                             <Radio colorScheme='green' borderColor={'#bdbdbd'} value="providencehumancapital.com">providencehumancapital.com</Radio>
-                            <Radio colorScheme='green' borderColor={'#bdbdbd'} value="providencehealth.com">providencehealth.co.zw</Radio>
-                            <Radio colorScheme='green' borderColor={'#bdbdbd'} value="staffing">staffingsolution.co.zw</Radio>
+                            <Radio colorScheme='green' borderColor={'#bdbdbd'} value="providencehealth.com">providencehealth.com</Radio>
+                            <Radio colorScheme='green' borderColor={'#bdbdbd'} value="staffingsolutions.com">staffingsolutions.com</Radio>
                         </VStack>
                     </RadioGroup>
                 </FormControl>

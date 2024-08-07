@@ -119,6 +119,9 @@ export default function hardware() {
                             <Checkbox value="desktop" borderColor={'#bdbdbd'} colorScheme='green'>Desktop</Checkbox>
                             <Checkbox value="printer" borderColor={'#bdbdbd'} colorScheme='green'>Printer</Checkbox>
                             <Checkbox value="adapter" borderColor={'#bdbdbd'} colorScheme='green'>Power Adapter</Checkbox>
+                            <Checkbox value="mouse" borderColor={'#bdbdbd'} colorScheme='green'>Mouse</Checkbox>
+                            <Checkbox value="keyboard" borderColor={'#bdbdbd'} colorScheme='green'>Keyboard</Checkbox>
+                            <Checkbox value="cables" borderColor={'#bdbdbd'} colorScheme='green'>Cables</Checkbox>
                         </HStack>
                     </CheckboxGroup>
                 </FormControl>
