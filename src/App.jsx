@@ -28,7 +28,7 @@ import Transfer from './components/transfer';
 
 export default function Requisition() {
 
-  const [showPage, setShowPage] = useState('hardware')
+  const [showPage, setShowPage] = useState('general')
 
   let x = 'green'
 

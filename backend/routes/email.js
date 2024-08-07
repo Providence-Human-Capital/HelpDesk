@@ -13,4 +13,4 @@ router.post('/individual', async (req, res) => {
     res.send('individual email record')
 })
 
-module.exports = email
+module.exports = router

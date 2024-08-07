@@ -9,4 +9,4 @@ router.post('/request', async (req, res) => {
     res.send('transfer request')
 })
 
-module.exports = transfer
+module.exports = router

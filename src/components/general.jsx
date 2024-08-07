@@ -10,16 +10,51 @@ import {
     Select,
     Button,
     Container,
-    Text
+    useToast,
+    Text,
+    Box
 } from '@chakra-ui/react';
 import { useForm } from "react-hook-form"
+import axios from 'axios'
 
 
 export default function general() {
-    const { register, formState: { errors }, handleSubmit } = useForm()
+    const { register, formState: { errors }, handleSubmit, reset } = useForm()
+    const toast = useToast()
 
     const onSubmit = (data) => {
         console.log(data)
+        axios.post('http://localhost:8800/general/add', data)
+            .then((res) => {
+                console.log(res.data)
+                toast({
+                    title: "Your request has been successfully sent",
+                    description: "You will hear from us soon",
+                    status: "success",
+                    duration: 4000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+
+                reset({
+                    name: '',
+                    department: '',
+                    description: '',
+                    type: '',
+                    anydesk: '',
+                })
+            })
+            .catch((err) => {
+                console.log(err)
+                toast({
+                    title: "Error sending request",
+                    description: "more text",
+                    status: "error",
+                    duration: 4000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+            })
     }
 
     return (
@@ -30,15 +65,29 @@ export default function general() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl id="name">
                         <FormLabel as='u'>Name</FormLabel>
-                        <Input type="text" placeholder="Enter your name" borderColor={'#bdbdbd'} focusBorderColor='green' {...register('name')} />
+                        <Input type="text"
+                            placeholder="Enter your name"
+                            borderColor={'#bdbdbd'}
+                            focusBorderColor='green'
+                            {...register('name', { minLength: { value: 4, message: 'Your name is too short' } })}
+                            aria-invalid={errors.name ? "true" : "false"}
+                            isRequired
+                        />
                     </FormControl>
                     <FormControl id="department" mt={3}>
                         <FormLabel as='u'>Department</FormLabel>
-                        <Input type="text" placeholder="Enter your department" borderColor={'#bdbdbd'} focusBorderColor='green'{...register('department')} />
+                        <Input type="text"
+                            placeholder="Enter your department"
+                            borderColor={'#bdbdbd'}
+                            focusBorderColor='green'
+                            {...register('department', { minLength: { value: 4, message: 'Department name is too short' } })}
+                            aria-invalid={errors.department ? "true" : "false"}
+                            isRequired
+                        />
                     </FormControl>
                     <FormControl id="request-type" mt={3}>
                         <FormLabel as='u'>Request Type</FormLabel>
-                        <Select placeholder="Select request type" borderColor={'#bdbdbd'} focusBorderColor='green' {...register('type')}>
+                        <Select placeholder="Select request type" borderColor={'#bdbdbd'} focusBorderColor='green' {...register('type')} isRequired>
                             <option value="network">Network</option>
                             <option value="printer">Printer</option>
                             <option value="scanner">Scanner</option>
@@ -48,12 +97,34 @@ export default function general() {
                     </FormControl>
                     <FormControl id="description" mt={3}>
                         <FormLabel as='u'>Request Description</FormLabel>
-                        <Textarea placeholder="Enter a description" borderColor={'#bdbdbd'} focusBorderColor='green' {...register('description')} />
+                        <Textarea placeholder="Enter a description"
+                            borderColor={'#bdbdbd'}
+                            focusBorderColor='green'
+                            {...register('description', { minLength: { value: 10, message: 'Please enter a longer description' } })}
+                            aria-invalid={errors.description ? "true" : "false"}
+                            isRequired
+                        />
                     </FormControl>
                     <FormControl id="anydesk-id" mt={3}>
                         <FormLabel as='u'>Anydesk ID</FormLabel>
-                        <Input type="text" placeholder="Enter your Anydesk ID" borderColor={'#bdbdbd'} focusBorderColor='green' {...register('anydesk')} />
+                        <Input type="text"
+                            placeholder="Enter your Anydesk ID"
+                            borderColor={'#bdbdbd'}
+                            focusBorderColor='green'
+                            {...register('anydesk')}
+                            aria-invalid={errors.anydesk ? "true" : "false"}
+                            isRequired
+
+                        />
                     </FormControl>
+
+                    <Box mt={5}>
+                        {errors.name && <p role="alert" style={{ color: "red" }}>{errors.name.message}</p>}
+                        {errors.department && <p role="alert" style={{ color: "red" }}>{errors.department.message}</p>}
+                        {/* {errors.nationalId && <p role="alert" style={{ color: "red" }}>{errors.nationalId.message}</p>} */}
+                        {errors.description && <p role="alert" style={{ color: "red" }}>{errors.description.message}</p>}
+                        {errors.anydesk && <p role="alert" style={{ color: "red" }}>Please enter your AnyDesk ID</p>}
+                    </Box>
 
                     <Button colorScheme="green" mt={4} mb='10' w={'20%'} type="submit">
                         Submit Request

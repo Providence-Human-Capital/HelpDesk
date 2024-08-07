@@ -9,4 +9,4 @@ router.post('/add', async (req, res) => {
     res.send('add admin ')
 })
 
-module.exports = admin
+module.exports = router
