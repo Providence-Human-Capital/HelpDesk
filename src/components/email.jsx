@@ -110,8 +110,8 @@ export default function email() {
                     <RadioGroup onChange={DomainChoice} value={domain}>
                         <VStack spacing={1} mt='2' align='left'>
                             <Radio colorScheme='green' borderColor={'#bdbdbd'} value="providencehumancapital.com">providencehumancapital.com</Radio>
-                            <Radio colorScheme='green' borderColor={'#bdbdbd'} value="providencehealth.com">providencehealth.com</Radio>
-                            <Radio colorScheme='green' borderColor={'#bdbdbd'} value="staffing">staffing</Radio>
+                            <Radio colorScheme='green' borderColor={'#bdbdbd'} value="providencehealth.com">providencehealth.co.zw</Radio>
+                            <Radio colorScheme='green' borderColor={'#bdbdbd'} value="staffing">staffingsolution.co.zw</Radio>
                         </VStack>
                     </RadioGroup>
                 </FormControl>
