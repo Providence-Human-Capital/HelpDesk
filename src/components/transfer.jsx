@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function transfer() {
   return (
-    <Box p={5} borderWidth={1} borderRadius="md" boxShadow="md">
+    <Box p={5} borderWidth={1} borderRadius="md" boxShadow="md" colorScheme="green">
       <Heading mb={4}>Computer Disposal/Transfer Form</Heading>
       <Grid templateColumns="repeat(2, 1fr)" gap={4}>
         <GridItem>
@@ -44,11 +44,13 @@ export default function transfer() {
         </GridItem>
       </Grid>
 
-      <Heading size="md" mt={6} spacing={3} >Request Type</Heading>
+      <Heading size="md" mt={6} spacing={3}>Request Type</Heading>
+      <VStack spacing={3} mt={4} alignItems="flex-start">
       <Checkbox>Disposal</Checkbox>
       <Checkbox>Transfer</Checkbox>
       <Checkbox>Donation</Checkbox>
       <Checkbox>Employee Purchase/Donation</Checkbox>
+      </VStack>
 
       <Heading size="md" mt={6}>Equipment</Heading>
       <Grid templateColumns="repeat(5, 1fr)" gap={4}>
@@ -76,11 +78,11 @@ export default function transfer() {
         <Textarea placeholder="Specify other reason" />
       </FormControl>
 
-      <FormControl mt={6}>
-        <FormLabel>
-          I, ________________________, acknowledge receipt of the above-mentioned hardware transfer, I confirm that the hardware has been received in good condition.
-        </FormLabel>
-      </FormControl>
+      {/* <FormControl mt={6}> */}
+        {/* <FormLabel> */}
+          {/* I, ________________________, acknowledge receipt of the above-mentioned hardware transfer, I confirm that the hardware has been received in good condition. */}
+        {/* </FormLabel> */}
+      {/* </FormControl> */}
 
       <Grid templateColumns="repeat(2, 1fr)" gap={4} mt={4}>
         <GridItem>
@@ -97,21 +99,21 @@ export default function transfer() {
         </GridItem>
       </Grid>
 
-      <Heading size="md" mt={6}>FOR IT USE ONLY:</Heading>
-      <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+      {/* <Heading size="md" mt={6}>FOR IT USE ONLY:</Heading> */}
+      {/* <Grid templateColumns="repeat(2, 1fr)" gap={4}> */}
         <GridItem>
-          <FormControl>
-            <FormLabel>IT Approval</FormLabel>
-            <Input placeholder="Approval" />
-          </FormControl>
+          {/* <FormControl> */}
+            {/* <FormLabel>HOD Approval</FormLabel> */}
+            {/* <Input placeholder="Approval" /> */}
+          {/* </FormControl> */}
         </GridItem>
         <GridItem>
           <FormControl>
-            <FormLabel>Date</FormLabel>
+            <FormLabel>Date Transfered</FormLabel>
             <Input type="date" />
           </FormControl>
         </GridItem>
-      </Grid>
+      {/* </Grid> */}
 
       <FormControl mt={4}>
         <FormLabel>Was the asset securely erased and/or reformatted?</FormLabel>
