@@ -111,6 +111,15 @@ export default function hardware() {
             <VStack align="start" mt='6'>
                 <Text mb={4} fontSize={{ md: "3xl", base: "2xl" }}>Hardware Requisition Form</Text>
 
+                <FormControl id="name">
+                <FormLabel htmlFor='name'>Requested By:</FormLabel>
+                <Input id='name' type='name' placeholder="Enter Requester's Full Name"  mb="5" w={"50%"} />
+
+                <FormLabel htmlFor='department'>Department Name:</FormLabel>
+                <Input id='department' type='text' placeholder='Enter your Department Name'  mb="5" w={"50%"} />
+                </FormControl>
+                
+
                 <FormControl id="hardware">
                     <Text as='u' fontSize={{ md: 'xl' }}>Hardware Needed</Text>
                     <CheckboxGroup onChange={handleHardwareChange} value={selectedHardware}>
@@ -118,14 +127,14 @@ export default function hardware() {
                             <Checkbox value="laptop" borderColor={'#bdbdbd'} colorScheme='green'>Laptop</Checkbox>
                             <Checkbox value="desktop" borderColor={'#bdbdbd'} colorScheme='green'>Desktop</Checkbox>
                             <Checkbox value="printer" borderColor={'#bdbdbd'} colorScheme='green'>Printer</Checkbox>
-                            <Checkbox value="adapter" borderColor={'#bdbdbd'} colorScheme='green'>Power Adapter</Checkbox>
                             <Checkbox value="mouse" borderColor={'#bdbdbd'} colorScheme='green'>Mouse</Checkbox>
                             <Checkbox value="keyboard" borderColor={'#bdbdbd'} colorScheme='green'>Keyboard</Checkbox>
-                            <Checkbox value="cables" borderColor={'#bdbdbd'} colorScheme='green'>Cables</Checkbox>
+                            <Checkbox value="adapter" borderColor={'#bdbdbd'} colorScheme='green'>Power Adapter</Checkbox>
                         </HStack>
                     </CheckboxGroup>
                 </FormControl>
 
+            {selectedHardware.includes('laptop') || selectedHardware.includes('desktop') ? (
                 <FormControl id="software" mt={3}>
                     <Text as='u' fontSize={{ md: 'xl' }}>Software to Install</Text>
                     <CheckboxGroup onChange={handleSoftwareChange} value={selectedSoftware} >
@@ -133,12 +142,15 @@ export default function hardware() {
                             <Checkbox value="Microsoft Office" fontSize={{ md: 'xl' }} borderColor={'#bdbdbd'} colorScheme='green'>Microsoft Office</Checkbox>
                             <Checkbox value="Adobe Acrobat" borderColor={'#bdbdbd'} colorScheme='green'>Adobe Acrobat</Checkbox>
                             <Checkbox value="Google Chrome" borderColor={'#bdbdbd'} colorScheme='green'>Google Chrome</Checkbox>
+                            <Checkbox value="Anydesk" borderColor={'#bdbdbd'} colorScheme='green'>Anydesk</Checkbox>
+                            <Checkbox value="Printer drivers" borderColor={'#bdbdbd'} colorScheme='green'>Printer drivers</Checkbox>
                             {/* <Checkbox value="Belina" colorScheme='green'>Belina</Checkbox>
                             <Checkbox value="Quick Books" colorScheme='green'>Quick Books</Checkbox>
                             <Checkbox value="Pastel" colorScheme='green'>Pastel</Checkbox> */}
                         </HStack>
                     </CheckboxGroup>
                 </FormControl>
+            ) : null}
 
                 <FormControl id="reason" mt={6} >
                     <Text as='u' fontSize={{ md: 'xl' }}>Reason for Request</Text>

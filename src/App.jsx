@@ -25,6 +25,7 @@ import Hardware from './components/hardware';
 import Email from './components/email';
 import General from './components/general';
 import Transfer from './components/transfer';
+import FAQs from './components/FAQs';
 
 export default function Requisition() {
 
@@ -64,6 +65,12 @@ export default function Requisition() {
               p={4}
             >
               Transfer</Center>
+              <Center
+              style={{ width: '25%', borderRight: '2px solid #ebeef0', borderBottom: `2px solid ${showPage === 'faqs' ? x : '#ebeef0'}` }}
+              onClick={() => setShowPage('faqs')}
+              p={4}
+            >
+              FAQs</Center>
 
           </Flex>
         </Box>
@@ -72,6 +79,7 @@ export default function Requisition() {
         {showPage === 'email' ? <Email /> : ''}
         {showPage === 'general' ? <General /> : ''}
         {showPage === 'transfer' ? <Transfer /> : ''}
+        {showPage === 'faqs' ? <FAQs /> : ''}
 
 
       </Container>
