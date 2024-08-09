@@ -46,7 +46,7 @@ export default function Manage() {
         <>
             <Navbar />
             <Box bg={'black'} color={'white'} minH={'93vh'}>
-                <Container maxW={'2xl'} pt={10}>
+                <Container maxW={'2xl'} pt={8}>
                     <Center>
                         <Text fontSize={'xl'}>Admin Management</Text>
                     </Center>

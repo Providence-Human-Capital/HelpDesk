@@ -1,0 +1,9 @@
+.general:hover {
+    cursor: pointer;
+    background-color: #1c1c1c;
+}
+
+.row:hover {
+    /* cursor: pointer; */
+    background-color: #1c1c1c;
+}

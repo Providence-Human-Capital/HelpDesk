@@ -29,31 +29,34 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body
 
     connect.query('SELECT * FROM admin WHERE username = (?)', [username], async (error, results) => {
-        // console.log(results[0].password)
+        // console.log(results)
         if (error) {
             return res.sendStatus(404);
-        } else if (results[0].length === 0) {
+            // console.log(error)
+        } else if (results.length === 0) {
             return res.sendStatus(401);
-        }
+        } else {
+            try {
+                const isMatch = await bcrypt.compare(password, results[0].password);
 
-        try {
-            const isMatch = await bcrypt.compare(password, results[0].password);
+                if (isMatch) {
+                    res.send(results);
 
-            if (isMatch) {
-                res.send(results);
+                    req.session.save(() => {
+                        req.session.logged_in = true
+                        req.session.username = username
+                    })
 
-                req.session.save(() => {
-                    req.session.logged_in = true
-                    req.session.username = username
-                })
-
-            } else {
-                res.sendStatus(401);
+                } else {
+                    res.sendStatus(401);
+                }
+            } catch (compareError) {
+                console.error('Bcrypt compare error:', compareError);
+                res.sendStatus(500);
             }
-        } catch (compareError) {
-            console.error('Bcrypt compare error:', compareError);
-            res.sendStatus(500);
         }
+
+
 
         console.log(req.session.username)
 

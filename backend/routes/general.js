@@ -21,10 +21,82 @@ router.post('/add', async (req, res) => {
     })
 })
 
-router.post('/info', async (req, res) => {
-    // connect.query('SELECT * FROM general')
+//getting requests
 
-    res.send('getting data')
+router.get('/all', async (req, res) => {
+    connect.query('SELECT * FROM general', (error, results) => {
+        if (error) {
+            res.send('Error executing query: ' + error.stack);
+            return;
+        }
+        res.send(results);
+        console.log('working');
+    });
+});
+
+router.get('/pending', async (req, res) => {
+    connect.query('SELECT * FROM general WHERE status = "pending"', (error, results) => {
+        if (error) {
+            res.send('Error executing query: ' + error.stack);
+            return;
+        }
+        res.send(results);
+        console.log('working');
+    });
+});
+
+router.get('/progress', async (req, res) => {
+    connect.query('SELECT * FROM general WHERE status = "in-progress"', (error, results) => {
+        if (error) {
+            res.send('Error executing query: ' + error.stack);
+            return;
+        }
+        res.send(results);
+        console.log('working');
+    });
+});
+
+router.get('/completed', async (req, res) => {
+    connect.query('SELECT * FROM general WHERE status = "completed"', (error, results) => {
+        if (error) {
+            res.send('Error executing query: ' + error.stack);
+            return;
+        }
+        res.send(results);
+        console.log('working');
+    });
+});
+
+//updating database status
+
+router.put('/pending/update', async (req, res) => {
+    const { officer, id } = req.body
+    //also need to get the it officer to the update the db
+
+    connect.query('UPDATE general SET status = "in-progress", it_officer = ? WHERE id = ?', [officer, id], (error, results) => {
+        if (error) {
+            res.send('Error executing query: ' + error.stack);
+            return;
+        }
+        res.send(results);
+        console.log('working');
+    })
+
+})
+
+router.put('/progress/update', async (req, res) => {
+    const { id } = req.body
+
+    connect.query('UPDATE general SET status = "completed" WHERE id = ?', [id], (error, results) => {
+        if (error) {
+            res.send('Error executing query: ' + error.stack);
+            return;
+        }
+        console.log(id)
+        res.send(results);
+        console.log('working');
+    })
+
 })
 
 module.exports = router

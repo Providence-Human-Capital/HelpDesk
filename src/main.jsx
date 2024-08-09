@@ -10,6 +10,7 @@ import {
 import Login from '../admin/login.jsx'
 import Dashboard from '../admin/dashboard.jsx'
 import Manage from '../admin/manage.jsx'
+import General from '../admin/generalRequests.jsx'
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/management",
     element: <Manage />,
+  },
+  {
+    path: "/admin/general",
+    element: <General />,
   },
 ]);
 
