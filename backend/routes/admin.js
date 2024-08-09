@@ -2,6 +2,26 @@ const express = require('express')
 const router = express.Router()
 const connect = require('../database')
 const bcrypt = require('bcrypt')
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
+
+const sessionStore = new MySQLStore({}, connect);
+
+//session
+router.use(session({
+    key: 'session_cookie_name',
+    secret: 'your-secret-key',
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        // maxAge: 1000 * 60 * 60 * 24, // Session expires in 1 day
+        maxAge: 5 * 60 * 1000,
+        secure: false // Set to true if using HTTPS
+    }
+}));
+
+// let req.session.username
 
 router.post('/login', async (req, res) => {
     if (!req) { return res.status(400) }
@@ -21,6 +41,12 @@ router.post('/login', async (req, res) => {
 
             if (isMatch) {
                 res.send(results);
+
+                req.session.save(() => {
+                    req.session.logged_in = true
+                    req.session.username = username
+                })
+
             } else {
                 res.sendStatus(401);
             }
@@ -28,6 +54,8 @@ router.post('/login', async (req, res) => {
             console.error('Bcrypt compare error:', compareError);
             res.sendStatus(500);
         }
+
+        console.log(req.session.username)
 
     })
 })
@@ -53,6 +81,25 @@ router.post('/add', async (req, res) => {
         res.status(500).send('Server error');
     }
 
+})
+
+router.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).send('Error logging out.');
+        }
+        res.send('Logged out successfully!');
+    });
+})
+
+router.get('/test', (req, res) => {
+    if (req.session.username) {
+        res.send(`Welcome back, ${req.session.username}!`);
+        console.log(req.session.username)
+    } else {
+        res.status(401).send('Please log in first.');
+        console.log(req.session.username)
+    }
 })
 
 module.exports = router
