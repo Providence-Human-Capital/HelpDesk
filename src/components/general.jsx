@@ -48,7 +48,7 @@ export default function general() {
                 console.log(err)
                 toast({
                     title: "Error sending request",
-                    description: "more text",
+                    description: "Check your internet or contact IT",
                     status: "error",
                     duration: 4000,
                     isClosable: true,
@@ -87,7 +87,7 @@ export default function general() {
                     </FormControl>
                     <FormControl id="request-type" mt={3}>
                         <FormLabel as='u'>Request Type</FormLabel>
-                        <Select placeholder="Select request type" borderColor={'#bdbdbd'} focusBorderColor='green' {...register('type')} isRequired>
+                        <Select placeholder="Select request type" borderColor={'#bdbdbd'} focusBorderColor='whatsapp' {...register('type')} isRequired>
                             <option value="network">Network</option>
                             <option value="printer">Printer</option>
                             <option value="scanner">Scanner</option>

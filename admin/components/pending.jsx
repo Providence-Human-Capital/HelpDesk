@@ -20,7 +20,8 @@ import {
     AlertDialogCloseButton,
     useToast,
     Text,
-    Button
+    Button,
+    Flex
 } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios'
@@ -32,6 +33,7 @@ export default function Pending() {
     const [data, setData] = useState([])
     const [isOpen, setIsOpen] = useState(false);
     const [selectedTicket, setSelectedTicket] = useState(null);
+    const [selectedRow, setSelectedRow] = useState('')
     const [, setRefresh] = useState(false);
     const cancelRef = useRef()
     const toast = useToast()
@@ -44,6 +46,14 @@ export default function Pending() {
             })
             .catch((err) => {
                 console.log(err)
+                toast({
+                    title: "Error fetching database data",
+                    description: "more text",
+                    status: "error",
+                    duration: 4000,
+                    isClosable: true,
+                    position: "top-right",
+                });
             })
     }, [])
 
@@ -60,6 +70,14 @@ export default function Pending() {
     const refreshPage = () => {
         // Toggle the state to force a re-render
         setRefresh({});
+    };
+
+    const handleRowClick = (id) => {
+        setSelectedRow(id);
+
+        if (selectedRow === id) {
+            setSelectedRow('')
+        }
     };
 
     const handleUpdate = () => {
@@ -99,9 +117,10 @@ export default function Pending() {
     }
 
     const options = {
-        year: 'numeric',
-        month: '2-digit',
+        year: '2-digit',
+        month: 'short',
         day: '2-digit',
+        weekday: 'short',
         hour: '2-digit',
         minute: '2-digit',
         // second: '2-digit',
@@ -121,8 +140,8 @@ export default function Pending() {
                                 <Th>Date of Applicaton</Th>
                                 <Th>Description</Th>
                                 <Th>Type</Th>
-                                <Th>Pending</Th>
-                                <Th>Action</Th>
+                                <Th>Status</Th>
+                                <Th>Own</Th>
                             </Tr>
                         </Thead>
                         {data.length == [] ?
@@ -130,8 +149,8 @@ export default function Pending() {
                             <Center mt={4}>There are no new tickets</Center>
                             :
                             data.map(info => (
-                                <Tbody className='row'>
-                                    <Tr>
+                                <Tbody className='row' onClick={() => handleRowClick(info.id)} >
+                                    <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
                                         <Td>{info.name}</Td>
                                         <Td>{info.department}</Td>
                                         <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>

@@ -22,7 +22,7 @@ export default function Drawerr() {
 
     const LinkItems = [
         { name: "Admin Dashboard", link: "/admin/dash" },
-        { name: "General Requests", link: "/admin/dash" },
+        { name: "General Requests", link: "/admin/general" },
         { name: "Email Requests", link: "/admin/dash" },
         { name: "Transfer Requests", link: "/admin/dash" },
         { name: "Admin management", link: "/admin/management" },

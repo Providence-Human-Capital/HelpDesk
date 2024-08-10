@@ -20,7 +20,7 @@ export default function All() {
     const [data, setData] = useState([])
     const [selectedRow, setSelectedRow] = useState('')
 
-    console.log(selectedRow)
+    // console.log(selectedRow)
     useEffect(() => {
         axios.get('http://localhost:8800/general/all')
             .then((res) => {
@@ -29,13 +29,22 @@ export default function All() {
             })
             .catch((err) => {
                 console.log(err)
+                toast({
+                    title: "Error fetching database data",
+                    description: "more text",
+                    status: "error",
+                    duration: 4000,
+                    isClosable: true,
+                    position: "top-right",
+                });
             })
     }, [])
 
     const options = {
-        year: 'numeric',
-        month: '2-digit',
+        year: '2-digit',
+        month: 'short',
         day: '2-digit',
+        weekday: 'short',
         hour: '2-digit',
         minute: '2-digit',
         // second: '2-digit',
@@ -44,6 +53,10 @@ export default function All() {
 
     const handleRowClick = (id) => {
         setSelectedRow(id);
+
+        if (selectedRow === id) {
+            setSelectedRow('')
+        }
     };
 
     return (
@@ -60,7 +73,7 @@ export default function All() {
                                 <Th>Date</Th>
                                 <Th>Description</Th>
                                 <Th>Type</Th>
-                                <Th>Pending</Th>
+                                <Th>Status</Th>
                                 {/* <Th>Action</Th> */}
                             </Tr>
                         </Thead>

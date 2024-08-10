@@ -22,19 +22,22 @@ import {
     Button,
     useToast,
     Text,
+    Flex
 } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios'
-import { CheckIcon } from '@chakra-ui/icons'
+import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
 import '../../src/App.css'
 
 export default function Progress() {
 
     const [data, setData] = useState([])
     const [isOpen, setIsOpen] = useState(false);
+    const [isReverseOpen, setIsReverseOpen] = useState(false);
     const [selectedTicket, setSelectedTicket] = useState(null);
     const [selectedRow, setSelectedRow] = useState('')
     const cancelRef = useRef()
+    const cancelReverseRef = useRef()
     const toast = useToast()
 
     const onOpen = (ticket) => {
@@ -42,8 +45,14 @@ export default function Progress() {
         setIsOpen(true);
     };
 
+    const onReverseOpen = (ticket) => {
+        setSelectedTicket(ticket);
+        setIsReverseOpen(true);
+    };
+
     const onClose = () => {
         setIsOpen(false);
+        setIsReverseOpen(false)
         setSelectedTicket(null);
     };
 
@@ -55,10 +64,16 @@ export default function Progress() {
             })
             .catch((err) => {
                 console.log(err)
+                toast({
+                    title: "Error fetching database data",
+                    description: "more text",
+                    status: "error",
+                    duration: 4000,
+                    isClosable: true,
+                    position: "top-right",
+                });
             })
     }, [])
-
-    console.log(data)
 
     const handleUpdate = () => {
         onClose();
@@ -97,10 +112,43 @@ export default function Progress() {
             })
     }
 
+    const handleReversal = () => {
+        onClose();
+
+        const update = {
+            id: selectedTicket.id,
+        }
+
+        axios.put('http://localhost:8800/general/progress/reverse', update)
+            .then((res) => {
+                console.log(res.data)
+                toast({
+                    title: "Ticket has been reversed",
+                    description: "Ticket is now back in pending",
+                    status: "info",
+                    duration: 4000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+            })
+            .catch((err) => {
+                console.log(err)
+                toast({
+                    title: "Error sending request",
+                    description: "more text",
+                    status: "error",
+                    duration: 4000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+            })
+    }
+
     const options = {
-        year: 'numeric',
-        month: '2-digit',
+        year: '2-digit',
+        month: 'short',
         day: '2-digit',
+        weekday: 'short',
         hour: '2-digit',
         minute: '2-digit',
         // second: '2-digit',
@@ -109,6 +157,10 @@ export default function Progress() {
 
     const handleRowClick = (id) => {
         setSelectedRow(id);
+
+        if (selectedRow === id) {
+            setSelectedRow('')
+        }
     };
 
     return (
@@ -119,16 +171,17 @@ export default function Progress() {
                     <Table >
                         <Thead>
                             <Tr>
-                                <Th>ID</Th>
+                                {/* <Th>ID</Th> */}
                                 <Th>Name</Th>
                                 <Th>Department</Th>
                                 <Th>Date of Applicaton</Th>
                                 <Th>Date Accepted</Th>
                                 <Th>Description</Th>
                                 <Th>Type</Th>
-                                <Th>Pending</Th>
+                                <Th>Status</Th>
                                 <Th>it officer</Th>
-                                <Th>Action</Th>
+                                <Th>Finish</Th>
+                                <Th>Reverse</Th>
                             </Tr>
                         </Thead>
                         {data.length == [] ?
@@ -138,7 +191,7 @@ export default function Progress() {
                             data.map(info => (
                                 <Tbody className='row' onClick={() => handleRowClick(info.id)} >
                                     <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
-                                        <Td>{info.id}</Td>
+                                        {/* <Td>{info.id}</Td> */}
                                         <Td>{info.name}</Td>
                                         <Td>{info.department}</Td>
                                         <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>
@@ -148,6 +201,7 @@ export default function Progress() {
                                         <Td>{info.status}</Td>
                                         <Td>{info.it_officer}</Td>
                                         <Td onClick={() => onOpen(info)} _hover={{ backgroundColor: 'green' }} style={{ width: '1%' }}><Center><CheckIcon /></Center></Td>
+                                        <Td onClick={() => onReverseOpen(info)} _hover={{ backgroundColor: 'blue' }} style={{ width: '1%' }}><Center><RepeatIcon /></Center></Td>
 
 
                                     </Tr>
@@ -166,7 +220,7 @@ export default function Progress() {
                             <AlertDialogOverlay />
 
                             <AlertDialogContent bg={'#101010'} border={'1px solid white'} color={'white'}>
-                                <AlertDialogHeader>Take Ownership?</AlertDialogHeader>
+                                <AlertDialogHeader>Complete Ticket?</AlertDialogHeader>
                                 <AlertDialogCloseButton />
                                 <AlertDialogBody >
                                     {selectedTicket ? (
@@ -183,6 +237,43 @@ export default function Progress() {
                                     </Button>
                                     <Button colorScheme='green' ml={3} onClick={() => {
                                         handleUpdate()
+
+                                    }}>
+                                        Yes
+                                    </Button>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+
+                        {/* reversal  */}
+                        <AlertDialog
+                            motionPreset='slideInBottom'
+                            leastDestructiveRef={cancelReverseRef}
+                            onClose={onClose}
+                            isOpen={isReverseOpen}
+                            isCentered
+
+                        >
+                            <AlertDialogOverlay />
+
+                            <AlertDialogContent bg={'#101010'} border={'1px solid white'} color={'white'}>
+                                <AlertDialogHeader>Ticket Reversal?</AlertDialogHeader>
+                                <AlertDialogCloseButton />
+                                <AlertDialogBody >
+                                    {selectedTicket ? (
+                                        <>
+                                            Are you sure that you want to reverse <Text as={'b'}>{selectedTicket.name}'s</Text> ticket and send back to pending??
+                                        </>
+                                    ) : (
+                                        'No ticket selected'
+                                    )}
+                                </AlertDialogBody>
+                                <AlertDialogFooter>
+                                    <Button ref={cancelRef} onClick={onClose} colorScheme='red'>
+                                        No
+                                    </Button>
+                                    <Button colorScheme='blue' ml={3} onClick={() => {
+                                        handleReversal()
 
                                     }}>
                                         Yes
