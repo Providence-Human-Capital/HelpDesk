@@ -10,35 +10,33 @@ import {
     TableCaption,
     TableContainer,
     Box,
+    useToast,
     Center,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { CheckIcon } from '@chakra-ui/icons'
+import { useQuery } from '@tanstack/react-query'
 import '../../src/App.css'
 
-export default function All() {
-    const [data, setData] = useState([])
+export default function All({ request }) {
+    // const [data, setData] = useState([])
     const [selectedRow, setSelectedRow] = useState('')
+    const toast = useToast()
 
-    // console.log(selectedRow)
-    useEffect(() => {
-        axios.get('http://localhost:8800/general/all')
-            .then((res) => {
-                console.log(res.data)
-                setData(res.data)
-            })
-            .catch((err) => {
-                console.log(err)
-                toast({
-                    title: "Error fetching database data",
-                    description: "more text",
-                    status: "error",
-                    duration: 4000,
-                    isClosable: true,
-                    position: "top-right",
-                });
-            })
-    }, [])
+    const { data: data, error } = useQuery({
+        queryKey: ['all'],
+        queryFn: () =>
+            axios.get(`http://localhost:8800/${request}/all`).then(res => res.data)
+    })
+
+    if (error) return toast({
+        title: "Error fetching database data",
+        description: "more text",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+    });
 
     const options = {
         year: '2-digit',
@@ -77,11 +75,13 @@ export default function All() {
                                 {/* <Th>Action</Th> */}
                             </Tr>
                         </Thead>
-                        {data.length == [] ?
+                        {" "}
+                        {
+                            // data.length == [] ?
 
-                            <Center mt={4}>There are no tickets.</Center>
-                            :
-                            data.map(info => (
+                            //     <Center mt={4}>There are no tickets.</Center>
+                            //     :
+                            data?.map(info => (
                                 <Tbody className='row' onClick={() => handleRowClick(info.id)} >
                                     <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
                                         <Td>{info.id}</Td>

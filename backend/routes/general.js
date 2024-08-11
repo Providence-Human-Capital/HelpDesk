@@ -158,7 +158,7 @@ router.put('/completed/reverse', async (req, res) => {
             return;
         }
         console.log(id)
-        res.send(results);
+        res.send({ message: 'reversallll' });
         console.log('working');
     })
 

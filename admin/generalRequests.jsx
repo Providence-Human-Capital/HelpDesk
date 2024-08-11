@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from './navbar'
 import {
     Box, Center, Container, Text, Flex, Table,
@@ -15,11 +15,21 @@ import All from './components/all'
 import Finished from './components/finished'
 import Pending from './components/pending'
 import Progress from './components/progress'
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import '../src/App.css'
 
 export default function General() {
 
     const [showPage, setShowPage] = useState('pending')
+    const { request } = useParams()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (request !== 'general') {
+            navigate('/404')
+        }
+    }, [])
+
 
     let x = 'red'
 
@@ -70,10 +80,10 @@ export default function General() {
 
                     </Box>
 
-                    {showPage === 'all' ? <All /> : ''}
-                    {showPage === 'pending' ? <Pending /> : ''}
-                    {showPage === 'progress' ? <Progress /> : ''}
-                    {showPage === 'finished' ? <Finished /> : ''}
+                    {showPage === 'all' ? <All request={request} /> : ''}
+                    {showPage === 'pending' ? <Pending request={request} /> : ''}
+                    {showPage === 'progress' ? <Progress request={request} /> : ''}
+                    {showPage === 'finished' ? <Finished request={request} /> : ''}
 
                 </Container>
             </Box>

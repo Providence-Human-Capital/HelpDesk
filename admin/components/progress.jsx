@@ -25,13 +25,14 @@ import {
     Flex
 } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
+import { QueryClient, useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
 import '../../src/App.css'
 
-export default function Progress() {
+export default function Progress({ request }) {
 
-    const [data, setData] = useState([])
+    // const [data, setData] = useState([])
     const [isOpen, setIsOpen] = useState(false);
     const [isReverseOpen, setIsReverseOpen] = useState(false);
     const [selectedTicket, setSelectedTicket] = useState(null);
@@ -39,6 +40,7 @@ export default function Progress() {
     const cancelRef = useRef()
     const cancelReverseRef = useRef()
     const toast = useToast()
+    const queryClient = new QueryClient({})
 
     const onOpen = (ticket) => {
         setSelectedTicket(ticket);
@@ -56,92 +58,68 @@ export default function Progress() {
         setSelectedTicket(null);
     };
 
-    useEffect(() => {
-        axios.get('http://localhost:8800/general/progress')
-            .then((res) => {
-                console.log(res.data)
-                setData(res.data)
-            })
-            .catch((err) => {
-                console.log(err)
-                toast({
-                    title: "Error fetching database data",
-                    description: "more text",
-                    status: "error",
-                    duration: 4000,
-                    isClosable: true,
-                    position: "top-right",
-                });
-            })
-    }, [])
+    const { data: data, error } = useQuery({
+        queryKey: ['progress'],
+        queryFn: () =>
+            axios.get(`http://localhost:8800/${request}/progress`).then(res => res.data)
+    })
+
+    if (error) return toast({
+        title: "Error fetching database data",
+        description: "more text",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+    });
+
+    const finishMutation = useMutation({
+        mutationFn: (finish) => {
+            axios.put(`http://localhost:8800/${request}/progress/update`, finish)
+        },
+        onSettled: () => {
+            toast({
+                title: "Ticket is now finished",
+                description: "Ticket is now closed",
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+                position: "top-right",
+            });
+        }
+    })
 
     const handleUpdate = () => {
         onClose();
 
-        // const update = {
-        //     id: selectedTicket.id,
-        //     officer: 'mafaro',
-        // }
-
-        const update = {
+        finishMutation.mutate({
             id: selectedTicket.id,
-        }
-
-        axios.put('http://localhost:8800/general/progress/update', update)
-            .then((res) => {
-                console.log(res.data)
-                toast({
-                    title: "Ticket is now finished",
-                    description: "Ticket is now closed",
-                    status: "success",
-                    duration: 4000,
-                    isClosable: true,
-                    position: "top-right",
-                });
-            })
-            .catch((err) => {
-                console.log(err)
-                toast({
-                    title: "Error sending request",
-                    description: "more text",
-                    status: "error",
-                    duration: 4000,
-                    isClosable: true,
-                    position: "top-right",
-                });
-            })
+        })
     }
+
+    const reversalMutation = useMutation({
+        mutationFn: (reverse) => {
+            axios.put(`http://localhost:8800/${request}/progress/reverse`, reverse)
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['completed'] })
+            toast({
+                title: "Ticket has been reversed",
+                description: "Ticket is now back in pending",
+                status: "info",
+                duration: 4000,
+                isClosable: true,
+                position: "top-right",
+            })
+        }
+    })
 
     const handleReversal = () => {
         onClose();
 
-        const update = {
+        reversalMutation.mutate({
             id: selectedTicket.id,
-        }
-
-        axios.put('http://localhost:8800/general/progress/reverse', update)
-            .then((res) => {
-                console.log(res.data)
-                toast({
-                    title: "Ticket has been reversed",
-                    description: "Ticket is now back in pending",
-                    status: "info",
-                    duration: 4000,
-                    isClosable: true,
-                    position: "top-right",
-                });
-            })
-            .catch((err) => {
-                console.log(err)
-                toast({
-                    title: "Error sending request",
-                    description: "more text",
-                    status: "error",
-                    duration: 4000,
-                    isClosable: true,
-                    position: "top-right",
-                });
-            })
+        })
     }
 
     const options = {
@@ -184,11 +162,12 @@ export default function Progress() {
                                 <Th>Reverse</Th>
                             </Tr>
                         </Thead>
-                        {data.length == [] ?
+                        {
+                            // data.length == [] ?
 
-                            <Center mt={4}>There are no tickets in progress</Center>
-                            :
-                            data.map(info => (
+                            //     <Center mt={4}>There are no tickets in progress</Center>
+                            //     :
+                            data?.map((info) => (
                                 <Tbody className='row' onClick={() => handleRowClick(info.id)} >
                                     <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
                                         {/* <Td>{info.id}</Td> */}
