@@ -16,38 +16,63 @@ import WLR from './img/wlr.jpg'
 import { useForm } from "react-hook-form"
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import { useMutation } from '@tanstack/react-query';
 
 export default function Login() {
     const { register, formState: { errors }, handleSubmit } = useForm()
     const toast = useToast()
     const navigate = useNavigate();
+    const { auth, addAuthUser, logoutAuthUser } = useAuthStore((state) => ({
+        auth: state.auth,
+        addAuthUser: state.addAuthUser,
+        logoutAuthUser: state.logoutAuthUser,
+    }))
 
+    // console.log(auth.user)
+    // console.log(auth.user[0].username)
+
+
+    const authMutation = useMutation({
+
+        mutationFn: async (auth) => {
+            axios.post('http://localhost:8800/admin/login', auth)
+                .then((res) => {
+                    toast({
+                        title: "Welcome Admin!!",
+                        description: "This is the way",
+                        status: "success",
+                        duration: 4000,
+                        isClosable: true,
+                        position: "top-right",
+                    });
+                    addAuthUser({
+                        username: res.data[0].username,
+                        email: res.data[0].email,
+                        isAuth: true
+
+                    })
+                    // console.log(res.data[0].username)
+                    navigate('/admin/dash')
+                })
+                .catch((err) => {
+                    logoutAuthUser()
+                    // console.log(err)
+                    toast({
+                        title: "Error ",
+                        description: err.response.data,
+                        status: "error",
+                        duration: 4000,
+                        isClosable: true,
+                        position: "top-right",
+                    });
+                })
+
+        },
+    })
 
     const onSubmit = (data) => {
-        axios.post('http://localhost:8800/admin/login', data)
-            .then((res) => {
-                console.log(res.data)
-                toast({
-                    title: "Welcome Admin!!",
-                    description: "This is the way",
-                    status: "success",
-                    duration: 4000,
-                    isClosable: true,
-                    position: "top-right",
-                });
-                navigate('/admin/dash')
-            })
-            .catch((err) => {
-                console.log(err)
-                toast({
-                    title: "Error ",
-                    description: "You are not an admin go elsewhere",
-                    status: "error",
-                    duration: 4000,
-                    isClosable: true,
-                    position: "top-right",
-                });
-            })
+        authMutation.mutate(data)
     }
 
     return (

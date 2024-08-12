@@ -16,7 +16,7 @@ import Finished from './components/finished'
 import Pending from './components/pending'
 import Progress from './components/progress'
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import '../src/App.css'
+import '../App.css'
 
 export default function General() {
 
@@ -25,7 +25,7 @@ export default function General() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (request !== 'general') {
+        if (request !== 'general' && request !== 'hardware') {
             navigate('/404')
         }
     }, [])

@@ -42,7 +42,7 @@ export default function Requisition() {
         <Box>
           <Center fontSize={'3xl'}>IT Job Card</Center>
 
-          <Alert mt={3} variant={'solid'}>
+          <Alert mt={3} variant={'solid'} >
             <AlertIcon />
             {/* Please note that the entire department is not currently at head office, you can still send your request and we will attend to it when we are back. */}
             The department is aware of the current network challenges and we are attending to it, there is no need to send a request.

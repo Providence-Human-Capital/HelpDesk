@@ -61,44 +61,44 @@ router.post('/add', async (req, res) => {
 router.get('/all', async (req, res) => {
     connect.query('SELECT * FROM general', (error, results) => {
         if (error) {
-            res.send('Error executing query: ' + error.stack);
+            res.status(500).send('Error fetching data');
             return;
         }
         res.send(results);
-        console.log('working');
+        // console.log('working');
     });
 });
 
 router.get('/pending', async (req, res) => {
     connect.query('SELECT * FROM general WHERE status = "pending"', (error, results) => {
         if (error) {
-            res.send('Error executing query: ' + error.stack);
+            res.status(500).send('Error fetching data');
             return;
         }
         res.send(results);
-        console.log('working');
+        // console.log('working');
     });
 });
 
 router.get('/progress', async (req, res) => {
     connect.query('SELECT * FROM general WHERE status = "in-progress"', (error, results) => {
         if (error) {
-            res.send('Error executing query: ' + error.stack);
+            res.status(500).send('Error fetching data');
             return;
         }
         res.send(results);
-        console.log('working');
+        // console.log('working');
     });
 });
 
 router.get('/completed', async (req, res) => {
     connect.query('SELECT * FROM general WHERE status = "completed"', (error, results) => {
         if (error) {
-            res.send('Error executing query: ' + error.stack);
+            res.status(500).send('Error fetching data');
             return;
         }
         res.send(results);
-        console.log('working');
+        // console.log('working');
     });
 });
 
@@ -110,11 +110,11 @@ router.put('/pending/update', async (req, res) => {
 
     connect.query('UPDATE general SET status = "in-progress", it_officer = ? WHERE id = ?', [officer, id], (error, results) => {
         if (error) {
-            res.send('Error executing query: ' + error.stack);
+            res.status(500).send('Error updating database');
             return;
         }
         res.send(results);
-        console.log('working');
+        // console.log('working');
     })
 
 })
@@ -124,12 +124,12 @@ router.put('/progress/update', async (req, res) => {
 
     connect.query('UPDATE general SET status = "completed" WHERE id = ?', [id], (error, results) => {
         if (error) {
-            res.send('Error executing query: ' + error.stack);
+            res.status(500).send('Error updating database');
             return;
         }
         console.log(id)
         res.send(results);
-        console.log('working');
+        // console.log('working');
     })
 
 })
@@ -138,13 +138,13 @@ router.put('/progress/update', async (req, res) => {
 router.put('/progress/reverse', async (req, res) => {
     const { id } = req.body
 
-    connect.query('UPDATE general SET status = "pending" WHERE id = ?', [id], (error, results) => {
+    connect.query('UPDATE general SET status = "pending", it_officer = " " WHERE id = ?', [id], (error, results) => {
         if (error) {
-            res.send('Error executing query: ' + error.stack);
+            res.status(500).send('Reversal error ');
             return;
         }
         res.send(results);
-        console.log('working');
+        // console.log('working');
     })
 
 })
@@ -154,12 +154,12 @@ router.put('/completed/reverse', async (req, res) => {
 
     connect.query('UPDATE general SET status = "in-progress" WHERE id = ?', [id], (error, results) => {
         if (error) {
-            res.send('Error executing query: ' + error.stack);
+            res.status(500).send('Reversal error ');
             return;
         }
-        console.log(id)
-        res.send({ message: 'reversallll' });
-        console.log('working');
+        // console.log(id)
+        res.send(results);
+        // console.log('working');
     })
 
 })

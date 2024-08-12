@@ -11,12 +11,13 @@ import {
     TableContainer,
     Box,
     useToast,
-    Center,
+    Tag,
+    Text
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { CheckIcon } from '@chakra-ui/icons'
 import { useQuery } from '@tanstack/react-query'
-import '../../src/App.css'
+// import '../App.css'
 
 export default function All({ request }) {
     // const [data, setData] = useState([])
@@ -26,17 +27,20 @@ export default function All({ request }) {
     const { data: data, error } = useQuery({
         queryKey: ['all'],
         queryFn: () =>
-            axios.get(`http://localhost:8800/${request}/all`).then(res => res.data)
+            axios.get(`http://localhost:8800/${request}/all`)
+                .then(res => res.data)
+                .catch((err) => {
+                    toast({
+                        title: "Error",
+                        description: err.response.data,
+                        status: "error",
+                        duration: 4000,
+                        isClosable: true,
+                        position: "top-right",
+                    });
+                })
     })
 
-    if (error) return toast({
-        title: "Error fetching database data",
-        description: "more text",
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-        position: "top-right",
-    });
 
     const options = {
         year: '2-digit',
@@ -60,8 +64,8 @@ export default function All({ request }) {
     return (
         <>
             <Box mt={4} >
-
-                <TableContainer border={'1px solid #4c4c4c'}>
+                <Text>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
+                <TableContainer border={'1px solid #4c4c4c'} mt={1}>
                     <Table >
                         <Thead>
                             <Tr>
@@ -90,8 +94,10 @@ export default function All({ request }) {
                                         <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>
                                         <Td>{info.description}</Td>
                                         <Td>{info.request_type}</Td>
-                                        <Td>{info.status}</Td>
-                                        {/* <Td><CheckIcon /></Td> */}
+                                        <Td><Tag variant={'solid'}
+                                            colorScheme={info.status === 'pending' ? 'gray' : info.status === 'in-progress' ? 'orange' : 'green'}>
+                                            {info.status}
+                                        </Tag></Td>
                                     </Tr>
                                 </Tbody>
                             ))}

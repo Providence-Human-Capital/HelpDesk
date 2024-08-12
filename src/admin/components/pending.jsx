@@ -18,83 +18,114 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   AlertDialogCloseButton,
-  // useDisclosure,
-  Button,
   useToast,
   Text,
+  Button,
   Flex,
 } from "@chakra-ui/react";
-import { QueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { RepeatIcon } from "@chakra-ui/icons";
-import "../../src/App.css";
+import { QueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { CheckIcon } from "@chakra-ui/icons";
+import { useAuthStore } from '../../store/authStore';
 
-export default function Finished({ request }) {
-  const [dbMessage, setdbMessage] = useState('')
-  const [isReverseOpen, setIsReverseOpen] = useState(false);
+
+export default function Pending({ request }) {
+  // const [data, setData] = useState([])
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [selectedRow, setSelectedRow] = useState("");
-  const cancelReverseRef = useRef();
+  const cancelRef = useRef();
   const toast = useToast();
   const queryClient = new QueryClient({});
 
-  const { data: data, error, refetch, } = useQuery({
-    queryKey: ["completed"],
-    staleTime: 0,
+  const username = useAuthStore((state) => state.auth)
+  const displayName = username.user.username
+
+  const { data: data, error } = useQuery({
+    queryKey: ["pending"],
     queryFn: () =>
-      axios.get(`http://localhost:8800/${request}/completed`)
-        .then((res) => res.data),
+      axios
+        .get(`http://localhost:8800/${request}/pending`)
+        .then((res) => res.data)
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: err.response.data,
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+            position: "top-right",
+          });
+        })
   });
 
-  if (error)
-    return toast({
-      title: "Error fetching database data",
-      description: "more text",
-      status: "error",
-      duration: 4000,
-      isClosable: true,
-      position: "top-right",
-    });
+  // if (error)
+  //   return toast({
+  //     title: "Error fetching database data",
+  //     description: "more text",
+  //     status: "error",
+  //     duration: 4000,
+  //     isClosable: true,
+  //     position: "top-right",
+  //   });
 
-  const onReverseOpen = (ticket) => {
+  const onOpen = (ticket) => {
     setSelectedTicket(ticket);
-    setIsReverseOpen(true);
+    setIsOpen(true);
   };
 
   const onClose = () => {
-    // setIsOpen(false);
-    setIsReverseOpen(false);
+    setIsOpen(false);
     setSelectedTicket(null);
   };
 
+  const handleRowClick = (id) => {
+    setSelectedRow(id);
 
-  const reversalMutation = useMutation({
-    mutationFn: (reverse) => {
-      axios.put(`http://localhost:8800/${request}/completed/reverse`, reverse)
-        .then((res) => res.json())
+    if (selectedRow === id) {
+      setSelectedRow("");
+    }
+  };
+
+  const fetchMutation = useMutation({
+    mutationFn: (update) => {
+      axios.put(`http://localhost:8800/${request}/pending/update`, update)
+        .then((res) => {
+          toast({
+            title: "You have now taken ownership of the ticket",
+            description: "Ticket is now in progress",
+            status: "success",
+            duration: 4000,
+            isClosable: true,
+            position: "top-right",
+          });
+        })
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: err.response.data,
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+            position: "top-right",
+          });
+        })
     },
-    onSuccess: (data) => {
-      queryClient.refetchQueries("completed");
-      // refetch()
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["pending"] });
 
-      toast({
-        title: "Ticket has been reversed",
-        description: data,
-        status: "info",
-        duration: 4000,
-        isClosable: true,
-        position: "top-right",
-      })
     },
   });
 
-
-  const handleReversal = () => {
+  const handleUpdate = () => {
     onClose();
 
-    reversalMutation.mutate({
+    fetchMutation.mutate({
       id: selectedTicket.id,
+      officer: displayName,
     });
+
   };
 
   const options = {
@@ -108,36 +139,28 @@ export default function Finished({ request }) {
     hour12: false,
   };
 
-  const handleRowClick = (id) => {
-    setSelectedRow(id);
-
-    if (selectedRow === id) {
-      setSelectedRow("");
-    }
-  };
-
   return (
     <>
       <Box mt={4}>
-        <TableContainer border={"1px solid #4c4c4c"}>
+        <Text>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
+
+        <TableContainer border={"1px solid #4c4c4c"} mt={2}>
           <Table>
             <Thead>
               <Tr>
                 <Th>Name</Th>
                 <Th>Department</Th>
                 <Th>Date of Applicaton</Th>
-                <Th>Date Completed</Th>
                 <Th>Description</Th>
                 <Th>Type</Th>
                 <Th>Status</Th>
-                <Th>IT officer</Th>
-                <Th>Reverse</Th>
+                <Th>Own</Th>
               </Tr>
             </Thead>
             {
-              // data.length == [] ?
+              // data.length === 0 ?
 
-              //     <Center mt={4}>There are no finished tickets</Center>
+              //     <Center mt={4}>There are no new tickets</Center>
               //     :
               data?.map((info) => (
                 <Tbody className="row" onClick={() => handleRowClick(info.id)}>
@@ -152,35 +175,27 @@ export default function Finished({ request }) {
                     <Td>
                       {new Date(info.date).toLocaleDateString("en-GB", options)}
                     </Td>
-                    <Td>
-                      {new Date(info.action_date).toLocaleDateString(
-                        "en-GB",
-                        options
-                      )}
-                    </Td>
                     <Td>{info.description}</Td>
                     <Td>{info.request_type}</Td>
                     <Td>{info.status}</Td>
-                    <Td>{info.it_officer}</Td>
                     <Td
-                      onClick={() => onReverseOpen(info)}
-                      _hover={{ backgroundColor: "blue" }}
+                      onClick={() => onOpen(info)}
+                      _hover={{ backgroundColor: "green" }}
                       style={{ width: "1%" }}
                     >
                       <Center>
-                        <RepeatIcon />
+                        <CheckIcon />
                       </Center>
                     </Td>
                   </Tr>
                 </Tbody>
               ))
             }
-
             <AlertDialog
               motionPreset="slideInBottom"
-              leastDestructiveRef={cancelReverseRef}
+              leastDestructiveRef={cancelRef}
               onClose={onClose}
-              isOpen={isReverseOpen}
+              isOpen={isOpen}
               isCentered
             >
               <AlertDialogOverlay />
@@ -190,32 +205,27 @@ export default function Finished({ request }) {
                 border={"1px solid white"}
                 color={"white"}
               >
-                <AlertDialogHeader>Ticket Reversal?</AlertDialogHeader>
+                <AlertDialogHeader>Take Ownership?</AlertDialogHeader>
                 <AlertDialogCloseButton />
                 <AlertDialogBody>
                   {selectedTicket ? (
                     <>
-                      Are you sure that you want to reverse{" "}
-                      <Text as={"b"}>{selectedTicket.name}'s</Text> ticket and
-                      send back to in-progress??
+                      Are you sure you want to take ownership of{" "}
+                      <Text as={"b"}>{selectedTicket.name}' s</Text> request??
                     </>
                   ) : (
                     "No ticket selected"
                   )}
                 </AlertDialogBody>
                 <AlertDialogFooter>
-                  <Button
-                    ref={cancelReverseRef}
-                    onClick={onClose}
-                    colorScheme="red"
-                  >
+                  <Button ref={cancelRef} onClick={onClose} colorScheme="red">
                     No
                   </Button>
                   <Button
-                    colorScheme="blue"
+                    colorScheme="green"
                     ml={3}
                     onClick={() => {
-                      handleReversal();
+                      handleUpdate();
                     }}
                   >
                     Yes

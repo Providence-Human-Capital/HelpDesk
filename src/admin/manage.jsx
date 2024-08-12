@@ -32,8 +32,8 @@ export default function Manage() {
             .catch((err) => {
                 console.log(err)
                 toast({
-                    title: "Error ",
-                    description: "more text",
+                    title: "Error",
+                    description: err.response.data,
                     status: "error",
                     duration: 4000,
                     isClosable: true,

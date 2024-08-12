@@ -31,10 +31,10 @@ router.post('/login', async (req, res) => {
     connect.query('SELECT * FROM admin WHERE username = (?)', [username], async (error, results) => {
         // console.log(results)
         if (error) {
-            return res.sendStatus(404);
+            return res.status(404).send('Error logging in');
             // console.log(error)
         } else if (results.length === 0) {
-            return res.sendStatus(401);
+            return res.status(401).send('You are not an admin go elsewhere');
         } else {
             try {
                 const isMatch = await bcrypt.compare(password, results[0].password);
@@ -48,17 +48,13 @@ router.post('/login', async (req, res) => {
                     })
 
                 } else {
-                    res.sendStatus(401);
+                    res.status(201);
                 }
             } catch (compareError) {
                 console.error('Bcrypt compare error:', compareError);
-                res.sendStatus(500);
+                res.status(500);
             }
         }
-
-
-
-        console.log(req.session.username)
 
     })
 })
@@ -74,10 +70,10 @@ router.post('/add', async (req, res) => {
         connect.query('INSERT INTO admin (username, email, password) VALUES (?, ?, ?)', [username, email, hashPass], (error, results) => {
             if (error) {
                 console.error('Error executing query:', error.stack);
-                return res.status(500).send('Error executing query');
+                return res.status(500).send('Error creating admin');
             }
             res.status(201).send(results);
-            console.log('User added successfully');
+            // console.log('User added successfully');
         });
     } catch (error) {
         console.error('Error hashing password:', error);
