@@ -41,6 +41,8 @@ export default function Pending({ request }) {
 
   const username = useAuthStore((state) => state.auth)
   const displayName = username.user.username
+  const adminRole = useAuthStore((state) => state.auth.user.role)
+
 
   const { data: data, error } = useQuery({
     queryKey: ["pending"],
@@ -112,7 +114,7 @@ export default function Pending({ request }) {
           });
         })
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pending"] });
 
     },
@@ -142,7 +144,7 @@ export default function Pending({ request }) {
   return (
     <>
       <Box mt={4}>
-        <Text>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
+        <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
 
         <TableContainer border={"1px solid #4c4c4c"} mt={2}>
           <Table>
@@ -154,14 +156,14 @@ export default function Pending({ request }) {
                 <Th>Description</Th>
                 <Th>Type</Th>
                 <Th>Status</Th>
-                <Th>Own</Th>
+                {adminRole === 'admin' ?
+                  <Th>Own</Th>
+                  :
+                  null}
               </Tr>
             </Thead>
-            {
-              // data.length === 0 ?
 
-              //     <Center mt={4}>There are no new tickets</Center>
-              //     :
+            {
               data?.map((info) => (
                 <Tbody className="row" onClick={() => handleRowClick(info.id)}>
                   <Tr
@@ -178,15 +180,18 @@ export default function Pending({ request }) {
                     <Td>{info.description}</Td>
                     <Td>{info.request_type}</Td>
                     <Td>{info.status}</Td>
-                    <Td
-                      onClick={() => onOpen(info)}
-                      _hover={{ backgroundColor: "green" }}
-                      style={{ width: "1%" }}
-                    >
-                      <Center>
-                        <CheckIcon />
-                      </Center>
-                    </Td>
+                    {adminRole === 'admin' ?
+                      <Td
+                        onClick={() => onOpen(info)}
+                        _hover={{ backgroundColor: "green" }}
+                        style={{ width: "1%" }}
+                      >
+                        <Center>
+                          <CheckIcon />
+                        </Center>
+                      </Td>
+                      :
+                      null}
                   </Tr>
                 </Tbody>
               ))

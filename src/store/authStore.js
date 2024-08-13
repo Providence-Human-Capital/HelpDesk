@@ -9,6 +9,7 @@ export const useAuthStore = create(
                     username: '',
                     email: '',
                     isAuth: false,
+                    role: '',
                 }
             },
             addAuthUser: (user) => set((state) => ({ auth: { ...state.auth, user } })),
@@ -18,6 +19,7 @@ export const useAuthStore = create(
                         username: '',
                         email: '',
                         isAuth: false,
+                        role: '',
                     }
                 }
             }),

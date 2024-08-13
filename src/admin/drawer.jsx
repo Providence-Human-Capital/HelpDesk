@@ -23,6 +23,7 @@ export default function Drawerr() {
     const LinkItems = [
         { name: "Admin Dashboard", link: "/admin/dash" },
         { name: "General Requests", link: "/admin/general" },
+        { name: "Hardware Requests", link: "/admin/hardware" },
         { name: "Email Requests", link: "/admin/dash" },
         { name: "Transfer Requests", link: "/admin/dash" },
         { name: "Admin management", link: "/admin/management" },
@@ -38,6 +39,8 @@ export default function Drawerr() {
                 color={"white"}
                 ref={btnRef}
                 onClick={onOpen}
+                cursor={'pointer'}
+                _hover={{ backgroundColor: 'black', padding: '4px' }}
             // className="admin-drawer"
             />
 
@@ -67,7 +70,7 @@ export default function Drawerr() {
                                             // className="sidebar"
                                             _hover={{ backgroundColor: 'red' }}
                                         >
-                                            <Text fontSize="18" p="">
+                                            <Text fontSize="18" onClose={onClose}>
                                                 {link.name}
                                             </Text>
                                         </Box>

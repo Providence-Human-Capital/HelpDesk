@@ -12,17 +12,27 @@ import {
     Box,
     useToast,
     Tag,
-    Text
+    Text,
+    Radio,
+    HStack,
+    RadioGroup,
+    Button
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { CheckIcon } from '@chakra-ui/icons'
-import { useQuery } from '@tanstack/react-query'
-// import '../App.css'
+import { useQuery, QueryClient } from '@tanstack/react-query'
+import { useAuthStore } from '../../store/authStore';
+import { useForm } from "react-hook-form"
 
 export default function All({ request }) {
-    // const [data, setData] = useState([])
+    const [filter, setFilter] = useState([])
     const [selectedRow, setSelectedRow] = useState('')
     const toast = useToast()
+    const { register, formState: { errors }, handleSubmit } = useForm()
+    const adminRole = useAuthStore((state) => state.auth.user.role)
+    const queryClient = new QueryClient({});
+
+    // console.log(adminRole)
 
     const { data: data, error } = useQuery({
         queryKey: ['all'],
@@ -40,7 +50,6 @@ export default function All({ request }) {
                     });
                 })
     })
-
 
     const options = {
         year: '2-digit',
@@ -61,11 +70,37 @@ export default function All({ request }) {
         }
     };
 
+    const filterChoice = (value) => {
+        setFilter(value)
+    }
+
+    const onSubmit = (data) => {
+        // console.log(data)
+        console.log(filter)
+    }
+
+    const clearFilter = () => {
+        queryClient.invalidateQueries({ queryKey: ['all'] })
+    }
+
     return (
         <>
             <Box mt={4} >
-                <Text>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
-                <TableContainer border={'1px solid #4c4c4c'} mt={1}>
+                <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
+
+                {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+                <RadioGroup onChange={filterChoice} value={filter}>
+                    <HStack spacing={7}  >
+                        <Radio value='hours'>Sort by last 24 hours</Radio>
+                        <Radio value='days'>Sort by last 7 days</Radio>
+                        <Radio value='month'>Sort by last 30 days</Radio>
+                        <Button h={'28px'} bg={'violet'} onClick={onSubmit}>Apply filter</Button>
+                        <Button h={'28px'} bg={'aqua'} onClick={clearFilter}>Reset</Button>
+                    </HStack>
+                </RadioGroup>
+                {/* </form> */}
+
+                <TableContainer border={'1px solid #4c4c4c'} mt={2}>
                     <Table >
                         <Thead>
                             <Tr>

@@ -1,8 +1,21 @@
-- authenticate admin when trying to add a new one
-- fix mutation error message displaying
-- 404 page
-- hardware backend route
-- sessions/ tokens
+TODO
+
+- authenticate admin when trying to add a new one(now only admins can add more)
+- fix mutation error message not displaying
+*** 404 page
+- hardware / email / transer backend route
+*** sessions/ tokens
 -- admin logout
-- notifications
+*** notifications
 - admin adding ticket in background
+-- admin roles
+-- admin audit
+- admin change roles
+*** loaders throughout app
+
+IDEAS
+
+- filtering requests (24 hours, week, month)
+- asset register management tied with transfer requests
+- bread ordering
+- 

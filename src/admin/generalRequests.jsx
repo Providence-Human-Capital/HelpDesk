@@ -27,8 +27,13 @@ export default function General() {
     useEffect(() => {
         if (request !== 'general' && request !== 'hardware') {
             navigate('/404')
+            return
         }
+
     }, [])
+
+    //capitalizing the first letter of the params 
+    const capitalizedRequest = request.charAt(0).toUpperCase() + request.slice(1)
 
 
     let x = 'red'
@@ -39,7 +44,7 @@ export default function General() {
             <Box bg={'black'} minH={'93vh'} color={'white'}>
                 <Container pt={8} maxW='95vw'>
                     <Center>
-                        <Text fontSize={'xl'} as={'u'}>General Requests</Text>
+                        <Text fontSize={'xl'} as={'u'}>{capitalizedRequest} Requests</Text>
                     </Center>
 
                     <Flex mt='5' h='7' className='req' >

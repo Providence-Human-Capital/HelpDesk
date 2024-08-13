@@ -49,8 +49,8 @@ export default function Login() {
                     addAuthUser({
                         username: res.data[0].username,
                         email: res.data[0].email,
-                        isAuth: true
-
+                        isAuth: true,
+                        role: res.data[0].role
                     })
                     // console.log(res.data[0].username)
                     navigate('/admin/dash')

@@ -22,13 +22,12 @@ import {
     Button,
     useToast,
     Text,
-    Flex
 } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
 import { QueryClient, useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
-// import '../../App/css'
+import { useAuthStore } from '../../store/authStore';
 
 export default function Progress({ request }) {
 
@@ -40,6 +39,7 @@ export default function Progress({ request }) {
     const cancelReverseRef = useRef()
     const toast = useToast()
     const queryClient = new QueryClient({})
+    const adminRole = useAuthStore((state) => state.auth.user.role)
 
     const onOpen = (ticket) => {
         setSelectedTicket(ticket);
@@ -193,7 +193,7 @@ export default function Progress({ request }) {
     return (
         <>
             <Box mt={4}>
-                <Text>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
+                <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
 
                 <TableContainer border={'1px solid #4c4c4c'} mt={2}>
                     <Table >
@@ -208,8 +208,14 @@ export default function Progress({ request }) {
                                 <Th>Type</Th>
                                 <Th>Status</Th>
                                 <Th>it officer</Th>
-                                <Th>Finish</Th>
-                                <Th>Reverse</Th>
+                                {adminRole === 'admin' ?
+                                    <Th>Finish</Th>
+                                    :
+                                    null}
+                                {adminRole === 'admin' ?
+                                    <Th>Reverse</Th>
+                                    :
+                                    null}
                             </Tr>
                         </Thead>
                         {
@@ -229,9 +235,19 @@ export default function Progress({ request }) {
                                         <Td>{info.request_type}</Td>
                                         <Td>{info.status}</Td>
                                         <Td>{info.it_officer}</Td>
-                                        <Td onClick={() => onOpen(info)} _hover={{ backgroundColor: 'green' }} style={{ width: '1%' }}><Center><CheckIcon /></Center></Td>
-                                        <Td onClick={() => onReverseOpen(info)} _hover={{ backgroundColor: 'blue' }} style={{ width: '1%' }}><Center><RepeatIcon /></Center></Td>
+                                        {adminRole === 'admin' ?
+                                            <Td onClick={() => onOpen(info)} _hover={{ backgroundColor: 'green' }} style={{ width: '1%' }}>
+                                                <Center><CheckIcon /></Center>
+                                            </Td>
+                                            :
+                                            null}
 
+                                        {adminRole === 'admin' ?
+                                            <Td onClick={() => onReverseOpen(info)} _hover={{ backgroundColor: 'blue' }} style={{ width: '1%' }}>
+                                                <Center><RepeatIcon /></Center>
+                                            </Td>
+                                            :
+                                            null}
 
                                     </Tr>
 

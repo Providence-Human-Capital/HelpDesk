@@ -27,6 +27,8 @@ router.post('/login', async (req, res) => {
     if (!req) { return res.status(400) }
 
     const { username, password } = req.body
+    const date = new Date()
+
 
     connect.query('SELECT * FROM admin WHERE username = (?)', [username], async (error, results) => {
         // console.log(results)
@@ -40,12 +42,13 @@ router.post('/login', async (req, res) => {
                 const isMatch = await bcrypt.compare(password, results[0].password);
 
                 if (isMatch) {
-                    res.send(results);
 
-                    req.session.save(() => {
-                        req.session.logged_in = true
-                        req.session.username = username
+                    connect.query('UPDATE admin SET last_login = ? WHERE username = ?', [date, username], async (error) => {
+                        if (error) {
+                            return res.status(500).send('Last login error');
+                        }
                     })
+                    res.send(results)
 
                 } else {
                     res.status(201);
@@ -62,18 +65,21 @@ router.post('/login', async (req, res) => {
 router.post('/add', async (req, res) => {
     if (!req) { return res.status(400) }
 
-    const { username, email, password } = req.body
+    const { username, email, password, role, created } = req.body
+
+    const date = new Date()
+
+    const last_login = ''
 
     try {
         const hashPass = await bcrypt.hash(password, 10);
 
-        connect.query('INSERT INTO admin (username, email, password) VALUES (?, ?, ?)', [username, email, hashPass], (error, results) => {
+        connect.query('INSERT INTO admin (username, email, password, role, last_login, created_by, created_date) VALUES (?, ?, ?, ?, ?, ?, ?)', [username, email, hashPass, role, last_login, created, date], (error, results) => {
             if (error) {
                 console.error('Error executing query:', error.stack);
                 return res.status(500).send('Error creating admin');
             }
             res.status(201).send(results);
-            // console.log('User added successfully');
         });
     } catch (error) {
         console.error('Error hashing password:', error);

@@ -27,7 +27,7 @@ import {
 import { QueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { RepeatIcon } from "@chakra-ui/icons";
-// import "../App.css";
+import { useAuthStore } from '../../store/authStore';
 
 export default function Finished({ request }) {
   const [dbMessage, setdbMessage] = useState('')
@@ -37,6 +37,7 @@ export default function Finished({ request }) {
   const cancelReverseRef = useRef();
   const toast = useToast();
   const queryClient = new QueryClient({});
+  const adminRole = useAuthStore((state) => state.auth.user.role)
 
   const { data: data, error, refetch, } = useQuery({
     queryKey: ["completed"],
@@ -138,7 +139,7 @@ export default function Finished({ request }) {
   return (
     <>
       <Box mt={4}>
-        <Text>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
+        <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
 
         <TableContainer border={"1px solid #4c4c4c"} mt={2}>
           <Table>
@@ -152,7 +153,10 @@ export default function Finished({ request }) {
                 <Th>Type</Th>
                 <Th>Status</Th>
                 <Th>IT officer</Th>
-                <Th>Reverse</Th>
+                {adminRole === 'admin' ?
+                  <Th>Reverse</Th>
+                  :
+                  null}
               </Tr>
             </Thead>
             {
@@ -183,15 +187,18 @@ export default function Finished({ request }) {
                     <Td>{info.request_type}</Td>
                     <Td>{info.status}</Td>
                     <Td>{info.it_officer}</Td>
-                    <Td
-                      onClick={() => onReverseOpen(info)}
-                      _hover={{ backgroundColor: "blue" }}
-                      style={{ width: "1%" }}
-                    >
-                      <Center>
-                        <RepeatIcon />
-                      </Center>
-                    </Td>
+                    {adminRole === 'admin' ?
+                      <Td
+                        onClick={() => onReverseOpen(info)}
+                        _hover={{ backgroundColor: "blue" }}
+                        style={{ width: "1%" }}
+                      >
+                        <Center>
+                          <RepeatIcon />
+                        </Center>
+                      </Td>
+                      :
+                      null}
                   </Tr>
                 </Tbody>
               ))
