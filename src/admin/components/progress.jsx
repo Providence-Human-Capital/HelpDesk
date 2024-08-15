@@ -24,7 +24,7 @@ import {
     Text,
 } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
-import { QueryClient, useQuery, useMutation } from '@tanstack/react-query'
+import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
 import { useAuthStore } from '../../store/authStore';
@@ -38,7 +38,7 @@ export default function Progress({ request }) {
     const cancelRef = useRef()
     const cancelReverseRef = useRef()
     const toast = useToast()
-    const queryClient = new QueryClient({})
+    const queryClient = useQueryClient()
     const adminRole = useAuthStore((state) => state.auth.user.role)
 
     const onOpen = (ticket) => {
@@ -86,42 +86,29 @@ export default function Progress({ request }) {
 
     const finishMutation = useMutation({
         mutationFn: (finish) => {
-            axios.put(`http://localhost:8800/${request}/progress/update`, finish)
-                .then((res) => {
-                    toast({
-                        title: "Ticket is now finished",
-                        description: "Ticket is now closed",
-                        status: "success",
-                        duration: 4000,
-                        isClosable: true,
-                        position: "top-right",
-                    });
-                })
-                .catch((err) => {
-                    toast({
-                        title: "Error",
-                        description: err.response.data,
-                        status: "error",
-                        duration: 4000,
-                        isClosable: true,
-                        position: "top-right",
-                    });
-                })
-            //need gpt to see if i can parse axios error response to the tanstack error
-            if (error)
-                return toast({
-
-                    title: "Error fetching database data",
-                    description: 'error',
-                    status: "error",
-                    duration: 4000,
-                    isClosable: true,
-                    position: "top-right",
-                });
-            // console.log(error)
+            return axios.put(`http://localhost:8800/${request}/progress/update`, finish)
         },
-        onSettled: () => {
-
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['progress'] });
+            toast({
+                title: "Ticket is now finished",
+                description: "Ticket is now closed",
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+                position: "top-right",
+            });
+            // queryClient.refetchQueries({ queryKey: ["pending"] });
+        },
+        onError: (err) => {
+            toast({
+                title: "Error",
+                description: err.response.data || "Failed to update the ticket",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+                position: "top-right",
+            });
         }
     })
 
@@ -135,31 +122,29 @@ export default function Progress({ request }) {
 
     const reversalMutation = useMutation({
         mutationFn: (reverse) => {
-            axios.put(`http://localhost:8800/${request}/progress/reverse`, reverse)
-                .then((res) => {
-                    toast({
-                        title: "Ticket has been reversed",
-                        description: "Ticket is now back in pending",
-                        status: "info",
-                        duration: 4000,
-                        isClosable: true,
-                        position: "top-right",
-                    })
-                })
-                .catch((err) => {
-                    toast({
-                        title: "Error",
-                        description: err.response.data,
-                        status: "error",
-                        duration: 4000,
-                        isClosable: true,
-                        position: "top-right",
-                    });
-                })
+            return axios.put(`http://localhost:8800/${request}/progress/reverse`, reverse)
         },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ['progress'] })
-
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['progress'] });
+            toast({
+                title: "Ticket has been reversed",
+                description: "Ticket is now back in pending",
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+                position: "top-right",
+            });
+            // queryClient.refetchQueries({ queryKey: ["pending"] });
+        },
+        onError: (err) => {
+            toast({
+                title: "Error",
+                description: err.response.data || "Failed to update the ticket",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+                position: "top-right",
+            });
         }
     })
 
@@ -225,7 +210,7 @@ export default function Progress({ request }) {
                             //     :
                             data?.map((info) => (
                                 <Tbody className='row' onClick={() => handleRowClick(info.id)} >
-                                    <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
+                                    <Tr key={info.id} style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
                                         {/* <Td>{info.id}</Td> */}
                                         <Td>{info.name}</Td>
                                         <Td>{info.department}</Td>

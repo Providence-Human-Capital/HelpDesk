@@ -3,15 +3,15 @@ TODO
 - authenticate admin when trying to add a new one(now only admins can add more)
 - fix mutation error message not displaying
 *** 404 page
-- hardware / email / transer backend route
+- hardware / email / transfer backend route
 *** sessions/ tokens
 -- admin logout
-*** notifications
+-- notifications
 - admin adding ticket in background
 -- admin roles
 -- admin audit
 - admin change roles
-*** loaders throughout app
+*** loaders throughout app (so far for user side)
 
 IDEAS
 

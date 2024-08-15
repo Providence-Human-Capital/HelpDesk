@@ -16,14 +16,17 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from "react-hook-form"
 import axios from 'axios'
+import Loader from './loader';
+import { useState } from 'react';
 
 
 export default function general() {
     const { register, formState: { errors }, handleSubmit, reset } = useForm()
     const toast = useToast()
+    const [loading, setLoading] = useState(false)
 
     const onSubmit = (data) => {
-        console.log(data)
+        setLoading(true)
         axios.post('http://localhost:8800/general/add', data)
             .then((res) => {
                 console.log(res.data)
@@ -54,6 +57,9 @@ export default function general() {
                     isClosable: true,
                     position: "top-right",
                 });
+            })
+            .finally(() => {
+                setLoading(false)
             })
     }
 
@@ -126,9 +132,16 @@ export default function general() {
                         {errors.anydesk && <p role="alert" style={{ color: "red" }}>Please enter your AnyDesk ID</p>}
                     </Box>
 
-                    <Button colorScheme="green" mt={4} mb='10' w={'20%'} type="submit">
-                        Submit Request
-                    </Button>
+                    {loading ?
+                        <Loader />
+                        :
+                        <Button colorScheme="green" mt={4} mb='10' w={'20%'} type="submit">
+                            Submit Request
+                        </Button>
+                    }
+
+
+
                 </form>
             </VStack>
         </Container>

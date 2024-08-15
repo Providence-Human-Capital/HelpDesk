@@ -27,27 +27,27 @@ router.post('/add', async (req, res) => {
         });
 
         // Send email
-        // const transporter = nodemailer.createTransport({
-        //     service: 'Gmail',
-        //     auth: {
-        //         user: '',  // Use environment variables
-        //         pass: '',
-        //     },
-        // });
+        const transporter = nodemailer.createTransport({
+            service: 'Outlook',
+            auth: {
+                user: 'ticket-alerts@providencehumancapital.com',  // Use environment variables
+                pass: 'Y@235813455857on',
+            },
+        });
 
-        // const mailOptions = {
-        //     from: '',
-        //     to: '',
-        //     subject: 'Ticket',
-        //     text: `Hi, \n\nNew ticket from ${name} who is asking for help with: ${description}\n\nRegards`,
-        // };
+        const mailOptions = {
+            from: 'ticket-alerts@providencehumancapital.com',
+            to: 'tickets@providencehumancapital.com',
+            subject: 'New Ticket',
+            text: `Hi Team, \n\nThere is a new ticket from ${name}, their request description is:\n\n${description}\n\nRegards \nTicket Alerts`,
+        };
 
-        // await new Promise((resolve, reject) => {
-        //     transporter.sendMail(mailOptions, (error, info) => {
-        //         if (error) return reject(error);
-        //         resolve(info);
-        //     });
-        // });
+        await new Promise((resolve, reject) => {
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) return reject(error);
+                resolve(info);
+            });
+        });
 
         res.status(200).send('Data inserted and email sent successfully');
     } catch (error) {
@@ -127,7 +127,7 @@ router.put('/progress/update', async (req, res) => {
             res.status(500).send('Error updating database');
             return;
         }
-        console.log(id)
+        // console.log(id)
         res.send(results);
         // console.log('working');
     })

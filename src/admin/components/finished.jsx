@@ -24,7 +24,7 @@ import {
   Text,
   Flex,
 } from "@chakra-ui/react";
-import { QueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { RepeatIcon } from "@chakra-ui/icons";
 import { useAuthStore } from '../../store/authStore';
@@ -36,7 +36,7 @@ export default function Finished({ request }) {
   const [selectedRow, setSelectedRow] = useState("");
   const cancelReverseRef = useRef();
   const toast = useToast();
-  const queryClient = new QueryClient({});
+  const queryClient = useQueryClient()
   const adminRole = useAuthStore((state) => state.auth.user.role)
 
   const { data: data, error, refetch, } = useQuery({
@@ -80,31 +80,29 @@ export default function Finished({ request }) {
 
   const reversalMutation = useMutation({
     mutationFn: (reverse) => {
-      axios.put(`http://localhost:8800/${request}/completed/reverse`, reverse)
-        .then((res) => {
-          toast({
-            title: "Ticket has been reversed",
-            description: "Ticket is now back in progress",
-            status: "info",
-            duration: 4000,
-            isClosable: true,
-            position: "top-right",
-          });
-        })
-        .catch((err) => {
-          toast({
-            title: "Error",
-            description: err.response.data,
-            status: "error",
-            duration: 4000,
-            isClosable: true,
-            position: "top-right",
-          });
-        })
+      return axios.put(`http://localhost:8800/${request}/completed/reverse`, reverse)
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['progress'] })
-
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["completed"] });
+      toast({
+        title: "Ticket has been reversed",
+        description: "Ticket is now back in progress",
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+      });
+      // queryClient.refetchQueries({ queryKey: ["pending"] });
+    },
+    onError: (err) => {
+      toast({
+        title: "Error",
+        description: err.response.data || "Failed to update the ticket",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+      });
     }
   })
 
@@ -167,6 +165,7 @@ export default function Finished({ request }) {
               data?.map((info) => (
                 <Tbody className="row" onClick={() => handleRowClick(info.id)}>
                   <Tr
+                    key={info.id}
                     style={{
                       backgroundColor: selectedRow === info.id ? "#c00000" : "",
                     }}

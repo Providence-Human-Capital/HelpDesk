@@ -25,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { QueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useAuthStore } from '../../store/authStore';
 
@@ -37,7 +37,7 @@ export default function Pending({ request }) {
   const [selectedRow, setSelectedRow] = useState("");
   const cancelRef = useRef();
   const toast = useToast();
-  const queryClient = new QueryClient({});
+  const queryClient = useQueryClient();
 
   const username = useAuthStore((state) => state.auth)
   const displayName = username.user.username
@@ -92,32 +92,50 @@ export default function Pending({ request }) {
 
   const fetchMutation = useMutation({
     mutationFn: (update) => {
-      axios.put(`http://localhost:8800/${request}/pending/update`, update)
-        .then((res) => {
-          toast({
-            title: "You have now taken ownership of the ticket",
-            description: "Ticket is now in progress",
-            status: "success",
-            duration: 4000,
-            isClosable: true,
-            position: "top-right",
-          });
-        })
-        .catch((err) => {
-          toast({
-            title: "Error",
-            description: err.response.data,
-            status: "error",
-            duration: 4000,
-            isClosable: true,
-            position: "top-right",
-          });
-        })
+      return axios.put(`http://localhost:8800/${request}/pending/update`, update)
+      // .then((res) => {
+      //   toast({
+      //     title: "You have now taken ownership of the ticket",
+      //     description: "Ticket is now in progress",
+      //     status: "success",
+      //     duration: 4000,
+      //     isClosable: true,
+      //     position: "top-right",
+      //   });
+      // })
+      // .catch((err) => {
+      //   toast({
+      //     title: "Error",
+      //     description: err.response.data,
+      //     status: "error",
+      //     duration: 4000,
+      //     isClosable: true,
+      //     position: "top-right",
+      //   });
+      // })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pending"] });
-
+      toast({
+        title: "You have now taken ownership of the ticket",
+        description: "Ticket is now in progress",
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+      });
+      // queryClient.refetchQueries({ queryKey: ["pending"] });
     },
+    onError: (err) => {
+      toast({
+        title: "Error",
+        description: err.response.data || "Failed to update the ticket",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+      });
+    }
   });
 
   const handleUpdate = () => {
@@ -167,6 +185,7 @@ export default function Pending({ request }) {
               data?.map((info) => (
                 <Tbody className="row" onClick={() => handleRowClick(info.id)}>
                   <Tr
+                    key={info.id}
                     style={{
                       backgroundColor: selectedRow === info.id ? "#c00000" : "",
                     }}
