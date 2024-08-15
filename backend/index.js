@@ -2,9 +2,15 @@ const express = require('express')
 const cors = require('cors');
 const app = express()
 const port = 8800
+require('dotenv').config();
 
 app.use(express.json());
 app.use(cors())
+
+// const sender = process.env.EMAIL_NAME
+// const pass = process.env.PASS
+// const reciever = process.env.EMAIL_RECIEVER
+// const service = process.env.EMAIL_SERVICE
 
 const adminRoute = require('./routes/admin')
 const emailRoute = require('./routes/email')
@@ -18,9 +24,11 @@ app.use('/transfer', transferRoute)
 
 app.get('/', (req, res) => {
     res.send('its working')
-    console.log('home')
+    console.log(process.env.EMAIL_NAME)
 })
 
 app.listen(port, () => {
     console.log(`live on port ${port}`)
 })
+
+// module.exports = { sender, pass, reciever, service }

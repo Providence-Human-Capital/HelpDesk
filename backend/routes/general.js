@@ -2,6 +2,12 @@ const express = require('express')
 const router = express.Router()
 const connect = require('../database')
 const nodemailer = require('nodemailer');
+require('dotenv').config();
+
+// const sender = process.env.EMAIL_NAME
+// const pass = process.env.PASS
+// const reciever = process.env.EMAIL_RECIEVER
+// const service = process.env.EMAIL_SERVICE
 
 // creating a ticket
 router.post('/add', async (req, res) => {
@@ -28,16 +34,16 @@ router.post('/add', async (req, res) => {
 
         // Send email
         const transporter = nodemailer.createTransport({
-            service: 'Outlook',
+            service: process.env.EMAIL_SERVICE,
             auth: {
-                user: 'ticket-alerts@providencehumancapital.com',  // Use environment variables
-                pass: 'Y@235813455857on',
+                user: process.env.EMAIL_NAME,  // Use environment variables
+                pass: process.env.EMAIL_PASS,
             },
         });
 
         const mailOptions = {
-            from: 'ticket-alerts@providencehumancapital.com',
-            to: 'tickets@providencehumancapital.com',
+            from: process.env.EMAIL_NAME,
+            to: process.env.EMAIL_RECIEVER,
             subject: 'New Ticket',
             text: `Hi Team, \n\nThere is a new ticket from ${name}, their request description is:\n\n${description}\n\nRegards \nTicket Alerts`,
         };
@@ -65,7 +71,10 @@ router.get('/all', async (req, res) => {
             return;
         }
         res.send(results);
-        // console.log('working');
+        console.log(process.env.EMAIL_SERVICE);
+        console.log(process.env.EMAIL_NAME);
+        console.log(process.env.PASS);
+        console.log(process.env.EMAIL_SERVICE);
     });
 });
 
