@@ -45,7 +45,7 @@ router.post('/add', async (req, res) => {
             from: process.env.EMAIL_NAME,
             to: process.env.EMAIL_RECIEVER,
             subject: 'New Ticket',
-            text: `Hi Team, \n\nThere is a new ticket from ${name}, their request description is:\n\n${description}\n\nRegards \nTicket Alerts`,
+            text: `Hi Team, \n\nThere is a new ticket from ${name} (${department}), their request description is:\n\n${description}\n\nRegards \nTicket Alerts`,
         };
 
         await new Promise((resolve, reject) => {
