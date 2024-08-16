@@ -21,13 +21,15 @@ import {
   Center,
   Divider,
   Alert,
-  AlertIcon
+  AlertIcon,
+  Image
 } from '@chakra-ui/react';
 import Hardware from './components/hardware';
 import Email from './components/email';
 import General from './components/general';
 import Transfer from './components/transfer';
 import FAQs from './components/FAQs';
+import PHC from './img/PHC_Logo.png'
 
 export default function Requisition() {
 
@@ -40,6 +42,13 @@ export default function Requisition() {
       {/* <Navbar /> */}
       <Container maxW='1100px' pt='4' >
         <Box>
+        <Center>
+          <Image 
+        src={PHC} 
+        alt="Company Logo"
+        boxSize="100px" // Adjust the size as needed
+        objectFit="contain"
+      /></Center>
           <Center fontSize={'3xl'}>IT Job Card</Center>
 
           {/* <Alert mt={3} variant={'solid'} >
