@@ -74,7 +74,7 @@ export default function general() {
                         <Input type="text"
                             placeholder="Enter your name"
                             borderColor={'#bdbdbd'}
-                            focusBorderColor='green'
+                            focusBorderColor='lime'
                             {...register('name', { minLength: { value: 4, message: 'Your name is too short' } })}
                             aria-invalid={errors.name ? "true" : "false"}
                             isRequired
@@ -85,7 +85,7 @@ export default function general() {
                         <Input type="text"
                             placeholder="Enter your department"
                             borderColor={'#bdbdbd'}
-                            focusBorderColor='green'
+                            focusBorderColor='lime'
                             {...register('department', { minLength: { value: 4, message: 'Department name is too short' } })}
                             aria-invalid={errors.department ? "true" : "false"}
                             isRequired
@@ -105,24 +105,24 @@ export default function general() {
                         <FormLabel as='u'>Request Description</FormLabel>
                         <Textarea placeholder="Enter a description"
                             borderColor={'#bdbdbd'}
-                            focusBorderColor='green'
+                            focusBorderColor='lime'
                             {...register('description', { minLength: { value: 10, message: 'Please enter a longer description' } })}
                             aria-invalid={errors.description ? "true" : "false"}
                             isRequired
                         />
                     </FormControl>
-                    <FormControl id="anydesk-id" mt={3}>
+                    {/* <FormControl id="anydesk-id" mt={3}>
                         <FormLabel as='u'>Anydesk ID</FormLabel>
                         <Input type="text"
                             placeholder="Enter your Anydesk ID"
                             borderColor={'#bdbdbd'}
-                            focusBorderColor='green'
+                            focusBorderColor='lime'
                             {...register('anydesk')}
                             aria-invalid={errors.anydesk ? "true" : "false"}
                             isRequired
 
                         />
-                    </FormControl>
+                    </FormControl> */}
 
                     <Box mt={5}>
                         {errors.name && <p role="alert" style={{ color: "red" }}>{errors.name.message}</p>}

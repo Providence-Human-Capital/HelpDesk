@@ -27,6 +27,7 @@ import { HamburgerIcon } from '@chakra-ui/icons'
 import Drawerr from './drawer';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'
 
 export default function Navbar() {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -61,10 +62,32 @@ export default function Navbar() {
     // console.log(username.user.username)
 
     const handleLogout = () => {
-        // console.log('first')
-        logoutAuthUser()
-        navigate('/admin')
+        axios.post('http://localhost:8800/admin/logout')
+            .then((res) => {
+                console.log(res.data)
+                logoutAuthUser()
+                navigate('/admin')
 
+                toast({
+                    title: "You have now logged out",
+                    description: "See you soon",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+            })
+            .catch((err) => {
+                console.log(err)
+                toast({
+                    title: "This is for Admins!!",
+                    description: err.response.data || "Sign in first",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+            })
     }
 
     return (

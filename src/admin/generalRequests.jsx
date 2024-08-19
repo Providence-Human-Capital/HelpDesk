@@ -41,13 +41,13 @@ export default function General() {
     return (
         <>
             <Navbar />
-            <Box bg={'black'} minH={'93vh'} color={'white'}>
+            <Box bg={'black'} minH={'93vh'} color={'white'} >
                 <Container pt={8} maxW='95vw'>
                     <Center>
-                        <Text fontSize={'xl'} as={'u'}>{capitalizedRequest} Requests</Text>
+                        <Text fontSize={'lg'} as={'u'}>{capitalizedRequest} Requests</Text>
                     </Center>
 
-                    <Flex mt='5' h='7' className='req' >
+                    <Flex mt='5' h='7' className='req' fontSize={'sm'}>
 
                         <Center
                             style={{ width: '100%', borderRight: '2px solid #4c4c4c', borderBottom: `2px solid ${showPage === 'all' ? x : '#4c4c4c'}` }}
@@ -90,6 +90,7 @@ export default function General() {
                     {showPage === 'progress' ? <Progress request={request} /> : ''}
                     {showPage === 'finished' ? <Finished request={request} /> : ''}
 
+                    <Box> .</Box>
                 </Container>
             </Box>
         </>

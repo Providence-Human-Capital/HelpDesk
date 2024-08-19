@@ -3,6 +3,7 @@ const router = express.Router()
 const connect = require('../database')
 const nodemailer = require('nodemailer');
 require('dotenv').config();
+const session = require('express-session');
 
 // const sender = process.env.EMAIL_NAME
 // const pass = process.env.PASS
@@ -65,16 +66,13 @@ router.post('/add', async (req, res) => {
 //getting requests
 
 router.get('/all', async (req, res) => {
+    console.log(req.session)
     connect.query('SELECT * FROM general', (error, results) => {
         if (error) {
             res.status(500).send('Error fetching data');
             return;
         }
         res.send(results);
-        console.log(process.env.EMAIL_SERVICE);
-        console.log(process.env.EMAIL_NAME);
-        console.log(process.env.PASS);
-        console.log(process.env.EMAIL_SERVICE);
     });
 });
 

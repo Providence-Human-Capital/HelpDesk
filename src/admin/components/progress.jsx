@@ -177,15 +177,15 @@ export default function Progress({ request }) {
 
     return (
         <>
-            <Box mt={4}>
+            <Box mt={4} >
                 <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
 
-                <TableContainer border={'1px solid #4c4c4c'} mt={2}>
+                <TableContainer border={'1px solid #4c4c4c'} mt={2} >
                     <Table >
-                        <Thead>
-                            <Tr>
+                        <Thead fontSize={'8px'}>
+                            <Tr >
                                 {/* <Th>ID</Th> */}
-                                <Th>Name</Th>
+                                <Th >Name</Th>
                                 <Th>Department</Th>
                                 <Th>Date of Applicaton</Th>
                                 <Th>Date Accepted</Th>

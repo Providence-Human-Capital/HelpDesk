@@ -85,7 +85,7 @@ export default function All({ request }) {
 
     return (
         <>
-            <Box mt={4} >
+            <Box mt={4}>
                 <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
 
                 {/* <form onSubmit={handleSubmit(onSubmit)}> */}
@@ -100,8 +100,8 @@ export default function All({ request }) {
                 </RadioGroup>
                 {/* </form> */}
 
-                <TableContainer border={'1px solid #4c4c4c'} mt={2}>
-                    <Table >
+                <TableContainer border={'1px solid #4c4c4c'} mt={2} >
+                    <Table size={'sm'}>
                         <Thead>
                             <Tr>
                                 <Th>ID</Th>

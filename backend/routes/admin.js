@@ -9,19 +9,18 @@ const sessionStore = new MySQLStore({}, connect);
 
 //session
 router.use(session({
-    key: 'session_cookie_name',
+    key: 'session_user',
     secret: 'your-secret-key',
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
         // maxAge: 1000 * 60 * 60 * 24, // Session expires in 1 day
-        maxAge: 5 * 60 * 1000,
+        maxAge: 2 * 60 * 1000,
         secure: false // Set to true if using HTTPS
     }
 }));
 
-// let req.session.username
 
 router.post('/login', async (req, res) => {
     if (!req) { return res.status(400) }
@@ -48,8 +47,8 @@ router.post('/login', async (req, res) => {
                             return res.status(500).send('Last login error');
                         }
                     })
-                    res.send(results)
 
+                    res.send(results)
                 } else {
                     res.status(201);
                 }
@@ -93,18 +92,24 @@ router.post('/logout', (req, res) => {
         if (err) {
             return res.status(500).send('Error logging out.');
         }
+        res.clearCookie('session_user');
         res.send('Logged out successfully!');
     });
+
+    console.log(req.session)
 })
 
 router.get('/test', (req, res) => {
-    if (req.session.username) {
-        res.send(`Welcome back, ${req.session.username}!`);
-        console.log(req.session.username)
-    } else {
-        res.status(401).send('Please log in first.');
-        console.log(req.session.username)
-    }
+    // if (req.session.user) {
+    //     res.send(`Welcome back, ${req.session.user}!`);
+    //     console.log(req.session.username)
+    // } else {
+    //     res.status(401).send('Please log in first.');
+    //     console.log(req.session.username)
+    // }
+
+    res.send(req.session.user)
+    console.log(req.session.user)
 })
 
 module.exports = router

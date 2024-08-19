@@ -5,7 +5,12 @@ const port = 8800
 require('dotenv').config();
 
 app.use(express.json());
-app.use(cors())
+// app.use(cors())
+app.use(cors({
+    origin: ['http://localhost:5173'],
+    // methods: ['GET', 'POST', 'PUT'],
+    credentials: true
+}))
 
 // const sender = process.env.EMAIL_NAME
 // const pass = process.env.PASS

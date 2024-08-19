@@ -42,13 +42,13 @@ export default function Requisition() {
       {/* <Navbar /> */}
       <Container maxW='1100px' pt='4' >
         <Box>
-        <Center>
-          <Image 
-        src={PHC} 
-        alt="Company Logo"
-        boxSize="100px" // Adjust the size as needed
-        objectFit="contain"
-      /></Center>
+          <Center>
+            <Image
+              src={PHC}
+              alt="Company Logo"
+              boxSize="100px" // Adjust the size as needed
+              objectFit="contain"
+            /></Center>
           <Center fontSize={'3xl'}>IT Job Card</Center>
 
           {/* <Alert mt={3} variant={'solid'} >
@@ -62,13 +62,13 @@ export default function Requisition() {
 
             <Center
               // style={{ width: '50%', borderRight: '2px solid #ebeef0', borderBottom: `2px solid ${showPage === 'hardware' ? x : '#ebeef0'}` }}
-              style={{ width: '25%', borderRight: '2px solid #ebeef0', borderBottom: `2px solid ${showPage === 'general' ? x : '#ebeef0'}` }}
+              style={{ width: '100%', borderBottom: `2px solid ${showPage === 'general' ? x : '#ebeef0'}` }}
               onClick={() => setShowPage('general')}
               className='user'
               p={4}
             >
               General Request</Center>
-            <Center
+            {/* <Center
               style={{ width: '25%', borderRight: '2px solid #ebeef0', borderBottom: `2px solid ${showPage === 'hardware' ? x : '#ebeef0'}` }}
               onClick={() => setShowPage('hardware')}
               className='user'
@@ -95,7 +95,7 @@ export default function Requisition() {
               className='user'
               p={4}
             >
-              FAQs</Center>
+              FAQs</Center> */}
 
           </Flex>
         </Box>
