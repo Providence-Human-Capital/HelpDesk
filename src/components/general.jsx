@@ -27,7 +27,7 @@ export default function general() {
 
     const onSubmit = (data) => {
         setLoading(true)
-        axios.post('http://localhost:8800/general/add', data)
+        axios.post('http://localhost:8880/general/add', data)
             .then((res) => {
                 console.log(res.data)
                 toast({
@@ -70,9 +70,9 @@ export default function general() {
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl id="name">
-                        <FormLabel as='u'>Name</FormLabel>
+                        <FormLabel as='u'>Full Name</FormLabel>
                         <Input type="text"
-                            placeholder="Enter your name"
+                            placeholder="Enter your full name"
                             borderColor={'#bdbdbd'}
                             focusBorderColor='lime'
                             {...register('name', { minLength: { value: 4, message: 'Your name is too short' } })}

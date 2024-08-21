@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // import Navbar from '../components/Navbar'
 import {
   FormControl,
@@ -30,12 +30,48 @@ import General from './components/general';
 import Transfer from './components/transfer';
 import FAQs from './components/FAQs';
 import PHC from './img/PHC_Logo.png'
+import axios from 'axios'
 
 export default function Requisition() {
-
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [showPage, setShowPage] = useState('general')
 
   let x = 'green'
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.log(error.message);
+        }
+      );
+    } else {
+      console.log('Geolocation is not supported by this browser.');
+    }
+
+    axios.get('https://nominatim.openstreetmap.org/reverse', {
+      params: {
+        lat: location.latitude,
+        lon: location.longitude,
+        format: 'json',
+      },
+    })
+      .then((res) => {
+        console.log(res.data.display_name)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+  };
+
+  // getLocation()
 
   return (
     <>

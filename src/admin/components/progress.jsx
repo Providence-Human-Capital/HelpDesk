@@ -60,7 +60,7 @@ export default function Progress({ request }) {
     const { data: data, error } = useQuery({
         queryKey: ['progress'],
         queryFn: () =>
-            axios.get(`http://localhost:8800/${request}/progress`)
+            axios.get(`http://localhost:8880/${request}/progress`)
                 .then(res => res.data)
                 .catch((err) => {
                     toast({
@@ -86,7 +86,7 @@ export default function Progress({ request }) {
 
     const finishMutation = useMutation({
         mutationFn: (finish) => {
-            return axios.put(`http://localhost:8800/${request}/progress/update`, finish)
+            return axios.put(`http://localhost:8880/${request}/progress/update`, finish)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['progress'] });
@@ -122,7 +122,7 @@ export default function Progress({ request }) {
 
     const reversalMutation = useMutation({
         mutationFn: (reverse) => {
-            return axios.put(`http://localhost:8800/${request}/progress/reverse`, reverse)
+            return axios.put(`http://localhost:8880/${request}/progress/reverse`, reverse)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['progress'] });

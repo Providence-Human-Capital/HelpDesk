@@ -42,7 +42,7 @@ export default function Finished({ request }) {
   const { data: data, error, refetch, } = useQuery({
     queryKey: ["completed"],
     queryFn: () =>
-      axios.get(`http://localhost:8800/${request}/completed`)
+      axios.get(`http://localhost:8880/${request}/completed`)
         .then((res) => res.data)
         .catch((err) => {
           toast({
@@ -80,7 +80,7 @@ export default function Finished({ request }) {
 
   const reversalMutation = useMutation({
     mutationFn: (reverse) => {
-      return axios.put(`http://localhost:8800/${request}/completed/reverse`, reverse)
+      return axios.put(`http://localhost:8880/${request}/completed/reverse`, reverse)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["completed"] });

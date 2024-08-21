@@ -34,27 +34,27 @@ router.post('/add', async (req, res) => {
         });
 
         // Send email
-        const transporter = nodemailer.createTransport({
-            service: process.env.EMAIL_SERVICE,
-            auth: {
-                user: process.env.EMAIL_NAME,  // Use environment variables
-                pass: process.env.EMAIL_PASS,
-            },
-        });
+        // const transporter = nodemailer.createTransport({
+        //     service: process.env.EMAIL_SERVICE,
+        //     auth: {
+        //         user: process.env.EMAIL_NAME,  // Use environment variables
+        //         pass: process.env.EMAIL_PASS,
+        //     },
+        // });
 
-        const mailOptions = {
-            from: process.env.EMAIL_NAME,
-            to: process.env.EMAIL_RECIEVER,
-            subject: 'New Ticket',
-            text: `Hi Team, \n\nThere is a new ticket from ${name} (${department}), their request description is:\n\n${description}\n\nRegards \nTicket Alerts`,
-        };
+        // const mailOptions = {
+        //     from: process.env.EMAIL_NAME,
+        //     to: process.env.EMAIL_RECIEVER,
+        //     subject: 'New Ticket',
+        //     text: `Hi Team, \n\nThere is a new ticket from ${name} (${department}), their request description is:\n\n${description}\n\nRegards \nTicket Alerts`,
+        // };
 
-        await new Promise((resolve, reject) => {
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) return reject(error);
-                resolve(info);
-            });
-        });
+        // await new Promise((resolve, reject) => {
+        //     transporter.sendMail(mailOptions, (error, info) => {
+        //         if (error) return reject(error);
+        //         resolve(info);
+        //     });
+        // });
 
         res.status(200).send('Data inserted and email sent successfully');
     } catch (error) {

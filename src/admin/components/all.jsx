@@ -37,7 +37,7 @@ export default function All({ request }) {
     const { data: data, error } = useQuery({
         queryKey: ['all'],
         queryFn: () =>
-            axios.get(`http://localhost:8800/${request}/all`)
+            axios.get(`http://localhost:8880/${request}/all`)
                 .then(res => res.data)
                 .catch((err) => {
                     toast({
