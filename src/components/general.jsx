@@ -51,7 +51,7 @@ export default function general() {
                 console.log(err)
                 toast({
                     title: "Error sending request",
-                    description: "Check your internet or contact IT",
+                    description: err.response.data || "There was a problem processing your request, you might need to contact IT",
                     status: "error",
                     duration: 4000,
                     isClosable: true,

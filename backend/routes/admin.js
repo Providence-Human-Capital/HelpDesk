@@ -28,6 +28,12 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body
     const date = new Date()
 
+    const dangerousPattern = /[<>\/\\\|:"'*?;]/g
+
+    if (dangerousPattern.test(username) || dangerousPattern.test(password)) {
+        return res.status(400).send('Your credentials have dangerous characters')
+    }
+
 
     connect.query('SELECT * FROM admin WHERE username = (?)', [username], async (error, results) => {
         // console.log(results)
@@ -35,7 +41,7 @@ router.post('/login', async (req, res) => {
             return res.status(404).send('Error logging in');
             // console.log(error)
         } else if (results.length === 0) {
-            return res.status(401).send('You are not an admin go elsewhere');
+            return res.status(401).send('You are not an admin are you??, Please go elsewhere');
         } else {
             try {
                 const isMatch = await bcrypt.compare(password, results[0].password);

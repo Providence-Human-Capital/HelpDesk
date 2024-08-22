@@ -12,13 +12,19 @@ const session = require('express-session');
 
 // creating a ticket
 router.post('/add', async (req, res) => {
-    if (!req) { return res.status(400) }
+    if (!req) { return res.status(400).send('There has been a problem') }
 
     const { name, department, description, type, anydesk } = req.body
 
     const date = new Date()
 
     const status = 'pending'
+
+    const dangerousPattern = /[<>\/\\\|:"'*?;]/g
+
+    if (dangerousPattern.test(name) || dangerousPattern.test(department) || dangerousPattern.test(description)) {
+        return res.status(400).send('Your input has dangerous characters')
+    }
 
     try {
         // Insert into database
@@ -147,7 +153,7 @@ router.put('/progress/reverse', async (req, res) => {
 
     connect.query('UPDATE general SET status = "pending", it_officer = " " WHERE id = ?', [id], (error, results) => {
         if (error) {
-            res.status(500).send('Reversal error ');
+            res.status(500).send('Reversal error');
             return;
         }
         res.send(results);
@@ -161,7 +167,7 @@ router.put('/completed/reverse', async (req, res) => {
 
     connect.query('UPDATE general SET status = "in-progress" WHERE id = ?', [id], (error, results) => {
         if (error) {
-            res.status(500).send('Reversal error ');
+            res.status(500).send('Reversal error');
             return;
         }
         // console.log(id)

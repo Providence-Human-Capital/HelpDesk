@@ -59,8 +59,8 @@ export default function Login() {
                     logoutAuthUser()
                     // console.log(err)
                     toast({
-                        title: "Error ",
-                        description: err.response.data,
+                        title: "Log In Error",
+                        description: err.response.data || "You are not an admin are you??!",
                         status: "error",
                         duration: 4000,
                         isClosable: true,
