@@ -27,7 +27,7 @@ export default function general() {
 
     const onSubmit = (data) => {
         setLoading(true)
-        axios.post('http://localhost:8880/general/add', data)
+        axios.post('http://192.168.10.172:8800/general/add', data)
             .then((res) => {
                 console.log(res.data)
                 toast({
@@ -82,14 +82,20 @@ export default function general() {
                     </FormControl>
                     <FormControl id="department" mt={3}>
                         <FormLabel as='u'>Department</FormLabel>
-                        <Input type="text"
-                            placeholder="Enter your department"
-                            borderColor={'#bdbdbd'}
-                            focusBorderColor='lime'
-                            {...register('department', { minLength: { value: 4, message: 'Department name is too short' } })}
-                            aria-invalid={errors.department ? "true" : "false"}
-                            isRequired
-                        />
+                        <Select placeholder="Select your department" borderColor={'#bdbdbd'} focusBorderColor='whatsapp' {...register('department')} isRequired>
+                            <option value="admin">Admin</option>
+                            <option value="Employee Benefits">Employee Benefits</option>
+                            <option value="filing">Filing</option>
+                            <option value="finance">Finance</option>
+                            <option value="health">Health</option>
+                            <option value="earning & development">Learning & Development</option>
+                            <option value="payroll">Payroll</option>
+                            <option value="pensions">Pensions</option>
+                            <option value="pro canteen">Pro Canteen</option>
+                            <option value="pro kleen">Pro Kleen</option>
+                            <option value="staffing solutions">Staffing Solutions</option>
+                            <option value="other">Other</option>
+                        </Select>
                     </FormControl>
                     <FormControl id="request-type" mt={3}>
                         <FormLabel as='u'>Request Type</FormLabel>
@@ -139,6 +145,7 @@ export default function general() {
                             Submit Request
                         </Button>
                     }
+
 
 
 

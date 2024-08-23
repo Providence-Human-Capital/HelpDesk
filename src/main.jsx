@@ -19,40 +19,13 @@ import NotFound from './admin/404.jsx';
 
 const queryClient = new QueryClient({});
 
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <App />,
-//   },
-//   {
-//     path: "/admin",
-//     element: <Login />,
-//   },
-//   {
-//     path: "/admin/dash",
-//     element: <Dashboard />,
-//   },
-//   {
-//     path: "/admin/management",
-//     element: <Manage />,
-//   },
-//   {
-//     path: "/admin/:request",
-//     element: <General />,
-//   },
-//   {
-//     path: '*',
-//     element: <NotFound />,
-//   },
-// ]);
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ChakraProvider>
     <QueryClientProvider client={queryClient}>
       {/* <BrowserRouter basename='/helpdesk'> */}
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" exact element={<App />} />
           <Route path="/admin" element={<Login />} />
           <Route path="/admin/dash" element={<Dashboard />} />
           <Route path="/admin/management" element={<Manage />} />

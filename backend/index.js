@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 const app = express()
-const port = 8880
+const port = 8888
 require('dotenv').config();
 
 app.use(express.json());
@@ -29,7 +29,6 @@ app.use('/transfer', transferRoute)
 
 app.get('/', (req, res) => {
     res.send('its working')
-    console.log(process.env.EMAIL_NAME)
 })
 
 app.listen(port, () => {

@@ -37,7 +37,7 @@ export default function All({ request }) {
     const { data: data, error } = useQuery({
         queryKey: ['all'],
         queryFn: () =>
-            axios.get(`http://localhost:8880/${request}/all`)
+            axios.get(`http://192.168.10.172:8800/${request}/all`)
                 .then(res => res.data)
                 .catch((err) => {
                     toast({
@@ -89,7 +89,7 @@ export default function All({ request }) {
                 <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
 
                 {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-                <RadioGroup onChange={filterChoice} value={filter}>
+                {/* <RadioGroup onChange={filterChoice} value={filter}>
                     <HStack spacing={7}  >
                         <Radio value='hours'>Sort by last 24 hours</Radio>
                         <Radio value='days'>Sort by last 7 days</Radio>
@@ -97,7 +97,7 @@ export default function All({ request }) {
                         <Button h={'28px'} bg={'violet'} onClick={onSubmit}>Apply filter</Button>
                         <Button h={'28px'} bg={'aqua'} onClick={clearFilter}>Reset</Button>
                     </HStack>
-                </RadioGroup>
+                </RadioGroup> */}
                 {/* </form> */}
 
                 <TableContainer border={'1px solid #4c4c4c'} mt={2} >

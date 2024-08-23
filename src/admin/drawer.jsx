@@ -54,7 +54,7 @@ export default function Drawerr() {
                 <DrawerOverlay />
                 <DrawerContent bg="black" color='white' borderRight={'1px solid red'}>
                     <DrawerCloseButton />
-                    <DrawerHeader>Admin</DrawerHeader>
+                    <DrawerHeader>v1.1.0</DrawerHeader>
 
                     <DrawerBody>
                         <Box>

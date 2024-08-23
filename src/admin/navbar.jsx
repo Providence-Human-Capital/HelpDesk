@@ -62,7 +62,7 @@ export default function Navbar() {
     // console.log(username.user.username)
 
     const handleLogout = () => {
-        axios.post('http://localhost:8880/admin/logout')
+        axios.post('http://192.168.10.172:8800/admin/logout')
             .then((res) => {
                 console.log(res.data)
                 logoutAuthUser()

@@ -26,17 +26,19 @@ import {
 import { useLocation } from 'react-router-dom';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
+import { CheckIcon, RepeatIcon, ArrowRightIcon } from '@chakra-ui/icons'
 import { useAuthStore } from '../../store/authStore';
 
 export default function Progress({ request }) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [isReverseOpen, setIsReverseOpen] = useState(false);
+    const [isUnfinishedOpen, setIsUnfinishedOpen] = useState(false);
     const [selectedTicket, setSelectedTicket] = useState(null);
     const [selectedRow, setSelectedRow] = useState('')
     const cancelRef = useRef()
     const cancelReverseRef = useRef()
+    const unfinishedRef = useRef()
     const toast = useToast()
     const queryClient = useQueryClient()
     const adminRole = useAuthStore((state) => state.auth.user.role)
@@ -51,16 +53,22 @@ export default function Progress({ request }) {
         setIsReverseOpen(true);
     };
 
+    const onUnfinishOpen = (ticket) => {
+        setSelectedTicket(ticket);
+        setIsUnfinishedOpen(true);
+    };
+
     const onClose = () => {
         setIsOpen(false);
         setIsReverseOpen(false)
+        setIsUnfinishedOpen(false)
         setSelectedTicket(null);
     };
 
     const { data: data, error } = useQuery({
         queryKey: ['progress'],
         queryFn: () =>
-            axios.get(`http://localhost:8880/${request}/progress`)
+            axios.get(`http://192.168.10.172:8800/${request}/progress`)
                 .then(res => res.data)
                 .catch((err) => {
                     toast({
@@ -86,7 +94,7 @@ export default function Progress({ request }) {
 
     const finishMutation = useMutation({
         mutationFn: (finish) => {
-            return axios.put(`http://localhost:8880/${request}/progress/update`, finish)
+            return axios.put(`http://192.168.10.172:8800/${request}/progress/update`, finish)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['progress'] });
@@ -122,7 +130,7 @@ export default function Progress({ request }) {
 
     const reversalMutation = useMutation({
         mutationFn: (reverse) => {
-            return axios.put(`http://localhost:8880/${request}/progress/reverse`, reverse)
+            return axios.put(`http://192.168.10.172:8800/${request}/progress/reverse`, reverse)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['progress'] });
@@ -156,6 +164,42 @@ export default function Progress({ request }) {
         })
     }
 
+    const unfinishMutation = useMutation({
+        mutationFn: (reverse) => {
+            return axios.put(`http://192.168.10.172:8800/${request}/progress/unfinished`, reverse)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['progress'] });
+            toast({
+                title: "Ticket is now unfinished",
+                description: "Ticket has been marked as unfinished",
+                status: "warning",
+                duration: 4000,
+                isClosable: true,
+                position: "top-right",
+            });
+            // queryClient.refetchQueries({ queryKey: ["pending"] });
+        },
+        onError: (err) => {
+            toast({
+                title: "Error",
+                description: err.response.data || "Failed to update the ticket",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+                position: "top-right",
+            });
+        }
+    })
+
+    const handleUnfinish = () => {
+        onClose();
+
+        unfinishMutation.mutate({
+            id: selectedTicket.id,
+        })
+    }
+
     const options = {
         year: '2-digit',
         month: 'short',
@@ -185,7 +229,7 @@ export default function Progress({ request }) {
                         <Thead fontSize={'8px'}>
                             <Tr >
                                 {/* <Th>ID</Th> */}
-                                <Th >Name</Th>
+                                <Th>Name</Th>
                                 <Th>Department</Th>
                                 <Th>Date of Applicaton</Th>
                                 <Th>Date Accepted</Th>
@@ -199,6 +243,10 @@ export default function Progress({ request }) {
                                     null}
                                 {adminRole === 'admin' ?
                                     <Th>Reverse</Th>
+                                    :
+                                    null}
+                                {adminRole === 'admin' ?
+                                    <Th>Unfinish</Th>
                                     :
                                     null}
                             </Tr>
@@ -230,6 +278,13 @@ export default function Progress({ request }) {
                                         {adminRole === 'admin' ?
                                             <Td onClick={() => onReverseOpen(info)} _hover={{ backgroundColor: 'blue' }} style={{ width: '1%' }}>
                                                 <Center><RepeatIcon /></Center>
+                                            </Td>
+                                            :
+                                            null}
+
+                                        {adminRole === 'admin' ?
+                                            <Td onClick={() => onUnfinishOpen(info)} _hover={{ backgroundColor: 'orange' }} style={{ width: '1%' }}>
+                                                <Center><ArrowRightIcon /></Center>
                                             </Td>
                                             :
                                             null}
@@ -304,6 +359,43 @@ export default function Progress({ request }) {
                                     </Button>
                                     <Button colorScheme='blue' ml={3} onClick={() => {
                                         handleReversal()
+
+                                    }}>
+                                        Yes
+                                    </Button>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+
+                        {/* unfinish */}
+                        <AlertDialog
+                            motionPreset='slideInBottom'
+                            leastDestructiveRef={unfinishedRef}
+                            onClose={onClose}
+                            isOpen={isUnfinishedOpen}
+                            isCentered
+
+                        >
+                            <AlertDialogOverlay />
+
+                            <AlertDialogContent bg={'#101010'} border={'1px solid white'} color={'white'}>
+                                <AlertDialogHeader>Unfinish Ticket?</AlertDialogHeader>
+                                <AlertDialogCloseButton />
+                                <AlertDialogBody >
+                                    {selectedTicket ? (
+                                        <>
+                                            Are you sure that you want to unfinish <Text as={'b'}>{selectedTicket.name}'s</Text> ticket??
+                                        </>
+                                    ) : (
+                                        'No ticket selected'
+                                    )}
+                                </AlertDialogBody>
+                                <AlertDialogFooter>
+                                    <Button ref={cancelRef} onClick={onClose} colorScheme='red'>
+                                        No
+                                    </Button>
+                                    <Button colorScheme='yellow' ml={3} onClick={() => {
+                                        handleUnfinish()
 
                                     }}>
                                         Yes

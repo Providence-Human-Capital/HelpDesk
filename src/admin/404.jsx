@@ -1,5 +1,6 @@
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 export default function NotFound() {
     return (
@@ -31,9 +32,11 @@ export default function NotFound() {
                 <Text fontSize="2xl" textAlign="center">
                     OOPS PAGE NOT FOUND
                 </Text>
-                <Button colorScheme="red" size="lg" onClick={() => window.location.href = '/'}>
-                    HOME
-                </Button>
+                <Link to={'/'}>
+                    <Button colorScheme="red" size="lg" >
+                        HOME
+                    </Button>
+                </Link>
             </VStack>
         </Box>
     )

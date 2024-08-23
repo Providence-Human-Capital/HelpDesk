@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react'
 import All from './components/all'
 import Finished from './components/finished'
+import Unfinished from './components/unfinished'
 import Pending from './components/pending'
 import Progress from './components/progress'
 import { useParams, useLocation, useNavigate } from "react-router-dom";
@@ -72,6 +73,13 @@ export default function General() {
                         >
                             In-Progress</Center>
                         <Center
+                            style={{ width: '100%', borderRight: '2px solid #4c4c4c', borderBottom: `2px solid ${showPage === 'unfinished' ? x : '#4c4c4c'}` }}
+                            onClick={() => setShowPage('unfinished')}
+                            className='general'
+                            p={4}
+                        >
+                            Unfinished</Center>
+                        <Center
                             style={{ width: '100%', borderBottom: `2px solid ${showPage === 'finished' ? x : '#4c4c4c'}` }}
                             onClick={() => setShowPage('finished')}
                             className='general'
@@ -88,6 +96,7 @@ export default function General() {
                     {showPage === 'all' ? <All request={request} /> : ''}
                     {showPage === 'pending' ? <Pending request={request} /> : ''}
                     {showPage === 'progress' ? <Progress request={request} /> : ''}
+                    {showPage === 'unfinished' ? <Unfinished request={request} /> : ''}
                     {showPage === 'finished' ? <Finished request={request} /> : ''}
 
                     <Box> .</Box>

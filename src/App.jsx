@@ -85,7 +85,7 @@ export default function Requisition() {
               boxSize="100px" // Adjust the size as needed
               objectFit="contain"
             /></Center>
-          <Center fontSize={'3xl'}>IT Job Card</Center>
+          <Center fontSize={'3xl'}>IT Help Desk</Center>
 
           {/* <Alert mt={3} variant={'solid'} >
             <AlertIcon />

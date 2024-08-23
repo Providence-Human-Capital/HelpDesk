@@ -72,7 +72,7 @@ router.post('/add', async (req, res) => {
 //getting requests
 
 router.get('/all', async (req, res) => {
-    console.log(req.session)
+    // console.log(req.session)
     connect.query('SELECT * FROM general', (error, results) => {
         if (error) {
             res.status(500).send('Error fetching data');
@@ -95,6 +95,17 @@ router.get('/pending', async (req, res) => {
 
 router.get('/progress', async (req, res) => {
     connect.query('SELECT * FROM general WHERE status = "in-progress"', (error, results) => {
+        if (error) {
+            res.status(500).send('Error fetching data');
+            return;
+        }
+        res.send(results);
+        // console.log('working');
+    });
+});
+
+router.get('/unfinished', async (req, res) => {
+    connect.query('SELECT * FROM general WHERE status = "unfinished"', (error, results) => {
         if (error) {
             res.status(500).send('Error fetching data');
             return;
@@ -175,6 +186,33 @@ router.put('/completed/reverse', async (req, res) => {
         // console.log('working');
     })
 
+})
+
+//unfinished
+router.put('/progress/unfinished', async (req, res) => {
+    const { id, reason } = req.body
+
+    connect.query('UPDATE general SET status = "unfinished" WHERE id = ?', [id], (error, results) => {
+        if (error) {
+            res.status(500).send('Error updating database');
+            return;
+        }
+
+        res.send(results)
+    })
+})
+
+router.put('/unfinished/update', async (req, res) => {
+    const { id } = req.body
+
+    connect.query('UPDATE general SET status = "completed" WHERE id = ?', [id], (error, results) => {
+        if (error) {
+            res.status(500).send('Error updating database');
+            return;
+        }
+
+        res.send(results)
+    })
 })
 
 
