@@ -27,7 +27,7 @@ export default function general() {
 
     const onSubmit = (data) => {
         setLoading(true)
-        axios.post('http://192.168.10.172:8800/general/add', data)
+        axios.post('http://localhost:8888/general/add', data)
             .then((res) => {
                 console.log(res.data)
                 toast({
@@ -87,7 +87,7 @@ export default function general() {
                             <option value="Employee Benefits">Employee Benefits</option>
                             <option value="filing">Filing</option>
                             <option value="finance">Finance</option>
-                            <option value="health">Health</option>
+                            <option value="health">Health & Wellness</option>
                             <option value="earning & development">Learning & Development</option>
                             <option value="payroll">Payroll</option>
                             <option value="pensions">Pensions</option>
@@ -132,7 +132,7 @@ export default function general() {
 
                     <Box mt={5}>
                         {errors.name && <p role="alert" style={{ color: "red" }}>{errors.name.message}</p>}
-                        {errors.department && <p role="alert" style={{ color: "red" }}>{errors.department.message}</p>}
+                        {/* {errors.department && <p role="alert" style={{ color: "red" }}>{errors.department.message}</p>} */}
                         {/* {errors.nationalId && <p role="alert" style={{ color: "red" }}>{errors.nationalId.message}</p>} */}
                         {errors.description && <p role="alert" style={{ color: "red" }}>{errors.description.message}</p>}
                         {errors.anydesk && <p role="alert" style={{ color: "red" }}>Please enter your AnyDesk ID</p>}
@@ -141,7 +141,7 @@ export default function general() {
                     {loading ?
                         <Loader />
                         :
-                        <Button colorScheme="green" mt={4} mb='10' w={'20%'} type="submit">
+                        <Button colorScheme="green" mt={4} mb='10' type="submit">
                             Submit Request
                         </Button>
                     }

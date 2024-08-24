@@ -7,7 +7,7 @@ TODO
 - admin adding ticket in background
 - admin change roles
 *** loaders throughout app (so far for user side)
--- add a field for when a request is never finished but attended to
+- showing filtered date where the old data was and managing to reset the filter
 
 IDEAS
 
@@ -15,14 +15,10 @@ IDEAS
 - asset register management tied with transfer requests
 - bread ordering
 
-VERSION v1.1.0
-- changed name field to fullname
-- changed department to a dropdown instead of users typing
-- link from dashboard to general requests
-- fixed relocating from 404 page (fix actually working)
-- change name from Job Card to Help Desk on the homepage
-- created unfinished route for instances where the ticket has been attended to but not finished, although the unfinished ticket can then go to finished if it is then resolved
-- added security to request from user
+VERSION 
+- updated department name from health to health & wellness
+- responsivness for request page
+- created bread routing
 
 UNFIXED ISSUES
 - not rerouting when a non admin tries to access the admin side
@@ -31,4 +27,3 @@ DEPLOY
 - change ip and port
 - adjust email config
 - fix paths for images
-- 

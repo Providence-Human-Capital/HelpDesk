@@ -16,7 +16,8 @@ import {
     Radio,
     HStack,
     RadioGroup,
-    Button
+    Button,
+    Input
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { CheckIcon } from '@chakra-ui/icons'
@@ -34,10 +35,10 @@ export default function All({ request }) {
 
     // console.log(adminRole)
 
-    const { data: data, error } = useQuery({
+    let { data: data, error } = useQuery({
         queryKey: ['all'],
         queryFn: () =>
-            axios.get(`http://192.168.10.172:8800/${request}/all`)
+            axios.get(`http://localhost:8888/${request}/all`)
                 .then(res => res.data)
                 .catch((err) => {
                     toast({
@@ -74,9 +75,31 @@ export default function All({ request }) {
         setFilter(value)
     }
 
-    const onSubmit = (data) => {
-        // console.log(data)
-        console.log(filter)
+    const onSubmit = (date) => {
+        // console.log(date)
+        const dateFormatted = new Date(date.date).toLocaleDateString('en-GB')
+        // console.log(dateFormatted)
+
+        for (let index = 0; index < data.length; index++) {
+            const rawDate = data[index].date
+            const cleanDate = new Date(rawDate).toLocaleDateString('en-GB')
+            // console.log(cleanDate)
+
+            if (cleanDate === dateFormatted) {
+                // console.log(data[index])
+                data = data[index]
+            }
+            // console.log(data)
+
+        }
+
+        axios.post('http://localhost:8888/general/filter', date)
+            .then((res) => {
+                console.log(res.data)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 
     const clearFilter = () => {
@@ -88,17 +111,20 @@ export default function All({ request }) {
             <Box mt={4}>
                 <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
 
-                {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-                {/* <RadioGroup onChange={filterChoice} value={filter}>
-                    <HStack spacing={7}  >
-                        <Radio value='hours'>Sort by last 24 hours</Radio>
-                        <Radio value='days'>Sort by last 7 days</Radio>
-                        <Radio value='month'>Sort by last 30 days</Radio>
-                        <Button h={'28px'} bg={'violet'} onClick={onSubmit}>Apply filter</Button>
-                        <Button h={'28px'} bg={'aqua'} onClick={clearFilter}>Reset</Button>
-                    </HStack>
-                </RadioGroup> */}
-                {/* </form> */}
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Input type='date' w={'14%'} h={'28px'}
+                        {...register('date')}
+                    />
+                    {/* <RadioGroup onChange={filterChoice} value={filter}>
+                        <HStack spacing={7}  >
+                            <Radio value='hours'>Sort by last 24 hours</Radio>
+                            <Radio value='days'>Sort by last 7 days</Radio>
+                            <Radio value='month'>Sort by last 30 days</Radio>
+                        </HStack>
+                    </RadioGroup> */}
+                    <Button h={'28px'} bg={'violet'} type='submit'>Apply filter</Button>
+                    <Button h={'28px'} bg={'aqua'} onClick={clearFilter}>Reset</Button>
+                </form>
 
                 <TableContainer border={'1px solid #4c4c4c'} mt={2} >
                     <Table size={'sm'}>
@@ -114,28 +140,22 @@ export default function All({ request }) {
                                 {/* <Th>Action</Th> */}
                             </Tr>
                         </Thead>
-                        {" "}
-                        {
-                            // data.length == [] ?
-
-                            //     <Center mt={4}>There are no tickets.</Center>
-                            //     :
-                            data?.map(info => (
-                                <Tbody className='row' onClick={() => handleRowClick(info.id)} >
-                                    <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
-                                        <Td>{info.id}</Td>
-                                        <Td>{info.name}</Td>
-                                        <Td>{info.department}</Td>
-                                        <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>
-                                        <Td>{info.description}</Td>
-                                        <Td>{info.request_type}</Td>
-                                        <Td><Tag variant={'solid'}
-                                            colorScheme={info.status === 'pending' ? 'gray' : info.status === 'in-progress' ? 'orange' : 'green'}>
-                                            {info.status}
-                                        </Tag></Td>
-                                    </Tr>
-                                </Tbody>
-                            ))}
+                        {data?.map(info => (
+                            <Tbody className='row' onClick={() => handleRowClick(info.id)} >
+                                <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
+                                    <Td>{info.id}</Td>
+                                    <Td>{info.name}</Td>
+                                    <Td>{info.department}</Td>
+                                    <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>
+                                    <Td>{info.description}</Td>
+                                    <Td>{info.request_type}</Td>
+                                    <Td><Tag variant={'solid'}
+                                        colorScheme={info.status === 'pending' ? 'gray' : info.status === 'in-progress' ? 'orange' : info.status === 'completed' ? 'green' : 'yellow'}>
+                                        {info.status}
+                                    </Tag></Td>
+                                </Tr>
+                            </Tbody>
+                        ))}
                     </Table>
                 </TableContainer>
             </Box>

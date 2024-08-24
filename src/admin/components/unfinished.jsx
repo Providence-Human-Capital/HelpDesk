@@ -47,7 +47,7 @@ export default function Unfinished({ request }) {
         queryKey: ["unfinished"],
         queryFn: () =>
             axios
-                .get(`http://192.168.10.172:8800/${request}/unfinished`)
+                .get(`http://localhost:8888/${request}/unfinished`)
                 .then((res) => res.data)
                 .catch((err) => {
                     toast({
@@ -91,7 +91,7 @@ export default function Unfinished({ request }) {
 
     const fetchMutation = useMutation({
         mutationFn: (update) => {
-            return axios.put(`http://192.168.10.172:8800/${request}/unfinished/update`, update)
+            return axios.put(`http://localhost:8888/${request}/unfinished/update`, update)
             // .then((res) => {
             //   toast({
             //     title: "You have now taken ownership of the ticket",

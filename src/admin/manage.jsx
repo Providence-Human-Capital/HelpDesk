@@ -31,7 +31,7 @@ export default function Manage() {
 
     const onSubmit = (data) => {
         data.created = displayName
-        axios.post('http://192.168.10.172:8800/admin/add', data)
+        axios.post('http://localhost:8888/admin/add', data)
             .then((res) => {
                 console.log(res.data)
                 toast({

@@ -48,7 +48,7 @@ export default function Pending({ request }) {
     queryKey: ["pending"],
     queryFn: () =>
       axios
-        .get(`http://192.168.10.172:8800/${request}/pending`)
+        .get(`http://localhost:8888/${request}/pending`)
         .then((res) => res.data)
         .catch((err) => {
           toast({
@@ -92,7 +92,7 @@ export default function Pending({ request }) {
 
   const fetchMutation = useMutation({
     mutationFn: (update) => {
-      return axios.put(`http://192.168.10.172:8800/${request}/pending/update`, update)
+      return axios.put(`http://localhost:8888/${request}/pending/update`, update)
       // .then((res) => {
       //   toast({
       //     title: "You have now taken ownership of the ticket",

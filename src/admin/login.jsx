@@ -36,7 +36,7 @@ export default function Login() {
     const authMutation = useMutation({
 
         mutationFn: async (auth) => {
-            axios.post('http://192.168.10.172:8800/admin/login', auth)
+            axios.post('http://localhost:8888/admin/login', auth)
                 .then((res) => {
                     toast({
                         title: "Welcome Admin!!",

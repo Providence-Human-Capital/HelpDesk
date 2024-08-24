@@ -72,7 +72,7 @@ router.post('/add', async (req, res) => {
 //getting requests
 
 router.get('/all', async (req, res) => {
-    // console.log(req.session)
+    if (!req) { return res.status(400).send('There has been a problem') } // console.log(req.session)
     connect.query('SELECT * FROM general', (error, results) => {
         if (error) {
             res.status(500).send('Error fetching data');
@@ -83,6 +83,7 @@ router.get('/all', async (req, res) => {
 });
 
 router.get('/pending', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     connect.query('SELECT * FROM general WHERE status = "pending"', (error, results) => {
         if (error) {
             res.status(500).send('Error fetching data');
@@ -94,6 +95,7 @@ router.get('/pending', async (req, res) => {
 });
 
 router.get('/progress', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     connect.query('SELECT * FROM general WHERE status = "in-progress"', (error, results) => {
         if (error) {
             res.status(500).send('Error fetching data');
@@ -105,6 +107,7 @@ router.get('/progress', async (req, res) => {
 });
 
 router.get('/unfinished', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     connect.query('SELECT * FROM general WHERE status = "unfinished"', (error, results) => {
         if (error) {
             res.status(500).send('Error fetching data');
@@ -116,6 +119,7 @@ router.get('/unfinished', async (req, res) => {
 });
 
 router.get('/completed', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     connect.query('SELECT * FROM general WHERE status = "completed"', (error, results) => {
         if (error) {
             res.status(500).send('Error fetching data');
@@ -129,6 +133,7 @@ router.get('/completed', async (req, res) => {
 //updating database status
 
 router.put('/pending/update', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     const { officer, id } = req.body
     //also need to get the it officer to the update the db
 
@@ -144,6 +149,7 @@ router.put('/pending/update', async (req, res) => {
 })
 
 router.put('/progress/update', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
 
     connect.query('UPDATE general SET status = "completed" WHERE id = ?', [id], (error, results) => {
@@ -160,6 +166,7 @@ router.put('/progress/update', async (req, res) => {
 
 //reversing database status
 router.put('/progress/reverse', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
 
     connect.query('UPDATE general SET status = "pending", it_officer = " " WHERE id = ?', [id], (error, results) => {
@@ -174,6 +181,7 @@ router.put('/progress/reverse', async (req, res) => {
 })
 
 router.put('/completed/reverse', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
 
     connect.query('UPDATE general SET status = "in-progress" WHERE id = ?', [id], (error, results) => {
@@ -190,6 +198,7 @@ router.put('/completed/reverse', async (req, res) => {
 
 //unfinished
 router.put('/progress/unfinished', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     const { id, reason } = req.body
 
     connect.query('UPDATE general SET status = "unfinished" WHERE id = ?', [id], (error, results) => {
@@ -203,6 +212,7 @@ router.put('/progress/unfinished', async (req, res) => {
 })
 
 router.put('/unfinished/update', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
 
     connect.query('UPDATE general SET status = "completed" WHERE id = ?', [id], (error, results) => {
@@ -215,5 +225,21 @@ router.put('/unfinished/update', async (req, res) => {
     })
 })
 
+// filtered
+router.post('/filter', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
+
+    const { date, secondDate } = req.body
+    // console.log(date)
+
+    connect.query('SELECT * FROM general WHERE date LIKE ?', [`%${date}%`], (error, results) => {
+        if (error) {
+            res.status(500).send('Error updating database');
+            return;
+        }
+
+        res.send(results)
+    })
+})
 
 module.exports = router

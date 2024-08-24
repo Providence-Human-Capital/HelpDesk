@@ -21,11 +21,13 @@ const adminRoute = require('./routes/admin')
 const emailRoute = require('./routes/email')
 const generalRoute = require('./routes/general')
 const transferRoute = require('./routes/transfer')
+const breadRoute = require('./routes/bread')
 
 app.use('/admin', adminRoute)
 app.use('/email', emailRoute)
 app.use('/general', generalRoute)
 app.use('/transfer', transferRoute)
+app.use('/bread', breadRoute)
 
 app.get('/', (req, res) => {
     res.send('its working')

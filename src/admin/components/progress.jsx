@@ -22,6 +22,7 @@ import {
     Button,
     useToast,
     Text,
+    Textarea,
 } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query'
@@ -68,7 +69,7 @@ export default function Progress({ request }) {
     const { data: data, error } = useQuery({
         queryKey: ['progress'],
         queryFn: () =>
-            axios.get(`http://192.168.10.172:8800/${request}/progress`)
+            axios.get(`http://localhost:8888/${request}/progress`)
                 .then(res => res.data)
                 .catch((err) => {
                     toast({
@@ -94,7 +95,7 @@ export default function Progress({ request }) {
 
     const finishMutation = useMutation({
         mutationFn: (finish) => {
-            return axios.put(`http://192.168.10.172:8800/${request}/progress/update`, finish)
+            return axios.put(`http://localhost:8888/${request}/progress/update`, finish)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['progress'] });
@@ -130,7 +131,7 @@ export default function Progress({ request }) {
 
     const reversalMutation = useMutation({
         mutationFn: (reverse) => {
-            return axios.put(`http://192.168.10.172:8800/${request}/progress/reverse`, reverse)
+            return axios.put(`http://localhost:8888/${request}/progress/reverse`, reverse)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['progress'] });
@@ -166,7 +167,7 @@ export default function Progress({ request }) {
 
     const unfinishMutation = useMutation({
         mutationFn: (reverse) => {
-            return axios.put(`http://192.168.10.172:8800/${request}/progress/unfinished`, reverse)
+            return axios.put(`http://localhost:8888/${request}/progress/unfinished`, reverse)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['progress'] });
@@ -384,11 +385,14 @@ export default function Progress({ request }) {
                                 <AlertDialogBody >
                                     {selectedTicket ? (
                                         <>
-                                            Are you sure that you want to unfinish <Text as={'b'}>{selectedTicket.name}'s</Text> ticket??
+                                            Are you sure that you want to mark <Text as={'b'}>{selectedTicket.name}'s</Text> ticket as unfinished??
                                         </>
                                     ) : (
                                         'No ticket selected'
                                     )}
+                                    <Textarea mt={3}
+                                        placeholder='Please provide a reason on why the ticket is being unfinished...'
+                                    />
                                 </AlertDialogBody>
                                 <AlertDialogFooter>
                                     <Button ref={cancelRef} onClick={onClose} colorScheme='red'>
