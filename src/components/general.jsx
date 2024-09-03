@@ -66,7 +66,7 @@ export default function general() {
     return (
         <Container maxW="1100px" mt={10}>
             <VStack spacing={4} align="stretch">
-                <Text fontSize={{ md: "2xl", base: "xl" }}>General Request Form</Text>
+                <Text fontSize={{ md: "xl", base: "xl" }}>General Request Form</Text>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl id="name">
@@ -83,18 +83,22 @@ export default function general() {
                     <FormControl id="department" mt={3}>
                         <FormLabel as='u'>Department</FormLabel>
                         <Select placeholder="Select your department" borderColor={'#bdbdbd'} focusBorderColor='whatsapp' {...register('department')} isRequired>
-                            <option value="admin">Admin</option>
+                            <option value="Admin">Admin</option>
                             <option value="Employee Benefits">Employee Benefits</option>
-                            <option value="filing">Filing</option>
-                            <option value="finance">Finance</option>
-                            <option value="health">Health & Wellness</option>
-                            <option value="earning & development">Learning & Development</option>
-                            <option value="payroll">Payroll</option>
-                            <option value="pensions">Pensions</option>
-                            <option value="pro canteen">Pro Canteen</option>
-                            <option value="pro kleen">Pro Kleen</option>
-                            <option value="staffing solutions">Staffing Solutions</option>
-                            <option value="other">Other</option>
+                            <option value="Filing">Filing</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Health & Wellness">Health & Wellness</option>
+                            <option value="IT">IT</option>
+                            <option value="Learning & development">Learning & Development</option>
+                            <option value="Loans">Loans</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Payroll">Payroll</option>
+                            <option value="Pensions">Pensions</option>
+                            <option value="Pro canteen">Pro Canteen</option>
+                            <option value="Pro kleen">Pro Kleen</option>
+                            <option value="Staffing solutions">Staffing Solutions</option>
+                            <option value="Other">Other</option>
                         </Select>
                     </FormControl>
                     <FormControl id="request-type" mt={3}>

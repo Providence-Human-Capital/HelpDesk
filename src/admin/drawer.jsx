@@ -26,6 +26,7 @@ export default function Drawerr() {
         { name: "Hardware Requests", link: "/admin/hardware" },
         { name: "Email Requests", link: "/admin/dash" },
         { name: "Transfer Requests", link: "/admin/dash" },
+        { name: "Bread Orders", link: "/admin/bread" },
         { name: "Admin management", link: "/admin/management" },
         // { name: "General user home", link: "/" },
 

@@ -229,10 +229,10 @@ router.put('/unfinished/update', async (req, res) => {
 router.post('/filter', async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
-    const { date, secondDate } = req.body
+    const { startDate, endDate } = req.body
     // console.log(date)
 
-    connect.query('SELECT * FROM general WHERE date LIKE ?', [`%${date}%`], (error, results) => {
+    connect.query('SELECT * FROM general WHERE DATE(date) BETWEEN ? AND ?', [startDate, endDate], (error, results) => {
         if (error) {
             res.status(500).send('Error updating database');
             return;

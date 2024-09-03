@@ -31,6 +31,7 @@ import Transfer from './components/transfer';
 import FAQs from './components/FAQs';
 import PHC from './img/PHC_Logo.png'
 import axios from 'axios'
+import Bread from './components/bread';
 
 export default function Requisition() {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
@@ -75,7 +76,6 @@ export default function Requisition() {
 
   return (
     <>
-      {/* <Navbar /> */}
       <Container maxW='1100px' pt='4' >
         <Box>
           <Center>
@@ -97,36 +97,43 @@ export default function Requisition() {
           <Flex mt='5' h='7'  >
 
             <Center
-              // style={{ width: '50%', borderRight: '2px solid #ebeef0', borderBottom: `2px solid ${showPage === 'hardware' ? x : '#ebeef0'}` }}
-              style={{ width: '100%', borderBottom: `2px solid ${showPage === 'general' ? x : '#ebeef0'}` }}
+              // style={{ width: '50%', borderRight: '2px solid #bdbdbd', borderBottom: `2px solid ${showPage === 'hardware' ? x : '#bdbdbd'}` }}
+              style={{ width: '100%', borderRight: '2px solid #bdbdbd', borderBottom: `2px solid ${showPage === 'general' ? x : '#bdbdbd'}` }}
               onClick={() => setShowPage('general')}
               className='user'
               p={4}
             >
               General Request</Center>
+            <Center
+              style={{ width: '100%', borderBottom: `2px solid ${showPage === 'bread' ? x : '#bdbdbd'}` }}
+              onClick={() => setShowPage('bread')}
+              className='user'
+              p={4}
+            >
+              Order Bread</Center>
             {/* <Center
-              style={{ width: '25%', borderRight: '2px solid #ebeef0', borderBottom: `2px solid ${showPage === 'hardware' ? x : '#ebeef0'}` }}
+              style={{ width: '25%', borderRight: '2px solid #bdbdbd', borderBottom: `2px solid ${showPage === 'hardware' ? x : '#bdbdbd'}` }}
               onClick={() => setShowPage('hardware')}
               className='user'
               p={4}
             >
               Hardware</Center>
             <Center
-              style={{ width: '25%', borderRight: '2px solid #ebeef0', borderBottom: `2px solid ${showPage === 'email' ? x : '#ebeef0'}` }}
+              style={{ width: '25%', borderRight: '2px solid #bdbdbd', borderBottom: `2px solid ${showPage === 'email' ? x : '#bdbdbd'}` }}
               onClick={() => setShowPage('email')}
               className='user'
               p={4}
             >
               Email</Center>
             <Center
-              style={{ width: '25%', borderRight: '2px solid #ebeef0', borderBottom: `2px solid ${showPage === 'transfer' ? x : '#ebeef0'}` }}
+              style={{ width: '25%', borderRight: '2px solid #bdbdbd', borderBottom: `2px solid ${showPage === 'transfer' ? x : '#bdbdbd'}` }}
               onClick={() => setShowPage('transfer')}
               className='user'
               p={4}
             >
               Transfer</Center>
             <Center
-              style={{ width: '25%', borderBottom: `2px solid ${showPage === 'faqs' ? x : '#ebeef0'}` }}
+              style={{ width: '25%', borderBottom: `2px solid ${showPage === 'faqs' ? x : '#bdbdbd'}` }}
               onClick={() => setShowPage('faqs')}
               className='user'
               p={4}
@@ -141,6 +148,7 @@ export default function Requisition() {
         {showPage === 'general' ? <General /> : ''}
         {showPage === 'transfer' ? <Transfer /> : ''}
         {showPage === 'faqs' ? <FAQs /> : ''}
+        {showPage === 'bread' ? <Bread /> : ''}
 
 
       </Container>

@@ -13,12 +13,15 @@ IDEAS
 
 - filtering requests (24 hours, week, month)
 - asset register management tied with transfer requests
-- bread ordering
 
 VERSION 
 - updated department name from health to health & wellness
+- fixed spelling error for learning and development
 - responsivness for request page
 - created bread routing
+- created bread page and also deadline conditional rendering
+- filtering requests by date on the all page
+- auto creating excel sheet from filtered data for the week
 
 UNFIXED ISSUES
 - not rerouting when a non admin tries to access the admin side
