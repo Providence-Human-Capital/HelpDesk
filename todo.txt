@@ -22,6 +22,8 @@ VERSION
 - created bread page and also deadline conditional rendering
 - filtering requests by date on the all page
 - auto creating excel sheet from filtered data for the week
+- created a new landing page which users can pick between help desk and ordering bread
+- calculating total price per order 
 
 UNFIXED ISSUES
 - not rerouting when a non admin tries to access the admin side

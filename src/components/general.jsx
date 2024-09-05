@@ -64,9 +64,9 @@ export default function general() {
     }
 
     return (
-        <Container maxW="1100px" mt={10}>
+        <Container maxW="1100px" mt={1}>
             <VStack spacing={4} align="stretch">
-                <Text fontSize={{ md: "xl", base: "xl" }}>General Request Form</Text>
+                {/* <Text fontSize={{ md: "xl", base: "xl" }}>General Request Form</Text> */}
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl id="name">

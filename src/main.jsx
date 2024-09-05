@@ -16,7 +16,9 @@ import Dashboard from './admin/dashboard.jsx';
 import Manage from './admin/manage.jsx';
 import General from './admin/generalRequests.jsx';
 import NotFound from './admin/404.jsx';
-import Bread from './admin/bread.jsx';
+// import Bread from './admin/bread.jsx';
+import Help from './pages/help.jsx';
+import Bread from './pages/bread.jsx';
 
 const queryClient = new QueryClient({});
 
@@ -27,9 +29,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" exact element={<App />} />
+          <Route path="/help-desk" exact element={<Help />} />
+          <Route path="/order-bread" exact element={<Bread />} />
           <Route path="/admin" element={<Login />} />
           <Route path="/admin/dash" element={<Dashboard />} />
-          <Route path="/admin/bread" element={<Bread />} />
+          {/* <Route path="/admin/bread" element={<Bread />} /> */}
           <Route path="/admin/management" element={<Manage />} />
           <Route path="/admin/:request" element={<General />} />
           <Route path="*" element={<NotFound />} />
