@@ -16,7 +16,7 @@ import Dashboard from './admin/dashboard.jsx';
 import Manage from './admin/manage.jsx';
 import General from './admin/generalRequests.jsx';
 import NotFound from './admin/404.jsx';
-// import Bread from './admin/bread.jsx';
+import AdminBread from './admin/bread.jsx';
 import Help from './pages/help.jsx';
 import Bread from './pages/bread.jsx';
 
@@ -33,7 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/order-bread" exact element={<Bread />} />
           <Route path="/admin" element={<Login />} />
           <Route path="/admin/dash" element={<Dashboard />} />
-          {/* <Route path="/admin/bread" element={<Bread />} /> */}
+          <Route path="/admin/bread" element={<AdminBread />} />
           <Route path="/admin/management" element={<Manage />} />
           <Route path="/admin/:request" element={<General />} />
           <Route path="*" element={<NotFound />} />

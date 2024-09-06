@@ -32,6 +32,7 @@ import { useState } from 'react';
 import bread from '../img/breads.webp'
 import PHC from '../img/PHC_Logo.png'
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Bread() {
     const { register, formState: { errors }, handleSubmit, reset } = useForm()
@@ -39,6 +40,7 @@ export default function Bread() {
     const [loading, setLoading] = useState(false)
     const [timeLoading, setTimeLoading] = useState(true)
     const [isWithinTimeFrame, setIsWithinTimeFrame] = useState(false);
+
 
     useEffect(() => {
         const checkTimeFrame = () => {
@@ -65,9 +67,29 @@ export default function Bread() {
 
         const intervalId = setInterval(checkTimeFrame, 60000);
 
+
+        // checkBreadPrice()
         return () => clearInterval(intervalId);
+
+
     }, [])
 
+    let { data: breadPrice, error } = useQuery({
+        queryKey: ['bread'],
+        queryFn: () =>
+            axios.get('http://localhost:8888/bread/price')
+                .then(res => res.data)
+                .catch((err) => {
+                    toast({
+                        title: "Error",
+                        description: err.response.data || 'An error occurred',
+                        status: "error",
+                        duration: 4000,
+                        isClosable: true,
+                        position: "top-right",
+                    });
+                })
+    })
 
     const onSubmit = (data) => {
         setLoading(true)
@@ -117,6 +139,13 @@ export default function Bread() {
         )
     }
 
+    const handleSort = () => {
+        axios.get('http://localhost:8888/bread/month')
+            .then((res) => {
+                // console.log(res.data)
+            })
+    }
+
     return (
         <>
             <Container maxW={"1100px"} mt={5}>
@@ -138,9 +167,15 @@ export default function Bread() {
                     <Box>
                         <Center>
                             <Text fontSize={'lg'} as={'u'} color='red'>Deadline for ordering bread is Thursday at <b>3:30pm</b></Text>
+
                         </Center>
 
                         {/* <Center>Always make sure to collect your bread after ordering</Center> */}
+                        {/* {console.log(breadPrice)} */}
+                        {breadPrice ?
+                            <Center mt={1}>The price for a loaf of bread is {' $' + breadPrice[0].unit_price}</Center>
+                            :
+                            null}
                         <VStack mt={5} spacing={4} >
                             {/* <Text fontSize={{ md: "xl", base: "xl" }}>Order Bread</Text> */}
 
@@ -192,9 +227,11 @@ export default function Bread() {
                                     <FormLabel as='u'>Department</FormLabel>
                                     <Select placeholder="Select your department" borderColor={'#bdbdbd'} focusBorderColor='lime' {...register('department')} isRequired>
                                         <option value="Admin">Admin</option>
+                                        <option value="Driver">Driver</option>
                                         <option value="Employee Benefits">Employee Benefits</option>
                                         <option value="Filing">Filing</option>
                                         <option value="Finance">Finance</option>
+                                        <option value="General Hand">General Hand</option>
                                         <option value="Health & Wellness">Health & Wellness</option>
                                         <option value="IT">IT</option>
                                         <option value="Learning & Development">Learning & Development</option>
@@ -279,6 +316,8 @@ export default function Bread() {
                                 }
                             </form>
                         </VStack>
+
+                        {/* <Button colorScheme='red' onClick={handleSort}>all</Button> */}
                     </Box>
                     :
                     <Box>

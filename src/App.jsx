@@ -35,7 +35,7 @@ export default function App() {
             </Text>
           </Center>
 
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 0, md: '120px' }}>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 0, md: '80px' }}>
 
             <Box height={{ base: '370px', md: '450px' }} borderRadius={'25px'} _hover={{ color: '#00bf1e' }}>
               <Link to={'/help-desk'}>

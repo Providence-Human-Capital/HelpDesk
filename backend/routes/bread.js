@@ -8,6 +8,23 @@ const cron = require('node-cron');
 const axios = require('axios')
 const { exec } = require('child_process');
 
+const options = {
+    year: 'numeric',
+    month: 'long',
+    day: '2-digit',
+    weekday: 'short',
+}
+
+const fileOptions = {
+    month: 'short',
+    day: '2-digit',
+}
+
+const monthFileOptions = {
+    month: 'long',
+}
+
+
 router.post('/add', async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
@@ -28,24 +45,37 @@ router.post('/add', async (req, res) => {
             res.status(500).send('Error sending order');
             return;
         }
-        res.send(results);
+        // console.log(results[0]);
+        res.send(results)
     })
 
     // connect.query('SELECT (b.total_loaves * p.unit_price) AS total_price FROM bread b JOIN bread_prices p ON b.', (error, results) => {
-    connect.query('SELECT (b.white + b.brown + b.wholewheat) * p.unit_price AS total_price FROM bread b CROSS JOIN (SELECT unit_price FROM bread_pricing LIMIT 1) p WHERE b.employee_number = ?', [empNumber], (error, results) => {
+    connect.query('SELECT (b.white + b.brown + b.wholewheat) * p.unit_price AS total_price FROM bread b CROSS JOIN (SELECT unit_price FROM bread_pricing LIMIT 1) p ORDER BY id DESC LIMIT 1', (error, results) => {
         if (error) {
             res.status(500).send('Error calculating bread price');
             return;
         }
         const totalCost = results[0].total_price
-        console.log(totalCost)
+        // console.log(totalCost)
 
-        connect.query('UPDATE bread SET total_price = ? WHERE employee_number = ? ', [totalCost, empNumber], (error) => {
+        connect.query('UPDATE bread SET total_price = ? ORDER BY id DESC LIMIT 1 ', [totalCost], (error) => {
             if (error) {
                 res.status(500).send('Error updating bread price');
                 return;
             }
         })
+    })
+})
+
+router.get('/price', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem ') }
+
+    connect.query('SELECT * FROM bread_pricing', (error, results) => {
+        if (error) {
+            res.status(500).send('Error fetching bread price');
+            return;
+        }
+        res.send(results);
     })
 })
 
@@ -76,7 +106,7 @@ router.get('/week', async (req, res) => {
     endOfWeek.setDate(startOfWeek.getDate() + 3);
     endOfWeek.setHours(16, 0, 0, 0);
 
-    connect.query('SELECT * FROM bread WHERE DATE(date) BETWEEN ? AND ?', [startOfWeek, endOfWeek], (error, results) => {
+    connect.query('SELECT employee_number AS "EMPLOYEE CODE" ,firstname AS "FIRST NAME", lastname AS "LAST NAME", department AS "DEPARTMENT", SUM(white) AS "WHITE", SUM(brown) AS "BROWN", SUM(wholewheat) AS "WHOLE WHEAT", SUM(total_loaves) AS "TOTAL LOAVES", SUM(total_price) AS "TOTAL AMOUNT($)" FROM bread WHERE DATE(date) BETWEEN ? AND ? GROUP BY employee_number ,firstname, lastname', [startOfWeek, endOfWeek], (error, results) => {
         if (error) {
             res.status(500).send('Error fetching this weeks orders');
             return;
@@ -87,18 +117,16 @@ router.get('/week', async (req, res) => {
 
         // Create a new workbook and append the worksheet
         const workbook = xlsx.utils.book_new();
-        xlsx.utils.book_append_sheet(workbook, worksheet, 'Bread Orders');
 
-        const options = {
-            year: 'numeric',
-            month: 'long',
-            day: '2-digit',
-            weekday: 'short',
-        }
+        const cleanStartOfWeek = new Date(startOfWeek).toLocaleDateString('en-GB', fileOptions)
+        const cleanEndOfWeek = new Date(endOfWeek).toLocaleDateString('en-GB', fileOptions)
+
+        xlsx.utils.book_append_sheet(workbook, worksheet, `${cleanStartOfWeek} - ${cleanEndOfWeek}`);
+
 
         // Define the file path
         const filePath = path.join('C:/Users/Administrator/Downloads', `Bread Orders Week Starting ${new Date(startOfWeek).toLocaleDateString('en-GB', options)}.xlsx`);
-        console.log('Bread orders output')
+        console.log(`Bread orders output for ${cleanStartOfWeek} to ${cleanEndOfWeek}`)
 
         // Write the workbook to a file
         xlsx.writeFile(workbook, filePath);
@@ -122,10 +150,66 @@ router.get('/week', async (req, res) => {
     })
 })
 
+router.get('/month', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
+
+
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    // Calculate start date (20th of the current month)
+    // let startOfRange = new Date(currentYear, currentMonth, 20);
+    let startOfRange = new Date(currentYear, currentMonth, 1);
+    startOfRange.setHours(0, 0, 0, 0); // Set time to midnight
+
+    // Calculate end date (19th of the next month)
+    let endOfRange;
+    if (currentMonth === 11) { // If current month is December
+        endOfRange = new Date(currentYear + 1, 0, 19); // Move to January of the next year
+    } else {
+        endOfRange = new Date(currentYear, currentMonth + 1, 19); // Move to the 19th of next month
+    }
+    endOfRange.setHours(23, 59, 59, 999);
+
+    // console.log(new Date(startOfRange).toLocaleDateString('en-GB', options))
+    // console.log(new Date(endOfRange).toLocaleDateString('en-GB', options))
+
+    connect.query('SELECT employee_number AS "EMPLOYEE CODE" ,firstname AS "FIRST NAME", lastname AS "LAST NAME", SUM(total_loaves) AS "TOTAL LOAVES", SUM(total_price) AS "DEDUCTION ($)" FROM bread WHERE DATE(date) BETWEEN ? AND ? GROUP BY employee_number ,firstname, lastname', [startOfRange, endOfRange], (error, results) => {
+        if (!req) { return res.status(400).send('There has been a problem') }
+
+        if (error) {
+            res.status(500).send('Error generating monthly report');
+            return;
+        }
+        res.send(results);
+
+        const worksheet = xlsx.utils.json_to_sheet(results);
+
+        // Create a new workbook and append the worksheet
+        const workbook = xlsx.utils.book_new();
+
+        const cleanStartOfRange = new Date(startOfRange).toLocaleDateString('en-GB', fileOptions)
+        const cleanEndOfRange = new Date(endOfRange).toLocaleDateString('en-GB', fileOptions)
+
+        xlsx.utils.book_append_sheet(workbook, worksheet, `${cleanStartOfRange} - ${cleanEndOfRange}`);
+
+
+        // Define the file path
+        const filePath = path.join('C:/Users/Administrator/Downloads', `Bread Orders for ${new Date(cleanEndOfRange).toLocaleDateString('en-GB', monthFileOptions)} payroll.xlsx`);
+        console.log(`Bread orders output for ${cleanStartOfRange} to ${cleanEndOfRange}`)
+
+        // Write the workbook to a file
+        xlsx.writeFile(workbook, filePath);
+
+    })
+})
+
 // cron.schedule('40 15 * * 4', async () => {
-cron.schedule('42 12 * * 3', async () => {
+cron.schedule('07 14 * * 5', async () => {
     try {
         const response = await axios.get('http://localhost:8888/bread/week');
+        // const response = await axios.get('http://localhost:8888/bread/month');
         // console.log('Bread Orders Exported');
     } catch (error) {
         console.error('Error executing the task:', error);

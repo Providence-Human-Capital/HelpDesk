@@ -24,6 +24,7 @@ VERSION
 - auto creating excel sheet from filtered data for the week
 - created a new landing page which users can pick between help desk and ordering bread
 - calculating total price per order 
+- merging multiple orders into one record with calculated loaves for one person which is then used for the weekly report
 
 UNFIXED ISSUES
 - not rerouting when a non admin tries to access the admin side
