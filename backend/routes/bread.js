@@ -30,10 +30,24 @@ router.post('/add', async (req, res) => {
 
     const { empNumber, firstname, lastname, department, white, brown, wholewheat } = req.body
 
+    const employeeCodePattern = /^PHC\d*$/
+
+    const dangerousPattern = /[<>\/\\\|:"'*?;@!#%^&().,=+`~$]/g
+
+    if (empNumber.length <= 4) {
+        return res.status(400).send('Your employee number is too short')
+    } else if (!employeeCodePattern.test(empNumber)) {
+        return res.status(400).send('Your employee number is invalid')
+    }
+
+    if (dangerousPattern.test(firstname) || dangerousPattern.test(lastname) || dangerousPattern.test(empNumber)) {
+        return res.status(400).send('Your input has invalid characters')
+    }
+
     if (white == 0 && brown == 0 && wholewheat == 0) {
-        return res.status(500).send('You have not ordered any bread all loaves are 0')
+        return res.status(400).send('You have not ordered any bread all loaves are 0')
     } else if (white > 15 || brown > 15 || wholewheat > 15) {
-        return res.status(500).send('Your bread quantities are too high, 10 loaves is the maximum for each')
+        return res.status(400).send('Your bread quantities are too high, 10 loaves is the maximum for each')
     }
 
     const date = new Date()
@@ -76,6 +90,21 @@ router.get('/price', async (req, res) => {
             return;
         }
         res.send(results);
+        // console.log('first')
+    })
+})
+
+router.post('/price/change', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem ') }
+
+    const { breadPrice } = req.body
+
+    connect.query('UPDATE bread SET unit_price = ? ', [breadPrice], (error, results) => {
+        if (error) {
+            res.status(500).send('Error updating bread price');
+            return;
+        }
+        res.send(results);
     })
 })
 
@@ -106,7 +135,7 @@ router.get('/week', async (req, res) => {
     endOfWeek.setDate(startOfWeek.getDate() + 3);
     endOfWeek.setHours(16, 0, 0, 0);
 
-    connect.query('SELECT employee_number AS "EMPLOYEE CODE" ,firstname AS "FIRST NAME", lastname AS "LAST NAME", department AS "DEPARTMENT", SUM(white) AS "WHITE", SUM(brown) AS "BROWN", SUM(wholewheat) AS "WHOLE WHEAT", SUM(total_loaves) AS "TOTAL LOAVES", SUM(total_price) AS "TOTAL AMOUNT($)" FROM bread WHERE DATE(date) BETWEEN ? AND ? GROUP BY employee_number ,firstname, lastname', [startOfWeek, endOfWeek], (error, results) => {
+    connect.query('SELECT b.employee_number AS "EMPLOYEE CODE" ,b.firstname AS "FIRST NAME", b.lastname AS "LAST NAME", b.department AS "DEPARTMENT", SUM(b.white) AS "WHITE", SUM(b.brown) AS "BROWN", SUM(b.wholewheat) AS "WHOLE WHEAT", SUM(b.total_loaves) AS "TOTAL LOAVES", bp.unit_price AS "UNIT PRICE($)", SUM(b.total_price) AS "TOTAL AMOUNT($)" FROM bread b CROSS JOIN bread_pricing bp WHERE DATE(b.date) BETWEEN ? AND ? GROUP BY b.employee_number ,b.firstname, b.lastname, bp.unit_price', [startOfWeek, endOfWeek], (error, results) => {
         if (error) {
             res.status(500).send('Error fetching this weeks orders');
             return;
@@ -206,10 +235,10 @@ router.get('/month', async (req, res) => {
 })
 
 // cron.schedule('40 15 * * 4', async () => {
-cron.schedule('07 14 * * 5', async () => {
+cron.schedule('47 11 * * 1', async () => {
     try {
-        const response = await axios.get('http://localhost:8888/bread/week');
-        // const response = await axios.get('http://localhost:8888/bread/month');
+        // const response = await axios.get('http://localhost:8888/bread/week');
+        const response = await axios.get('http://localhost:8888/bread/month');
         // console.log('Bread Orders Exported');
     } catch (error) {
         console.error('Error executing the task:', error);

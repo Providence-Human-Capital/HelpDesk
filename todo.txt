@@ -7,11 +7,9 @@ TODO
 - admin adding ticket in background
 - admin change roles
 *** loaders throughout app (so far for user side)
-- showing filtered date where the old data was and managing to reset the filter
+-- showing filtered date where the old data was and managing to reset the filter
 
 IDEAS
-
-- filtering requests (24 hours, week, month)
 - asset register management tied with transfer requests
 
 VERSION 
@@ -25,6 +23,9 @@ VERSION
 - created a new landing page which users can pick between help desk and ordering bread
 - calculating total price per order 
 - merging multiple orders into one record with calculated loaves for one person which is then used for the weekly report
+- input sanitization for bread orders
+- routing for changing bread price 
+- updated font to Poppins
 
 UNFIXED ISSUES
 - not rerouting when a non admin tries to access the admin side

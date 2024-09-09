@@ -66,7 +66,7 @@ export default function general() {
     return (
         <Container maxW="1100px" mt={1}>
             <VStack spacing={4} align="stretch">
-                {/* <Text fontSize={{ md: "xl", base: "xl" }}>General Request Form</Text> */}
+                <Text fontSize={{ md: "3xl", base: "2xl" }} mt={5}>General Request Form</Text>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl id="name">
@@ -80,13 +80,15 @@ export default function general() {
                             isRequired
                         />
                     </FormControl>
-                    <FormControl id="department" mt={3}>
+                    <FormControl id="department" mt={4}>
                         <FormLabel as='u'>Department</FormLabel>
                         <Select placeholder="Select your department" borderColor={'#bdbdbd'} focusBorderColor='whatsapp' {...register('department')} isRequired>
                             <option value="Admin">Admin</option>
+                            <option value="Driver">Driver</option>
                             <option value="Employee Benefits">Employee Benefits</option>
                             <option value="Filing">Filing</option>
                             <option value="Finance">Finance</option>
+                            <option value="General Hand">General Hand</option>
                             <option value="Health & Wellness">Health & Wellness</option>
                             <option value="IT">IT</option>
                             <option value="Learning & development">Learning & Development</option>
@@ -101,7 +103,7 @@ export default function general() {
                             <option value="Other">Other</option>
                         </Select>
                     </FormControl>
-                    <FormControl id="request-type" mt={3}>
+                    <FormControl id="request-type" mt={4}>
                         <FormLabel as='u'>Request Type</FormLabel>
                         <Select placeholder="Select request type" borderColor={'#bdbdbd'} focusBorderColor='whatsapp' {...register('type')} isRequired>
                             <option value="network">Network</option>
@@ -111,7 +113,7 @@ export default function general() {
                             <option value="other">Other</option>
                         </Select>
                     </FormControl>
-                    <FormControl id="description" mt={3}>
+                    <FormControl id="description" mt={4}>
                         <FormLabel as='u'>Request Description</FormLabel>
                         <Textarea placeholder="Enter a description"
                             borderColor={'#bdbdbd'}

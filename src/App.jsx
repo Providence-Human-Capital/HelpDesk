@@ -30,8 +30,14 @@ export default function App() {
           </Center>
 
           <Center mb={4}>
-            <Text fontSize={'xl'} fontWeight={'bold'}>
+            <Text fontSize={'2xl'} fontWeight={'bold'}>
               Welcome!!
+            </Text>
+          </Center>
+
+          <Center mb={6}>
+            <Text fontSize={'xl'} fontWeight={'bold'}>
+              What can we help you with today?
             </Text>
           </Center>
 

@@ -23,7 +23,7 @@ router.post('/add', async (req, res) => {
     const dangerousPattern = /[<>\/\\\|:"'*?;]/g
 
     if (dangerousPattern.test(name) || dangerousPattern.test(department) || dangerousPattern.test(description)) {
-        return res.status(400).send('Your input has dangerous characters')
+        return res.status(400).send('Your input has invalid characters')
     }
 
     try {

@@ -121,7 +121,7 @@ export default function Bread() {
                     title: "Error sending order",
                     description: err.response.data || "There was a problem processing your order",
                     status: "error",
-                    duration: 4000,
+                    duration: 6000,
                     isClosable: true,
                     position: "top-right",
                 });
@@ -162,7 +162,7 @@ export default function Bread() {
                 </Center>
                 <Center fontSize={'3xl'}>Order Bread</Center>
 
-                {!isWithinTimeFrame ?
+                {isWithinTimeFrame ?
 
                     <Box>
                         <Center>

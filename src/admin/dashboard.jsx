@@ -14,7 +14,9 @@ export default function Dashboard() {
                             <Link to={'/admin/general'}>
                                 <Box bg="tomato" borderRadius={'12px'} p={9}>General Requests</Box></Link>
                             <Box bg="brown" borderRadius={'12px'} p={9}>Hardware Requests</Box>
-                            <Box bg="brown" borderRadius={'12px'} p={9}>Email Requests</Box>
+                            <Link to={'/admin/bread'}>
+                                <Box bg="brown" borderRadius={'12px'} p={9}>Bread Orders</Box>
+                            </Link>
                             <Box bg="blue" borderRadius={'12px'} p={9}>Transfer Requests</Box>
                         </Box>
                     </Center>
