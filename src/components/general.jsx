@@ -64,16 +64,16 @@ export default function general() {
     }
 
     return (
-        <Container maxW="1100px" mt={1}>
+        <Container maxW="1100px" mt={1} color={'black'}>
             <VStack spacing={4} align="stretch">
                 <Text fontSize={{ md: "3xl", base: "2xl" }} mt={5}>General Request Form</Text>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl id="name">
-                        <FormLabel as='u'>Full Name</FormLabel>
+                        <FormLabel as='u' color={errors.name ? 'red' : 'black'}>Full Name</FormLabel>
                         <Input type="text"
                             placeholder="Enter your full name"
-                            borderColor={'#bdbdbd'}
+                            borderColor={errors.name ? 'red' : '#bdbdbd'}
                             focusBorderColor='lime'
                             {...register('name', { minLength: { value: 4, message: 'Your name is too short' } })}
                             aria-invalid={errors.name ? "true" : "false"}
@@ -114,9 +114,9 @@ export default function general() {
                         </Select>
                     </FormControl>
                     <FormControl id="description" mt={4}>
-                        <FormLabel as='u'>Request Description</FormLabel>
+                        <FormLabel as='u' color={errors.description ? 'red' : 'black'}>Request Description</FormLabel>
                         <Textarea placeholder="Enter a description"
-                            borderColor={'#bdbdbd'}
+                            borderColor={errors.description ? 'red' : '#bdbdbd'}
                             focusBorderColor='lime'
                             {...register('description', { minLength: { value: 10, message: 'Please enter a longer description' } })}
                             aria-invalid={errors.description ? "true" : "false"}
@@ -137,11 +137,11 @@ export default function general() {
                     </FormControl> */}
 
                     <Box mt={5}>
-                        {errors.name && <p role="alert" style={{ color: "red" }}>{errors.name.message}</p>}
+                        {errors.name && <p role="alert" style={{ color: "red", fontWeight: 700 }}>{errors.name.message}</p>}
                         {/* {errors.department && <p role="alert" style={{ color: "red" }}>{errors.department.message}</p>} */}
                         {/* {errors.nationalId && <p role="alert" style={{ color: "red" }}>{errors.nationalId.message}</p>} */}
-                        {errors.description && <p role="alert" style={{ color: "red" }}>{errors.description.message}</p>}
-                        {errors.anydesk && <p role="alert" style={{ color: "red" }}>Please enter your AnyDesk ID</p>}
+                        {errors.description && <p role="alert" style={{ color: "red", fontWeight: 700 }}>{errors.description.message}</p>}
+                        {errors.anydesk && <p role="alert" style={{ color: "red", fontWeight: 700 }}>Please enter your AnyDesk ID</p>}
                     </Box>
 
                     {loading ?

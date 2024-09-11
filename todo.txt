@@ -25,7 +25,8 @@ VERSION
 - merging multiple orders into one record with calculated loaves for one person which is then used for the weekly report
 - input sanitization for bread orders
 - routing for changing bread price 
-- updated font to Poppins
+- changed font to Poppins
+- making incorrect input fields red
 
 UNFIXED ISSUES
 - not rerouting when a non admin tries to access the admin side

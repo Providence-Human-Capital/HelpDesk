@@ -23,7 +23,7 @@ import {
     Image,
     Spacer,
     InputRightAddon,
-    InputGroup
+    InputGroup,
 } from '@chakra-ui/react';
 import { useForm } from "react-hook-form"
 import axios from 'axios'
@@ -40,7 +40,6 @@ export default function Bread() {
     const [loading, setLoading] = useState(false)
     const [timeLoading, setTimeLoading] = useState(true)
     const [isWithinTimeFrame, setIsWithinTimeFrame] = useState(false);
-
 
     useEffect(() => {
         const checkTimeFrame = () => {
@@ -160,20 +159,19 @@ export default function Bread() {
                         />
                     </Link>
                 </Center>
-                <Center fontSize={'3xl'}>Order Bread</Center>
 
                 {isWithinTimeFrame ?
 
                     <Box>
+                        <Center fontSize={'3xl'}>Order Bread</Center>
                         <Center>
-                            <Text fontSize={'lg'} as={'u'} color='red'>Deadline for ordering bread is Thursday at <b>3:30pm</b></Text>
-
+                            <Text fontSize={'lg'} as={'u'} color='#F2000C'>Deadline for ordering bread is Thursday @ <b>3:30pm</b></Text>
                         </Center>
 
                         {/* <Center>Always make sure to collect your bread after ordering</Center> */}
                         {/* {console.log(breadPrice)} */}
                         {breadPrice ?
-                            <Center mt={1}>The price for a loaf of bread is {' $' + breadPrice[0].unit_price}</Center>
+                            <Center mt={1} >The price for a loaf of bread is:<pre> </pre><Text as={'u'}>{' $' + breadPrice[0].unit_price}</Text></Center>
                             :
                             null}
                         <VStack mt={5} spacing={4} >
@@ -182,42 +180,42 @@ export default function Bread() {
 
                             <form onSubmit={handleSubmit(onSubmit)} >
                                 <FormControl id="employeeNumber" >
-                                    <FormLabel as='u'>Employee Number</FormLabel>
+                                    <FormLabel as='u' color={errors.empNumber ? 'red' : 'black'}>Employee Number</FormLabel>
 
                                     <Input type="text"
                                         placeholder="Enter your Employee Number"
-                                        borderColor={'#bdbdbd'}
+                                        borderColor={errors.empNumber ? 'red' : '#bdbdbd'}
                                         focusBorderColor='lime'
-                                        {...register('empNumber', { minLength: { value: 4, message: 'Your code is too short' } })}
-                                        aria-invalid={errors.name ? "true" : "false"}
+                                        {...register('empNumber', { minLength: { value: 4, message: 'Your employee number is too short' } })}
+                                        aria-invalid={errors.empNumber ? "true" : "false"}
                                         w={{ base: '100%', md: '800px' }}
                                         isRequired
                                     />
                                 </FormControl>
 
                                 <FormControl id="firstname" mt={5}>
-                                    <FormLabel as='u'>First Name</FormLabel>
+                                    <FormLabel as='u' color={errors.firstname ? 'red' : 'black'}>First Name</FormLabel>
 
                                     <Input type="text"
                                         placeholder="Enter your first name"
-                                        borderColor={'#bdbdbd'}
+                                        borderColor={errors.firstname ? 'red' : '#bdbdbd'}
                                         focusBorderColor='lime'
-                                        {...register('firstname', { minLength: { value: 4, message: 'Your name is too short' } })}
-                                        aria-invalid={errors.name ? "true" : "false"}
+                                        {...register('firstname', { minLength: { value: 4, message: 'Your first name is too short' } })}
+                                        aria-invalid={errors.firstname ? "true" : "false"}
                                         w={{ base: '100%', md: '800px' }}
                                         isRequired
                                     />
                                 </FormControl>
 
                                 <FormControl id="lastname" mt={5}>
-                                    <FormLabel as='u'>Last Name</FormLabel>
+                                    <FormLabel as='u' color={errors.lastname ? 'red' : 'black'}>Last Name</FormLabel>
 
                                     <Input type="text"
                                         placeholder="Enter your last name"
-                                        borderColor={'#bdbdbd'}
+                                        borderColor={errors.lastname ? 'red' : '#bdbdbd'}
                                         focusBorderColor='lime'
-                                        {...register('lastname', { minLength: { value: 4, message: 'Your name is too short' } })}
-                                        aria-invalid={errors.name ? "true" : "false"}
+                                        {...register('lastname', { minLength: { value: 4, message: 'Your last name is too short' } })}
+                                        aria-invalid={errors.lastname ? "true" : "false"}
                                         w={{ base: '100%', md: '800px' }}
                                         isRequired
                                     />
@@ -307,6 +305,12 @@ export default function Bread() {
                                     {/* </Container> */}
                                 </FormControl>
 
+                                <Box mt={5}>
+                                    {errors.empNumber && <p role="alert" style={{ color: "red", fontWeight: 700 }}>{errors.empNumber.message}</p>}
+                                    {errors.firstname && <p role="alert" style={{ color: "red", fontWeight: 700 }} >{errors.firstname.message}</p>}
+                                    {errors.lastname && <p role="alert" style={{ color: "red", fontWeight: 700 }} >{errors.lastname.message}</p>}
+                                </Box>
+
                                 {loading ?
                                     <Loader />
                                     :
@@ -322,7 +326,7 @@ export default function Bread() {
                     :
                     <Box>
                         <Center >
-                            <Text fontSize={{ md: "xl", base: "xl" }} mt={9}>
+                            <Text fontSize={{ md: "xl", base: "xl" }} mt={5}>
                                 The deadline for ordering bread has passed, you will only be able to order again on <b>Monday at 8am</b>
                             </Text>
                         </Center>
