@@ -27,6 +27,8 @@ VERSION
 - routing for changing bread price 
 - changed font to Poppins
 - making incorrect input fields red
+- updating bread price from admin center
+- requesting transport
 
 UNFIXED ISSUES
 - not rerouting when a non admin tries to access the admin side

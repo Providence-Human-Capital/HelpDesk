@@ -71,7 +71,7 @@ export default function Help() {
                             />
                         </Link>
                     </Center>
-                    <Center fontSize={'3xl'}>IT Help Desk</Center>
+                    <Center fontSize={'3xl'} color={'black'}>IT Help Desk</Center>
 
                     {/* <Alert mt={3} variant={'solid'} >
             <AlertIcon />
@@ -80,7 +80,7 @@ export default function Help() {
 
           </Alert> */}
 
-                    <Flex >
+                    {/* <Flex >
 
                         <Center
                             // style={{ width: '50%', borderRight: '2px solid #bdbdbd', borderBottom: `2px solid ${showPage === 'hardware' ? x : '#bdbdbd'}` }}
@@ -119,7 +119,7 @@ export default function Help() {
                         >
                             FAQs</Center>
 
-                    </Flex>
+                    </Flex> */}
                 </Box>
 
                 {showPage === 'hardware' ? <Hardware /> : ''}

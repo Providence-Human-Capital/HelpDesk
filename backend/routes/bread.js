@@ -94,12 +94,12 @@ router.get('/price', async (req, res) => {
     })
 })
 
-router.post('/price/change', async (req, res) => {
+router.put('/price/change', async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem ') }
 
     const { breadPrice } = req.body
 
-    connect.query('UPDATE bread SET unit_price = ? ', [breadPrice], (error, results) => {
+    connect.query('UPDATE bread_pricing SET unit_price = ? ', [breadPrice], (error, results) => {
         if (error) {
             res.status(500).send('Error updating bread price');
             return;

@@ -12,12 +12,12 @@ export default function Dashboard() {
                     <Center>
                         <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap="90px" marginTop="28px">
                             <Link to={'/admin/general'}>
-                                <Box bg="tomato" borderRadius={'12px'} p={9}>General Requests</Box></Link>
-                            <Box bg="brown" borderRadius={'12px'} p={9}>Hardware Requests</Box>
+                                <Box bg="#5c0101" borderRadius={'12px'} p={'20%'} _hover={{ backgroundColor: 'red', cursor: 'pointer' }}>General Requests</Box></Link>
+                            <Box bg="#510101" borderRadius={'12px'} p={'20%'} _hover={{ backgroundColor: 'red', cursor: 'pointer' }}>Hardware Requests</Box>
                             <Link to={'/admin/bread'}>
-                                <Box bg="brown" borderRadius={'12px'} p={9}>Bread Orders</Box>
+                                <Box bg="#7b0a0a" borderRadius={'12px'} p={'20%'} _hover={{ backgroundColor: 'red', cursor: 'pointer' }}>Bread Orders</Box>
                             </Link>
-                            <Box bg="blue" borderRadius={'12px'} p={9}>Transfer Requests</Box>
+                            <Box bg="#a31212" borderRadius={'12px'} p={'20%'} _hover={{ backgroundColor: 'red', cursor: 'pointer' }}>Transfer Requests</Box>
                         </Box>
                     </Center>
                 </Container>

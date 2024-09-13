@@ -89,17 +89,14 @@ export default function General() {
 
                     </Flex>
 
-                    <Box mt={4} >
-
-                    </Box>
-
                     {showPage === 'all' ? <All request={request} /> : ''}
                     {showPage === 'pending' ? <Pending request={request} /> : ''}
                     {showPage === 'progress' ? <Progress request={request} /> : ''}
                     {showPage === 'unfinished' ? <Unfinished request={request} /> : ''}
                     {showPage === 'finished' ? <Finished request={request} /> : ''}
 
-                    <Box> .</Box>
+                    <br />
+
                 </Container>
             </Box>
         </>

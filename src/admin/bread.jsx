@@ -19,16 +19,25 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
+    useToast,
     useDisclosure
 } from '@chakra-ui/react'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useForm } from "react-hook-form"
+import { useNavigate } from 'react-router-dom';
+import { WarningTwoIcon } from '@chakra-ui/icons'
+import Loader from '../components/loader';
+
 
 export default function AdminBread() {
     const [disabled, setDisabled] = useState(true)
     const { register, formState: { errors }, handleSubmit } = useForm()
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const toast = useToast()
+    const [loading, setLoading] = useState(false)
+    const navigate = useNavigate();
+
     let { data: breadPrice, error } = useQuery({
         queryKey: ['bread'],
         queryFn: () =>
@@ -46,13 +55,62 @@ export default function AdminBread() {
                 })
     })
 
+    useEffect(() => {
+        onOpen()
+    }, [])
+
+
     const onSubmit = (data) => {
-        console.log(data)
+        axios.put('http://localhost:8888/bread/price/change', data)
+            .then((res) => {
+                toast({
+                    title: "You have updated the bread price",
+                    description: "Future orders are now going to be calculated with the new price",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+            })
+            .catch((err) => {
+                toast({
+                    title: "Error updating ",
+                    description: err.response.data || "There was a problem updating bread price",
+                    status: "error",
+                    duration: 6000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+            })
+            .finally(() => {
+                setLoading(false)
+                setDisabled(true)
+            })
     }
 
     return (
         <>
             <Navbar />
+
+            <Modal isOpen={isOpen} isCentered >
+                <ModalOverlay />
+                <ModalContent bg={"#101010"} border={"1px solid white"}
+                    color={"white"}>
+                    <ModalHeader><WarningTwoIcon color={'orangered'} />WARNING!!!!<WarningTwoIcon color={'orangered'} /></ModalHeader>
+                    {/* <ModalCloseButton /> */}
+                    <ModalBody>
+                        This page is responsible for changing the unit price of bread, which affects bread orders and payroll deductions.
+                    </ModalBody>
+
+                    <ModalFooter>
+                        <Button colorScheme='orange' onClick={onClose} mr={3}>Continue</Button>
+                        <Button colorScheme='red' onClick={() => navigate(-1)}>
+                            Go Back!
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
             <Box bg={'black'} minH={'93vh'} color={'white'} >
                 <Container pt={8} maxW='95vw'>
                     <Center>
@@ -65,11 +123,12 @@ export default function AdminBread() {
                             <Box mt={2} mr={3}>Current Bread Price ($):</Box>
                             {breadPrice ?
                                 <Input w={'10%'}
-                                    type='number'
+                                    // type='number'
                                     {...register('breadPrice')}
                                     defaultValue={breadPrice[0].unit_price}
                                     focusBorderColor='#FF0000'
                                     disabled={disabled ? 'disabled' : null}
+                                    borderColor={disabled ? 'black' : 'white'}
                                 />
                                 :
                                 null
@@ -82,30 +141,16 @@ export default function AdminBread() {
                             </Button>
 
                             {disabled ? null :
-                                <Box mt={2}>
-                                    <Button colorScheme='blue' onClick={onOpen}>Update Price</Button>
-                                </Box>
+                                loading ?
+                                    <Loader />
+                                    :
+                                    <Box mt={2}>
+                                        <Button colorScheme='blue' type="submit">Update Price</Button>
+                                    </Box>
                             }
                         </Box>
 
-                        <Modal isOpen={isOpen} onClose={onClose} isCentered >
-                            <ModalOverlay />
-                            <ModalContent bg={"#101010"} border={"1px solid white"}
-                                color={"white"}>
-                                <ModalHeader>NOTICE!!!!</ModalHeader>
-                                <ModalCloseButton />
-                                <ModalBody>
-                                    You are about to change the unit price of bread, this is going to affect orders and deductions
-                                </ModalBody>
 
-                                <ModalFooter>
-                                    <Button colorScheme='blue' type="submit" mr={3}>Update Price</Button>
-                                    <Button colorScheme='red' onClick={onClose}>
-                                        Cancel
-                                    </Button>
-                                </ModalFooter>
-                            </ModalContent>
-                        </Modal>
                     </form>
                 </Container>
             </Box>

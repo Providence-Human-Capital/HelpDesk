@@ -26,10 +26,8 @@ export default function Drawerr() {
         { name: "Hardware Requests", link: "/admin/hardware" },
         { name: "Email Requests", link: "/admin/dash" },
         { name: "Transfer Requests", link: "/admin/dash" },
-        { name: "Bread Orders", link: "/admin/bread" },
+        { name: "Bread Price", link: "/admin/bread" },
         { name: "Admin management", link: "/admin/management" },
-        // { name: "General user home", link: "/" },
-
     ];
 
     return (
@@ -69,9 +67,9 @@ export default function Drawerr() {
                                             p="2"
                                             mt={1}
                                             // className="sidebar"
-                                            _hover={{ backgroundColor: 'red' }}
+                                            _hover={{ backgroundColor: 'red', borderRadius: '11px' }}
                                         >
-                                            <Text fontSize="18" onClose={onClose}>
+                                            <Text fontSize="16" onClose={onClose}>
                                                 {link.name}
                                             </Text>
                                         </Box>

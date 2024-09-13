@@ -76,7 +76,7 @@ export default function Bread() {
     let { data: breadPrice, error } = useQuery({
         queryKey: ['bread'],
         queryFn: () =>
-            axios.get('http://localhost:8888/bread/price')
+            axios.get('http://192.168.10.172:8888/bread/price')
                 .then(res => res.data)
                 .catch((err) => {
                     toast({
@@ -147,7 +147,7 @@ export default function Bread() {
 
     return (
         <>
-            <Container maxW={"1100px"} mt={5}>
+            <Container maxW={"1000px"} mt={5}>
 
                 <Center>
                     <Link to={'https://providencehumancapital.com'} target='_blank'>
@@ -165,13 +165,13 @@ export default function Bread() {
                     <Box>
                         <Center fontSize={'3xl'}>Order Bread</Center>
                         <Center>
-                            <Text fontSize={'lg'} as={'u'} color='#F2000C'>Deadline for ordering bread is Thursday @ <b>3:30pm</b></Text>
+                            <Text fontSize={'lg'} as={'u'} color='#F2000C' >Deadline for ordering bread is Thursday @ <b>3:30pm</b></Text>
                         </Center>
 
                         {/* <Center>Always make sure to collect your bread after ordering</Center> */}
                         {/* {console.log(breadPrice)} */}
                         {breadPrice ?
-                            <Center mt={1} >The price for a loaf of bread is:<pre> </pre><Text as={'u'}>{' $' + breadPrice[0].unit_price}</Text></Center>
+                            <Center as={'u'} mt={{ base: 4, md: 1 }}>The price for a loaf of bread is:<pre> </pre><Text>{' $' + breadPrice[0].unit_price}</Text></Center>
                             :
                             null}
                         <VStack mt={5} spacing={4} >

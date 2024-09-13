@@ -19,6 +19,7 @@ import NotFound from './admin/404.jsx';
 import AdminBread from './admin/bread.jsx';
 import Help from './pages/help.jsx';
 import Bread from './pages/bread.jsx';
+import Transport from './pages/transport.jsx';
 
 const queryClient = new QueryClient({});
 
@@ -31,6 +32,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/" exact element={<App />} />
           <Route path="/help-desk" exact element={<Help />} />
           <Route path="/order-bread" exact element={<Bread />} />
+          <Route path="/transport" exact element={<Transport />} />
           <Route path="/admin" element={<Login />} />
           <Route path="/admin/dash" element={<Dashboard />} />
           <Route path="/admin/bread" element={<AdminBread />} />

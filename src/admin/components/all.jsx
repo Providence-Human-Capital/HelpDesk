@@ -106,15 +106,15 @@ export default function All({ request }) {
 
     return (
         <>
-            <Box mt={4}>
-                <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + displayData.length : null}</Text>
+            <Box mt={4} >
+                <Text textAlign={'right'}>{displayData == 0 ? 'No Tickets to display' : data ? 'Count: ' + displayData.length : null}</Text>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <HStack spacing={5}  >
-                        <Input type='date' w={'14%'} h={'28px'}
+                        <Input type='date' w={'16%'} h={'28px'}
                             {...register('startDate')}
                         />
-                        <Input type='date' w={'14%'} h={'28px'}
+                        <Input type='date' w={'16%'} h={'28px'}
                             {...register('endDate')}
                         />
                         <Button h={'28px'} bg={'violet'} type='submit'>Apply filter</Button>
@@ -123,7 +123,7 @@ export default function All({ request }) {
                 </form>
 
                 <TableContainer border={'1px solid #4c4c4c'} mt={2} >
-                    <Table size={'sm'}>
+                    <Table size={'sm'} >
                         <Thead>
                             <Tr>
                                 <Th>ID</Th>

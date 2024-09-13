@@ -41,7 +41,7 @@ export default function App() {
             </Text>
           </Center>
 
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 0, md: '80px' }}>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 0, md: '60px' }}>
 
             <Box height={{ base: '370px', md: '450px' }} borderRadius={'25px'} _hover={{ color: '#00bf1e' }}>
               <Link to={'/help-desk'}>
@@ -53,7 +53,7 @@ export default function App() {
                     _hover={{ transform: 'scale(1.2)' }}
                     transition="transform 0.5s ease-in-out"
                     objectFit="cover"
-                    height={{ base: '300px', md: '400px' }}
+                    height={{ base: '300px', md: '300px' }}
                   />
                 </Center>
               </Link>
@@ -61,6 +61,28 @@ export default function App() {
               <Center mt={1}>
                 <Link to={'/help-desk'}>
                   <Text fontSize={'xl'} >IT Help Desk</Text>
+                </Link>
+              </Center>
+            </Box>
+
+            <Box borderRadius={'25px'} height={{ base: '370px', md: '450px' }} _hover={{ color: '#00bf1e' }}>
+              <Link to={'/transport'}>
+                <Center overflow="hidden" borderRadius={'25px'}>
+                  <Image
+                    src={bread}
+                    borderRadius={'25px'}
+                    w={{ base: '80%', md: '100%' }}
+                    _hover={{ transform: 'scale(1.2)' }}
+                    transition="transform 0.5s ease-in-out"
+                    objectFit="cover"
+                    height={{ base: '300px', md: '300px' }}
+                  />
+                </Center>
+              </Link>
+
+              <Center mt={1}>
+                <Link to={'/order-bread'}>
+                  <Text fontSize={'xl'}>Transport Request</Text>
                 </Link>
               </Center>
             </Box>
@@ -75,7 +97,7 @@ export default function App() {
                     _hover={{ transform: 'scale(1.2)' }}
                     transition="transform 0.5s ease-in-out"
                     objectFit="cover"
-                    height={{ base: '300px', md: '400px' }}
+                    height={{ base: '300px', md: '300px' }}
                   />
                 </Center>
               </Link>
