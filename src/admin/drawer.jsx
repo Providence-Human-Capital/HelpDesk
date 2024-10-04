@@ -24,6 +24,7 @@ export default function Drawerr() {
         { name: "Admin Dashboard", link: "/admin/dash" },
         { name: "General Requests", link: "/admin/general" },
         { name: "Hardware Requests", link: "/admin/hardware" },
+        { name: "Transport Requests", link: '/admin/transport' },
         { name: "Email Requests", link: "/admin/dash" },
         { name: "Transfer Requests", link: "/admin/dash" },
         { name: "Bread Price", link: "/admin/bread" },

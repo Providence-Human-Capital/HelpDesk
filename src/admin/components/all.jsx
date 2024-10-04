@@ -125,31 +125,72 @@ export default function All({ request }) {
                 <TableContainer border={'1px solid #4c4c4c'} mt={2} >
                     <Table size={'sm'} >
                         <Thead>
-                            <Tr>
-                                <Th>ID</Th>
-                                <Th>Name</Th>
-                                <Th>Department</Th>
-                                <Th>Date</Th>
-                                <Th>Description</Th>
-                                <Th>Type</Th>
-                                <Th>Status</Th>
-                                {/* <Th>Action</Th> */}
-                            </Tr>
+                            {request === 'transport' ?
+                                <Tr>
+                                    <Th>ID</Th>
+                                    <Th>Firstname</Th>
+                                    <Th>Lastname</Th>
+                                    <Th>Department</Th>
+                                    <Th>Date</Th>
+                                    <Th>Start</Th>
+                                    <Th>Destination</Th>
+                                    <Th>Purpose</Th>
+                                    <Th>Cargo</Th>
+                                    <Th>Passengers</Th>
+                                    <Th>Status</Th>
+                                    {/* <Th>Action</Th> */}
+                                </Tr>
+                                :
+                                <Tr>
+                                    <Th>ID</Th>
+                                    <Th>Name</Th>
+                                    <Th>Department</Th>
+                                    <Th>Date</Th>
+                                    <Th>Description</Th>
+                                    <Th>Type</Th>
+                                    <Th>Status</Th>
+                                    {/* <Th>Action</Th> */}
+                                </Tr>
+                            }
+
                         </Thead>
                         {displayData?.map(info => (
                             <Tbody className='row' onClick={() => handleRowClick(info.id)} >
-                                <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
-                                    <Td>{info.id}</Td>
-                                    <Td>{info.name}</Td>
-                                    <Td>{info.department}</Td>
-                                    <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>
-                                    <Td>{info.description}</Td>
-                                    <Td>{info.request_type}</Td>
-                                    <Td><Tag variant={'solid'}
-                                        colorScheme={info.status === 'pending' ? 'gray' : info.status === 'in-progress' ? 'orange' : info.status === 'completed' ? 'green' : 'yellow'}>
-                                        {info.status}
-                                    </Tag></Td>
-                                </Tr>
+                                {request === 'transport' ?
+                                    <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
+                                        <Td>{info.id}</Td>
+                                        <Td>{info.firstname}</Td>
+                                        <Td>{info.lastname}</Td>
+                                        <Td>{info.department}</Td>
+                                        <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>
+                                        <Td>{info.start}</Td>
+                                        <Td>{info.destination}</Td>
+                                        <Td>{info.purpose}</Td>
+                                        <Td>{info.cargo}</Td>
+                                        <Td>{info.passengers}</Td>
+                                        <Td><Tag variant={'solid'}
+                                            colorScheme={info.status === 'pending' ? 'gray' : info.status === 'in-progress' ? 'orange' : info.status === 'completed' ? 'green' : 'yellow'}>
+                                            {info.status}
+                                        </Tag></Td>
+                                    </Tr>
+
+                                    :
+
+                                    <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
+                                        <Td>{info.id}</Td>
+                                        <Td>{info.name}</Td>
+                                        <Td>{info.department}</Td>
+                                        <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>
+                                        <Td>{info.description}</Td>
+                                        <Td>{info.request_type}</Td>
+                                        <Td><Tag variant={'solid'}
+                                            colorScheme={info.status === 'pending' ? 'gray' : info.status === 'in-progress' ? 'orange' : info.status === 'completed' ? 'green' : 'yellow'}>
+                                            {info.status}
+                                        </Tag></Td>
+                                    </Tr>
+                                }
+
+
                             </Tbody>
                         ))}
                     </Table>

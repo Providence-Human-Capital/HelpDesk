@@ -29,6 +29,7 @@ VERSION
 - making incorrect input fields red
 - updating bread price from admin center
 - requesting transport
+- viewing requests for transport on the admin side
 
 UNFIXED ISSUES
 - not rerouting when a non admin tries to access the admin side

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     SimpleGrid,
     VStack,
     FormControl,
     FormLabel,
     Input,
+    Textarea,
     Grid,
     Select,
     Button,
@@ -29,9 +30,51 @@ import PHC from '../img/PHC_Logo.png'
 import { useForm } from "react-hook-form"
 import axios from 'axios'
 import { Link } from 'react-router-dom';
+import Loader from '../components/loader';
 
 export default function Transport() {
     const { register, formState: { errors }, handleSubmit, reset } = useForm()
+    const toast = useToast()
+    const [loading, setLoading] = useState(false)
+
+    const onSubmit = (data) => {
+        // console.log(data)
+        setLoading(true)
+        axios.post('http://localhost:8888/transport/add', data)
+            .then((res) => {
+                // console.log(res.data)
+                toast({
+                    title: "Your request has been successfully sent",
+                    description: "Please check your emails for further updates on your request",
+                    status: "success",
+                    duration: 7000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+
+                reset({
+                    name: '',
+                    department: '',
+                    description: '',
+                    type: '',
+                    anydesk: '',
+                })
+            })
+            .catch((err) => {
+                console.log(err)
+                toast({
+                    title: "Error sending request",
+                    description: "There was a problem processing your request, you might need to contact IT",
+                    status: "error",
+                    duration: 4000,
+                    isClosable: true,
+                    position: "top-right",
+                });
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
 
     return (
         <>
@@ -54,7 +97,7 @@ export default function Transport() {
                 <VStack mt={5} spacing={4} >
 
 
-                    <form  >
+                    <form onSubmit={handleSubmit(onSubmit)}>
 
                         <FormControl id="firstname">
                             <FormLabel as='u' color={errors.firstname ? 'red' : 'black'}>First Name</FormLabel>
@@ -72,16 +115,32 @@ export default function Transport() {
 
                         <FormControl id="lastname" mt={5}>
                             <FormLabel as='u' color={errors.lastname ? 'red' : 'black'}>Last Name</FormLabel>
-
                             <Input type="text"
                                 placeholder="Enter your last name"
                                 borderColor={errors.lastname ? 'red' : '#bdbdbd'}
                                 focusBorderColor='lime'
-                                {...register('lastname', { minLength: { value: 4, message: 'Your last name is too short' } })}
+                                {...register('lastname', { minLength: { value: 3, message: 'Your last name is too short' } })}
                                 aria-invalid={errors.lastname ? "true" : "false"}
                                 w={{ base: '100%', md: '800px' }}
                                 isRequired
                             />
+                        </FormControl>
+
+                        <FormControl id="email" mt={5}>
+                            <FormLabel as='u' color={errors.email ? 'red' : 'black'}>Email</FormLabel>
+                            <InputGroup>
+
+                                <Input type="text"
+                                    placeholder="Enter your email before the @"
+                                    borderColor={errors.email ? 'red' : '#bdbdbd'}
+                                    focusBorderColor='lime'
+                                    {...register('email', { minLength: { value: 4, message: 'Your email is too short' } })}
+                                    aria-invalid={errors.email ? "true" : "false"}
+                                    w={{ base: '100%', md: '500px' }}
+                                    isRequired
+                                />
+                                <InputRightAddon>@providencehumancapital.com</InputRightAddon>
+                            </InputGroup>
                         </FormControl>
 
 
@@ -89,7 +148,7 @@ export default function Transport() {
                             <FormLabel as='u'>Department</FormLabel>
                             <Select placeholder="Select your department" borderColor={'#bdbdbd'} focusBorderColor='lime' {...register('department')} isRequired>
                                 <option value="Admin">Admin</option>
-                                <option value="Driver">Driver</option>
+                                {/* <option value="Driver">Driver</option> */}
                                 <option value="Employee Benefits">Employee Benefits</option>
                                 <option value="Filing">Filing</option>
                                 <option value="Finance">Finance</option>
@@ -121,22 +180,22 @@ export default function Transport() {
                             <Flex flexDirection={{ base: 'column', md: 'row' }}>
 
                                 <Input type="text"
-                                    placeholder="Enter your Employee Number"
-                                    borderColor={errors.route ? 'red' : '#bdbdbd'}
+                                    placeholder="Enter starting point"
+                                    borderColor={errors.start ? 'red' : '#bdbdbd'}
                                     focusBorderColor='lime'
-                                    {...register('route', { minLength: { value: 3, message: 'Your route is too short' } })}
-                                    aria-invalid={errors.route ? "true" : "false"}
+                                    {...register('start', { minLength: { value: 3, message: 'Your route is too short' } })}
+                                    aria-invalid={errors.start ? "true" : "false"}
                                     w={{ base: '100%', md: '320px' }}
                                     isRequired
                                 />
                                 <Spacer />
 
                                 <Input type="text"
-                                    placeholder="Enter your Employee Number"
-                                    borderColor={errors.route ? 'red' : '#bdbdbd'}
+                                    placeholder="Enter destination"
+                                    borderColor={errors.destination ? 'red' : '#bdbdbd'}
                                     focusBorderColor='lime'
-                                    {...register('route', { minLength: { value: 3, message: 'Your route is too short' } })}
-                                    aria-invalid={errors.route ? "true" : "false"}
+                                    {...register('destination', { minLength: { value: 3, message: 'Your route is too short' } })}
+                                    aria-invalid={errors.destination ? "true" : "false"}
                                     w={{ base: '100%', md: '320px' }}
                                     isRequired
                                 />
@@ -146,8 +205,8 @@ export default function Transport() {
                         <FormControl id="purpose" mt={5}>
                             <FormLabel as='u' color={errors.route ? 'red' : 'black'}>Purpose</FormLabel>
 
-                            <Input type="text"
-                                placeholder="Enter your Employee Number"
+                            <Textarea type="text"
+                                placeholder="Enter purpose of trip"
                                 borderColor={errors.purpose ? 'red' : '#bdbdbd'}
                                 focusBorderColor='lime'
                                 {...register('purpose', { minLength: { value: 4, message: 'Your purpose is too short' } })}
@@ -160,8 +219,8 @@ export default function Transport() {
                         <FormControl id="cargo" mt={5}>
                             <FormLabel as='u' color={errors.cargo ? 'red' : 'black'}>Cargo Carried</FormLabel>
 
-                            <Input type="text"
-                                placeholder="Enter your Employee Number"
+                            <Textarea type="text"
+                                placeholder="Describe the cargo quantity and description"
                                 borderColor={errors.cargo ? 'red' : '#bdbdbd'}
                                 focusBorderColor='lime'
                                 {...register('cargo')}
@@ -175,10 +234,10 @@ export default function Transport() {
                             <Flex alignItems={'center'} justifyContent="space-between">
                                 <Text>Number of passengers</Text>
                                 {/* <Spacer /> */}
-                                <NumberInput defaultValue={0} min={0} max={10} w={{ base: '60%', md: '30%' }} borderColor={'#bdbdbd'} focusBorderColor='lime' {...register('white')}>
+                                <NumberInput defaultValue={0} min={0} max={10} w={{ base: '60%', md: '30%' }} borderColor={'#bdbdbd'} focusBorderColor='lime' {...register('passengers')}>
                                     <InputGroup>
                                         <NumberInputField />
-                                        <InputRightAddon mr={5}>passengers</InputRightAddon>
+                                        <InputRightAddon mr={5}>passenger(s)</InputRightAddon>
                                     </InputGroup>
                                     <NumberInputStepper >
                                         <NumberIncrementStepper />
@@ -194,13 +253,13 @@ export default function Transport() {
                             {errors.lastname && <p role="alert" style={{ color: "red", fontWeight: 700 }} >{errors.lastname.message}</p>}
                         </Box>
 
-                        {/* {loading ? */}
-                        {/* // <Loader /> */}
-                        {/* : */}
-                        <Button colorScheme="green" mt={8} mb='10' type="submit">
-                            Submit Request
-                        </Button>
-                        {/* } */}
+                        {loading ?
+                            <Loader />
+                            :
+                            <Button colorScheme="green" mt={8} mb='10' type="submit">
+                                Submit Request
+                            </Button>
+                        }
                     </form>
                 </VStack>
             </Container>

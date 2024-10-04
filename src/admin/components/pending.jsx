@@ -167,51 +167,96 @@ export default function Pending({ request }) {
         <TableContainer border={"1px solid #4c4c4c"} mt={2}>
           <Table>
             <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Department</Th>
-                <Th>Date of Applicaton</Th>
-                <Th>Description</Th>
-                <Th>Type</Th>
-                <Th>Status</Th>
-                {adminRole === 'admin' ?
-                  <Th>Own</Th>
-                  :
-                  null}
-              </Tr>
+              {request === 'transport' ?
+                <Tr>
+                  <Th>ID</Th>
+                  <Th>Firstname</Th>
+                  <Th>Lastname</Th>
+                  <Th>Department</Th>
+                  <Th>Date</Th>
+                  <Th>Start</Th>
+                  <Th>Destination</Th>
+                  <Th>Purpose</Th>
+                  <Th>Cargo</Th>
+                  <Th>Passengers</Th>
+                  {/* <Th>Status</Th> */}
+                  <Th>Action</Th>
+                </Tr>
+                :
+                <Tr>
+                  <Th>ID</Th>
+                  <Th>Name</Th>
+                  <Th>Department</Th>
+                  <Th>Date</Th>
+                  <Th>Description</Th>
+                  <Th>Type</Th>
+                  {/* <Th>Status</Th> */}
+                  <Th>Action</Th>
+                </Tr>
+              }
             </Thead>
 
             {
               data?.map((info) => (
                 <Tbody className="row" onClick={() => handleRowClick(info.id)}>
-                  <Tr
-                    key={info.id}
-                    style={{
-                      backgroundColor: selectedRow === info.id ? "#c00000" : "",
-                    }}
-                    className={selectedRow === info.id ? "row" : ""}
-                  >
-                    <Td>{info.name}</Td>
-                    <Td>{info.department}</Td>
-                    <Td>
-                      {new Date(info.date).toLocaleDateString("en-GB", options)}
-                    </Td>
-                    <Td>{info.description}</Td>
-                    <Td>{info.request_type}</Td>
-                    <Td>{info.status}</Td>
-                    {adminRole === 'admin' ?
-                      <Td
-                        onClick={() => onOpen(info)}
-                        _hover={{ backgroundColor: "green" }}
-                        style={{ width: "1%" }}
-                      >
-                        <Center>
-                          <CheckIcon />
-                        </Center>
+                  {request === 'transport' ?
+                    <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
+                      <Td>{info.id}</Td>
+                      <Td>{info.firstname}</Td>
+                      <Td>{info.lastname}</Td>
+                      <Td>{info.department}</Td>
+                      <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>
+                      <Td>{info.start}</Td>
+                      <Td>{info.destination}</Td>
+                      <Td>{info.purpose}</Td>
+                      <Td>{info.cargo}</Td>
+                      <Td>{info.passengers}</Td>
+                      {adminRole === 'admin' ?
+                        <Td
+                          onClick={() => onOpen(info)}
+                          _hover={{ backgroundColor: "green" }}
+                          style={{ width: "1%" }}
+                        >
+                          <Center>
+                            <CheckIcon />
+                          </Center>
+                        </Td>
+                        :
+                        null}
+                    </Tr>
+
+                    :
+
+                    <Tr
+                      key={info.id}
+                      style={{
+                        backgroundColor: selectedRow === info.id ? "#c00000" : "",
+                      }}
+                      className={selectedRow === info.id ? "row" : ""}
+                    >
+                      <Td>{info.name}</Td>
+                      <Td>{info.department}</Td>
+                      <Td>
+                        {new Date(info.date).toLocaleDateString("en-GB", options)}
                       </Td>
-                      :
-                      null}
-                  </Tr>
+                      <Td>{info.description}</Td>
+                      <Td>{info.request_type}</Td>
+                      <Td>{info.status}</Td>
+                      {adminRole === 'admin' ?
+                        <Td
+                          onClick={() => onOpen(info)}
+                          _hover={{ backgroundColor: "green" }}
+                          style={{ width: "1%" }}
+                        >
+                          <Center>
+                            <CheckIcon />
+                          </Center>
+                        </Td>
+                        :
+                        null}
+                    </Tr>
+                  }
+
                 </Tbody>
               ))
             }
@@ -235,7 +280,7 @@ export default function Pending({ request }) {
                   {selectedTicket ? (
                     <>
                       Are you sure you want to take ownership of{" "}
-                      <Text as={"b"}>{selectedTicket.name}' s</Text> request??
+                      <Text as={"b"}>{selectedTicket.name || selectedTicket.firstname}' s</Text> request??
                     </>
                   ) : (
                     "No ticket selected"

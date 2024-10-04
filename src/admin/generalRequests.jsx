@@ -26,7 +26,7 @@ export default function General() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (request !== 'general' && request !== 'hardware') {
+        if (request !== 'general' && request !== 'hardware' && request !== 'transport') {
             navigate('/404')
             return
         }

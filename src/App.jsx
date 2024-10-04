@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import bread from './img/2bread.jpg'
 import help from './img/help.jpg'
+import transport from './img/IMG_1808.jpg'
 import { Link } from 'react-router-dom';
 import PHC from './img/PHC_Logo.png'
 
@@ -69,7 +70,7 @@ export default function App() {
               <Link to={'/transport'}>
                 <Center overflow="hidden" borderRadius={'25px'}>
                   <Image
-                    src={bread}
+                    src={transport}
                     borderRadius={'25px'}
                     w={{ base: '80%', md: '100%' }}
                     _hover={{ transform: 'scale(1.2)' }}
