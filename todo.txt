@@ -29,6 +29,7 @@ VERSION
 - making incorrect input fields red
 - updating bread price from admin center
 - requesting transport
+- updated picture for transport on home page 
 - viewing requests for transport on the admin side
 
 UNFIXED ISSUES

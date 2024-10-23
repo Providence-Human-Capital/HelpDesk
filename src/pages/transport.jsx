@@ -139,7 +139,7 @@ export default function Transport() {
                                     w={{ base: '100%', md: '500px' }}
                                     isRequired
                                 />
-                                <InputRightAddon>@providencehumancapital.com</InputRightAddon>
+                                <InputRightAddon fontSize={{ base: '10px', md: '16px' }} p={{ base: 1, md: 3 }}>@providencehumancapital.com</InputRightAddon>
                             </InputGroup>
                         </FormControl>
 
@@ -174,7 +174,7 @@ export default function Transport() {
                             <Flex w={'63%'} flexDirection={{ base: 'column', md: 'row' }}>
                                 <Box>From:</Box>
                                 <Spacer />
-                                <Box>To:</Box>
+                                <Box display={{ base: 'none', md: 'block' }}>To:</Box>
                             </Flex>
 
                             <Flex flexDirection={{ base: 'column', md: 'row' }}>
@@ -189,6 +189,8 @@ export default function Transport() {
                                     isRequired
                                 />
                                 <Spacer />
+
+                                <Box display={{ base: 'block', md: 'none' }} mt={2}>To:</Box>
 
                                 <Input type="text"
                                     placeholder="Enter destination"
@@ -230,6 +232,20 @@ export default function Transport() {
                             />
                         </FormControl>
 
+                        <FormControl id="additional" mt={5}>
+                            <FormLabel as='u' color={errors.additional ? 'red' : 'black'}>Additional Comments or Requests (Optional)</FormLabel>
+
+                            <Textarea type="additional"
+                                placeholder="Specify whether you would want to be picked up later or any other items that are specific to your needs"
+                                borderColor={errors.additional ? 'red' : '#bdbdbd'}
+                                focusBorderColor='lime'
+                                {...register('additional')}
+                                aria-invalid={errors.additional ? "true" : "false"}
+                                w={{ base: '100%', md: '800px' }}
+                                isRequired
+                            />
+                        </FormControl>
+
                         <Box mt={5}>
                             <Flex alignItems={'center'} justifyContent="space-between">
                                 <Text>Number of passengers</Text>
@@ -237,7 +253,7 @@ export default function Transport() {
                                 <NumberInput defaultValue={0} min={0} max={10} w={{ base: '60%', md: '30%' }} borderColor={'#bdbdbd'} focusBorderColor='lime' {...register('passengers')}>
                                     <InputGroup>
                                         <NumberInputField />
-                                        <InputRightAddon mr={5}>passenger(s)</InputRightAddon>
+                                        <InputRightAddon mr={6} fontSize={{ base: '10px', md: '16px' }}>passenger(s)</InputRightAddon>
                                     </InputGroup>
                                     <NumberInputStepper >
                                         <NumberIncrementStepper />

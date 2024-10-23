@@ -26,16 +26,18 @@ import {
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { CheckIcon } from "@chakra-ui/icons";
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { useAuthStore } from '../../store/authStore';
 
 
 export default function Pending({ request }) {
   // const [data, setData] = useState([])
   const [isOpen, setIsOpen] = useState(false);
+  const [isRejectOpen, setIsRejectOpen] = useState(false)
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [selectedRow, setSelectedRow] = useState("");
   const cancelRef = useRef();
+  const rejectRef = useRef();
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -77,9 +79,15 @@ export default function Pending({ request }) {
     setIsOpen(true);
   };
 
+  const onRejectOpen = (ticket) => {
+    setSelectedTicket(ticket);
+    setIsRejectOpen(true);
+  }
+
   const onClose = () => {
     setIsOpen(false);
     setSelectedTicket(null);
+    setIsRejectOpen(false)
   };
 
   const handleRowClick = (id) => {
@@ -90,29 +98,9 @@ export default function Pending({ request }) {
     }
   };
 
-  const fetchMutation = useMutation({
+  const updateMutation = useMutation({
     mutationFn: (update) => {
       return axios.put(`http://localhost:8888/${request}/pending/update`, update)
-      // .then((res) => {
-      //   toast({
-      //     title: "You have now taken ownership of the ticket",
-      //     description: "Ticket is now in progress",
-      //     status: "success",
-      //     duration: 4000,
-      //     isClosable: true,
-      //     position: "top-right",
-      //   });
-      // })
-      // .catch((err) => {
-      //   toast({
-      //     title: "Error",
-      //     description: err.response.data,
-      //     status: "error",
-      //     duration: 4000,
-      //     isClosable: true,
-      //     position: "top-right",
-      //   });
-      // })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pending"] });
@@ -141,12 +129,48 @@ export default function Pending({ request }) {
   const handleUpdate = () => {
     onClose();
 
-    fetchMutation.mutate({
+    updateMutation.mutate({
       id: selectedTicket.id,
-      officer: displayName,
+      // officer: displayName,
     });
 
   };
+
+  const handleReject = () => {
+    onClose();
+
+    rejectMutation.mutate({
+      id: selectedTicket.id,
+    });
+  }
+
+  const rejectMutation = useMutation({
+    mutationFn: (update) => {
+      return axios.put(`http://localhost:8888/${request}/pending/rejected`, update)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pending"] });
+      toast({
+        title: "You have rejected the request",
+        // description: "Ticket is now in progress",
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+      });
+      // queryClient.refetchQueries({ queryKey: ["pending"] });
+    },
+    onError: (err) => {
+      toast({
+        title: "Error",
+        description: err.response.data || "Failed to update the ticket",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+      });
+    }
+  });
 
   const options = {
     year: "2-digit",
@@ -179,8 +203,9 @@ export default function Pending({ request }) {
                   <Th>Purpose</Th>
                   <Th>Cargo</Th>
                   <Th>Passengers</Th>
-                  {/* <Th>Status</Th> */}
-                  <Th>Action</Th>
+                  <Th>Comments</Th>
+                  <Th>Approve</Th>
+                  <Th>Reject</Th>
                 </Tr>
                 :
                 <Tr>
@@ -211,6 +236,7 @@ export default function Pending({ request }) {
                       <Td>{info.purpose}</Td>
                       <Td>{info.cargo}</Td>
                       <Td>{info.passengers}</Td>
+                      <Td>{info.additional}</Td>
                       {adminRole === 'admin' ?
                         <Td
                           onClick={() => onOpen(info)}
@@ -219,6 +245,19 @@ export default function Pending({ request }) {
                         >
                           <Center>
                             <CheckIcon />
+                          </Center>
+                        </Td>
+                        :
+                        null}
+
+                      {adminRole === 'admin' ?
+                        <Td
+                          onClick={() => onRejectOpen(info)}
+                          _hover={{ backgroundColor: "red" }}
+                          style={{ width: "1%" }}
+                        >
+                          <Center>
+                            <CloseIcon />
                           </Center>
                         </Td>
                         :
@@ -274,12 +313,12 @@ export default function Pending({ request }) {
                 border={"1px solid white"}
                 color={"white"}
               >
-                <AlertDialogHeader>Take Ownership?</AlertDialogHeader>
+                <AlertDialogHeader>{request === 'transport' ? 'Approve Request' : 'Take Ownership?'}</AlertDialogHeader>
                 <AlertDialogCloseButton />
                 <AlertDialogBody>
                   {selectedTicket ? (
                     <>
-                      Are you sure you want to take ownership of{" "}
+                      Are you sure you want to approve{" "}
                       <Text as={"b"}>{selectedTicket.name || selectedTicket.firstname}' s</Text> request??
                     </>
                   ) : (
@@ -297,6 +336,41 @@ export default function Pending({ request }) {
                       handleUpdate();
                     }}
                   >
+                    Yes
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            {/* reject  */}
+            <AlertDialog
+              motionPreset='slideInBottom'
+              leastDestructiveRef={rejectRef}
+              onClose={onClose}
+              isOpen={isRejectOpen}
+              isCentered
+            >
+              <AlertDialogOverlay />
+
+              <AlertDialogContent bg={'#101010'} border={'1px solid white'} color={'white'}>
+                <AlertDialogHeader>Reject request</AlertDialogHeader>
+                <AlertDialogCloseButton />
+                <AlertDialogBody >
+                  {selectedTicket ? (
+                    <>
+                      Are you sure you want to deny <Text as={'b'}>{selectedTicket.name || selectedTicket.firstname}'s</Text> request??
+                    </>
+                  ) : (
+                    'No ticket selected'
+                  )}
+                </AlertDialogBody>
+                <AlertDialogFooter>
+                  <Button ref={rejectRef} onClick={onClose} colorScheme='red'>
+                    No
+                  </Button>
+                  <Button colorScheme='blue' ml={3} onClick={() => {
+                    handleReject()
+                  }}>
                     Yes
                   </Button>
                 </AlertDialogFooter>
