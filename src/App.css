@@ -1,11 +1,11 @@
 .general:hover {
     cursor: pointer;
-    background-color: #1c1c1c;
+    background-color: #1c1c2c;
 }
 
 .row:hover {
     /* cursor: pointer; */
-    background-color: #1c1c1c;
+    background-color: #1c1c2c;
 }
 
 .user:hover {

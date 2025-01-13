@@ -1,16 +1,19 @@
 const express = require('express')
 const cors = require('cors');
 const app = express()
+const cookieParser = require('cookie-parser')
 const port = 8888
 require('dotenv').config();
 
 app.use(express.json());
-app.use(cors())
-// app.use(cors({
-//     origin: ['http://localhost:5173'],
-//     methods: ['GET', 'POST', 'PUT'],
-//     credentials: true
-// }))
+// app.use(cors())
+app.use(cookieParser())
+app.use(cors({
+    origin: ['http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}))
 
 // const sender = process.env.EMAIL_NAME
 // const pass = process.env.PASS

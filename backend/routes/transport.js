@@ -53,6 +53,30 @@ router.get('/pending', async (req, res) => {
     });
 })
 
+router.get('/completed', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
+
+    connect.query('SELECT * FROM transport WHERE status = "approved"', (error, results) => {
+        if (error) {
+            res.status(500).send('Error fetching data');
+            return;
+        }
+        res.send(results);
+    });
+})
+
+router.get('/unfinished', async (req, res) => {
+    if (!req) { return res.status(400).send('There has been a problem') }
+
+    connect.query('SELECT * FROM transport WHERE status = "rejected"', (error, results) => {
+        if (error) {
+            res.status(500).send('Error fetching data');
+            return;
+        }
+        res.send(results);
+    });
+})
+
 router.put('/pending/update', async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body

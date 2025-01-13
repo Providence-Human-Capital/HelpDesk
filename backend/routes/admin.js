@@ -4,6 +4,7 @@ const connect = require('../database')
 const bcrypt = require('bcrypt')
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const sessionVerification = require('../middleware/sessionVerification')
 
 const sessionStore = new MySQLStore({}, connect);
 
@@ -14,10 +15,12 @@ router.use(session({
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
+    name: 'session_id',
     cookie: {
         // maxAge: 1000 * 60 * 60 * 24, // Session expires in 1 day
-        maxAge: 2 * 60 * 1000,
-        secure: false // Set to true if using HTTPS
+        maxAge: 2 * 60 * 60000,
+        secure: false, // Set to true if using HTTPS
+        httpOnly: true,
     }
 }));
 
@@ -54,6 +57,11 @@ router.post('/login', async (req, res) => {
                         }
                     })
 
+                    req.session.username = username
+                    req.session.visited = true // to avoid having multiple sessions for the same user
+                    // res.cookie('cookie', 'working', {maxAge: 6000})
+
+
                     res.send(results)
                 } else {
                     res.status(201);
@@ -67,7 +75,8 @@ router.post('/login', async (req, res) => {
     })
 })
 
-router.post('/add', async (req, res) => {
+
+router.post('/add', sessionVerification, async (req, res) => {
     if (!req) { return res.status(400) }
 
     const { username, email, password, role, created } = req.body
@@ -76,7 +85,15 @@ router.post('/add', async (req, res) => {
 
     const last_login = ''
 
-    try {
+    connect.query('SELECT * FROM admin WHERE username = ? OR email = ?', [username, email], async(error, results) =>{
+        if(error){
+            return res.status(404).send('Error adding a new user');
+        }else if(results){
+            return res.status(404).send('That username or email is already in use')
+        }else{
+
+        try {
+        
         const hashPass = await bcrypt.hash(password, 10);
 
         connect.query('INSERT INTO admin (username, email, password, role, last_login, created_by, created_date) VALUES (?, ?, ?, ?, ?, ?, ?)', [username, email, hashPass, role, last_login, created, date], (error, results) => {
@@ -89,33 +106,40 @@ router.post('/add', async (req, res) => {
     } catch (error) {
         console.error('Error hashing password:', error);
         res.status(500).send('Server error');
-    }
+    }  
+        }
+    })
+
+    
 
 })
 
-router.post('/logout', (req, res) => {
+
+router.post('/logout', sessionVerification, (req, res) => {
+
+    console.log(req.headers)
+    
     req.session.destroy(err => {
         if (err) {
             return res.status(500).send('Error logging out.');
         }
-        res.clearCookie('session_user');
-        res.send('Logged out successfully!');
+        console.log(req.session)
+        res.clearCookie('session_id');
+        // res.send('Logged out successfully!');
+
     });
 
-    console.log(req.session)
 })
 
-router.get('/test', (req, res) => {
-    // if (req.session.user) {
-    //     res.send(`Welcome back, ${req.session.user}!`);
-    //     console.log(req.session.username)
-    // } else {
-    //     res.status(401).send('Please log in first.');
-    //     console.log(req.session.username)
-    // }
 
-    res.send(req.session.user)
-    console.log(req.session.user)
+
+router.get('/test', sessionVerification, (req, res) => {
+
+    // res.send(req.session.user)
+    // console.log(req.cookies, 'coooooookie')
+    // console.log(req.session.username)
+    console.log(req.headers.cookie)
+    res.status(200)
 })
 
 module.exports = router

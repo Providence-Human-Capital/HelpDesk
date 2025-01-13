@@ -27,22 +27,27 @@ import {
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { RepeatIcon } from "@chakra-ui/icons";
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from "../../store/authStore";
 
 export default function Finished({ request }) {
-  const [dbMessage, setdbMessage] = useState('')
+  const [dbMessage, setdbMessage] = useState("");
   const [isReverseOpen, setIsReverseOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [selectedRow, setSelectedRow] = useState("");
   const cancelReverseRef = useRef();
   const toast = useToast();
-  const queryClient = useQueryClient()
-  const adminRole = useAuthStore((state) => state.auth.user.role)
+  const queryClient = useQueryClient();
+  const adminRole = useAuthStore((state) => state.auth.user.role);
 
-  const { data: data, error, refetch, } = useQuery({
+  const {
+    data: data,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["completed"],
     queryFn: () =>
-      axios.get(`http://localhost:8888/${request}/completed`)
+      axios
+        .get(`http://localhost:8888/${request}/completed`)
         .then((res) => res.data)
         .catch((err) => {
           toast({
@@ -53,7 +58,7 @@ export default function Finished({ request }) {
             isClosable: true,
             position: "top-right",
           });
-        })
+        }),
   });
 
   // if (error)
@@ -77,10 +82,12 @@ export default function Finished({ request }) {
     setSelectedTicket(null);
   };
 
-
   const reversalMutation = useMutation({
     mutationFn: (reverse) => {
-      return axios.put(`http://localhost:8888/${request}/completed/reverse`, reverse)
+      return axios.put(
+        `http://localhost:8888/${request}/completed/reverse`,
+        reverse
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["completed"] });
@@ -103,9 +110,8 @@ export default function Finished({ request }) {
         isClosable: true,
         position: "top-right",
       });
-    }
-  })
-
+    },
+  });
 
   const handleReversal = () => {
     onClose();
@@ -137,7 +143,13 @@ export default function Finished({ request }) {
   return (
     <>
       <Box mt={4}>
-        <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
+        <Text textAlign={"right"}>
+          {data == 0
+            ? "No Tickets to display"
+            : data
+            ? "Count: " + data.length
+            : null}
+        </Text>
 
         <TableContainer border={"1px solid #4c4c4c"} mt={2}>
           <Table>
@@ -150,11 +162,11 @@ export default function Finished({ request }) {
                 <Th>Description</Th>
                 <Th>Type</Th>
                 <Th>Status</Th>
-                <Th>IT officer</Th>
-                {adminRole === 'admin' ?
+                {request === "transport" ? null : <Th>it officer</Th>}
+
+                {request === "transport" ? null : adminRole === "admin" ? (
                   <Th>Reverse</Th>
-                  :
-                  null}
+                ) : null}
               </Tr>
             </Thead>
             {
@@ -167,7 +179,7 @@ export default function Finished({ request }) {
                   <Tr
                     key={info.id}
                     style={{
-                      backgroundColor: selectedRow === info.id ? "#c00000" : "",
+                      backgroundColor: selectedRow === info.id ? "#0006cf" : "",
                     }}
                     className={selectedRow === info.id ? "row" : ""}
                   >
@@ -185,8 +197,11 @@ export default function Finished({ request }) {
                     <Td>{info.description}</Td>
                     <Td>{info.request_type}</Td>
                     <Td>{info.status}</Td>
-                    <Td>{info.it_officer}</Td>
-                    {adminRole === 'admin' ?
+
+                    {request === "transport" ? null : (
+                      <Td>{info.it_officer}</Td>
+                    )}
+                    {request === "transport" ? null : adminRole === "admin" ? (
                       <Td
                         onClick={() => onReverseOpen(info)}
                         _hover={{ backgroundColor: "blue" }}
@@ -196,8 +211,7 @@ export default function Finished({ request }) {
                           <RepeatIcon />
                         </Center>
                       </Td>
-                      :
-                      null}
+                    ) : null}
                   </Tr>
                 </Tbody>
               ))

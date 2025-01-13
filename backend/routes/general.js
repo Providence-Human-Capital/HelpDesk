@@ -4,11 +4,30 @@ const connect = require('../database')
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
+const sessionVerification = require('../middleware/sessionVerification')
+
+const sessionStore = new MySQLStore({}, connect);
 
 // const sender = process.env.EMAIL_NAME
 // const pass = process.env.PASS
 // const reciever = process.env.EMAIL_RECIEVER
 // const service = process.env.EMAIL_SERVICE
+
+router.use(session({
+    key: 'session_user',
+    secret: 'your-secret-key',
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    name: 'session_id',
+    cookie: {
+        // maxAge: 1000 * 60 * 60 * 24, // Session expires in 1 day
+        maxAge: 2 * 60 * 60000,
+        secure: false, // Set to true if using HTTPS
+        httpOnly: true,
+    }
+}));
 
 // creating a ticket
 router.post('/add', async (req, res) => {
@@ -72,6 +91,7 @@ router.post('/add', async (req, res) => {
 //getting requests
 
 router.get('/all', async (req, res) => {
+    // console.log(req.session.username)
     if (!req) { return res.status(400).send('There has been a problem') } // console.log(req.session)
     connect.query('SELECT * FROM general', (error, results) => {
         if (error) {

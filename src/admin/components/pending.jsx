@@ -27,13 +27,12 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import { useAuthStore } from '../../store/authStore';
-
+import { useAuthStore } from "../../store/authStore";
 
 export default function Pending({ request }) {
   // const [data, setData] = useState([])
   const [isOpen, setIsOpen] = useState(false);
-  const [isRejectOpen, setIsRejectOpen] = useState(false)
+  const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [selectedRow, setSelectedRow] = useState("");
   const cancelRef = useRef();
@@ -41,10 +40,9 @@ export default function Pending({ request }) {
   const toast = useToast();
   const queryClient = useQueryClient();
 
-  const username = useAuthStore((state) => state.auth)
-  const displayName = username.user.username
-  const adminRole = useAuthStore((state) => state.auth.user.role)
-
+  const username = useAuthStore((state) => state.auth);
+  const displayName = username.user.username;
+  const adminRole = useAuthStore((state) => state.auth.user.role);
 
   const { data: data, error } = useQuery({
     queryKey: ["pending"],
@@ -61,7 +59,7 @@ export default function Pending({ request }) {
             isClosable: true,
             position: "top-right",
           });
-        })
+        }),
   });
 
   // if (error)
@@ -82,12 +80,12 @@ export default function Pending({ request }) {
   const onRejectOpen = (ticket) => {
     setSelectedTicket(ticket);
     setIsRejectOpen(true);
-  }
+  };
 
   const onClose = () => {
     setIsOpen(false);
     setSelectedTicket(null);
-    setIsRejectOpen(false)
+    setIsRejectOpen(false);
   };
 
   const handleRowClick = (id) => {
@@ -100,7 +98,10 @@ export default function Pending({ request }) {
 
   const updateMutation = useMutation({
     mutationFn: (update) => {
-      return axios.put(`http://localhost:8888/${request}/pending/update`, update)
+      return axios.put(
+        `http://localhost:8888/${request}/pending/update`,
+        update
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pending"] });
@@ -123,7 +124,7 @@ export default function Pending({ request }) {
         isClosable: true,
         position: "top-right",
       });
-    }
+    },
   });
 
   const handleUpdate = () => {
@@ -133,7 +134,6 @@ export default function Pending({ request }) {
       id: selectedTicket.id,
       // officer: displayName,
     });
-
   };
 
   const handleReject = () => {
@@ -142,11 +142,14 @@ export default function Pending({ request }) {
     rejectMutation.mutate({
       id: selectedTicket.id,
     });
-  }
+  };
 
   const rejectMutation = useMutation({
     mutationFn: (update) => {
-      return axios.put(`http://localhost:8888/${request}/pending/rejected`, update)
+      return axios.put(
+        `http://localhost:8888/${request}/pending/rejected`,
+        update
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pending"] });
@@ -169,7 +172,7 @@ export default function Pending({ request }) {
         isClosable: true,
         position: "top-right",
       });
-    }
+    },
   });
 
   const options = {
@@ -186,12 +189,18 @@ export default function Pending({ request }) {
   return (
     <>
       <Box mt={4}>
-        <Text textAlign={'right'}>{data == 0 ? 'No Tickets to display' : data ? 'Count: ' + data.length : null}</Text>
+        <Text textAlign={"right"}>
+          {data == 0
+            ? "No Tickets to display"
+            : data
+            ? "Count: " + data.length
+            : null}
+        </Text>
 
         <TableContainer border={"1px solid #4c4c4c"} mt={2}>
           <Table>
             <Thead>
-              {request === 'transport' ?
+              {request === "transport" ? (
                 <Tr>
                   <Th>ID</Th>
                   <Th>Firstname</Th>
@@ -207,7 +216,7 @@ export default function Pending({ request }) {
                   <Th>Approve</Th>
                   <Th>Reject</Th>
                 </Tr>
-                :
+              ) : (
                 <Tr>
                   <Th>ID</Th>
                   <Th>Name</Th>
@@ -218,87 +227,86 @@ export default function Pending({ request }) {
                   {/* <Th>Status</Th> */}
                   <Th>Action</Th>
                 </Tr>
-              }
+              )}
             </Thead>
 
-            {
-              data?.map((info) => (
-                <Tbody className="row" onClick={() => handleRowClick(info.id)}>
-                  {request === 'transport' ?
-                    <Tr style={{ backgroundColor: selectedRow === info.id ? '#c00000' : '' }} className={selectedRow === info.id ? 'row' : ''}>
-                      <Td>{info.id}</Td>
-                      <Td>{info.firstname}</Td>
-                      <Td>{info.lastname}</Td>
-                      <Td>{info.department}</Td>
-                      <Td>{new Date(info.date).toLocaleDateString('en-GB', options)}</Td>
-                      <Td>{info.start}</Td>
-                      <Td>{info.destination}</Td>
-                      <Td>{info.purpose}</Td>
-                      <Td>{info.cargo}</Td>
-                      <Td>{info.passengers}</Td>
-                      <Td>{info.additional}</Td>
-                      {adminRole === 'admin' ?
-                        <Td
-                          onClick={() => onOpen(info)}
-                          _hover={{ backgroundColor: "green" }}
-                          style={{ width: "1%" }}
-                        >
-                          <Center>
-                            <CheckIcon />
-                          </Center>
-                        </Td>
-                        :
-                        null}
-
-                      {adminRole === 'admin' ?
-                        <Td
-                          onClick={() => onRejectOpen(info)}
-                          _hover={{ backgroundColor: "red" }}
-                          style={{ width: "1%" }}
-                        >
-                          <Center>
-                            <CloseIcon />
-                          </Center>
-                        </Td>
-                        :
-                        null}
-                    </Tr>
-
-                    :
-
-                    <Tr
-                      key={info.id}
-                      style={{
-                        backgroundColor: selectedRow === info.id ? "#c00000" : "",
-                      }}
-                      className={selectedRow === info.id ? "row" : ""}
-                    >
-                      <Td>{info.name}</Td>
-                      <Td>{info.department}</Td>
-                      <Td>
-                        {new Date(info.date).toLocaleDateString("en-GB", options)}
+            {data?.map((info) => (
+              <Tbody className="row" onClick={() => handleRowClick(info.id)}>
+                {request === "transport" ? (
+                  <Tr
+                    style={{
+                      backgroundColor: selectedRow === info.id ? "#0006cf" : "",
+                    }}
+                    className={selectedRow === info.id ? "row" : ""}
+                  >
+                    <Td>{info.id}</Td>
+                    <Td>{info.firstname}</Td>
+                    <Td>{info.lastname}</Td>
+                    <Td>{info.department}</Td>
+                    <Td>
+                      {new Date(info.date).toLocaleDateString("en-GB", options)}
+                    </Td>
+                    <Td>{info.start}</Td>
+                    <Td>{info.destination}</Td>
+                    <Td>{info.purpose}</Td>
+                    <Td>{info.cargo}</Td>
+                    <Td>{info.passengers}</Td>
+                    <Td>{info.additional}</Td>
+                    {adminRole === "admin" ? (
+                      <Td
+                        onClick={() => onOpen(info)}
+                        _hover={{ backgroundColor: "green" }}
+                        style={{ width: "1%" }}
+                      >
+                        <Center>
+                          <CheckIcon />
+                        </Center>
                       </Td>
-                      <Td>{info.description}</Td>
-                      <Td>{info.request_type}</Td>
-                      <Td>{info.status}</Td>
-                      {adminRole === 'admin' ?
-                        <Td
-                          onClick={() => onOpen(info)}
-                          _hover={{ backgroundColor: "green" }}
-                          style={{ width: "1%" }}
-                        >
-                          <Center>
-                            <CheckIcon />
-                          </Center>
-                        </Td>
-                        :
-                        null}
-                    </Tr>
-                  }
+                    ) : null}
 
-                </Tbody>
-              ))
-            }
+                    {adminRole === "admin" ? (
+                      <Td
+                        onClick={() => onRejectOpen(info)}
+                        _hover={{ backgroundColor: "red" }}
+                        style={{ width: "1%" }}
+                      >
+                        <Center>
+                          <CloseIcon />
+                        </Center>
+                      </Td>
+                    ) : null}
+                  </Tr>
+                ) : (
+                  <Tr
+                    key={info.id}
+                    style={{
+                      backgroundColor: selectedRow === info.id ? "#0006cf" : "",
+                    }}
+                    className={selectedRow === info.id ? "row" : ""}
+                  >
+                    <Td>{info.name}</Td>
+                    <Td>{info.department}</Td>
+                    <Td>
+                      {new Date(info.date).toLocaleDateString("en-GB", options)}
+                    </Td>
+                    <Td>{info.description}</Td>
+                    <Td>{info.request_type}</Td>
+                    <Td>{info.status}</Td>
+                    {adminRole === "admin" ? (
+                      <Td
+                        onClick={() => onOpen(info)}
+                        _hover={{ backgroundColor: "green" }}
+                        style={{ width: "1%" }}
+                      >
+                        <Center>
+                          <CheckIcon />
+                        </Center>
+                      </Td>
+                    ) : null}
+                  </Tr>
+                )}
+              </Tbody>
+            ))}
             <AlertDialog
               motionPreset="slideInBottom"
               leastDestructiveRef={cancelRef}
@@ -313,13 +321,20 @@ export default function Pending({ request }) {
                 border={"1px solid white"}
                 color={"white"}
               >
-                <AlertDialogHeader>{request === 'transport' ? 'Approve Request' : 'Take Ownership?'}</AlertDialogHeader>
+                <AlertDialogHeader>
+                  {request === "transport"
+                    ? "Approve Request"
+                    : "Take Ownership?"}
+                </AlertDialogHeader>
                 <AlertDialogCloseButton />
                 <AlertDialogBody>
                   {selectedTicket ? (
                     <>
                       Are you sure you want to approve{" "}
-                      <Text as={"b"}>{selectedTicket.name || selectedTicket.firstname}' s</Text> request??
+                      <Text as={"b"}>
+                        {selectedTicket.name || selectedTicket.firstname}' s
+                      </Text>{" "}
+                      request??
                     </>
                   ) : (
                     "No ticket selected"
@@ -344,7 +359,7 @@ export default function Pending({ request }) {
 
             {/* reject  */}
             <AlertDialog
-              motionPreset='slideInBottom'
+              motionPreset="slideInBottom"
               leastDestructiveRef={rejectRef}
               onClose={onClose}
               isOpen={isRejectOpen}
@@ -352,25 +367,37 @@ export default function Pending({ request }) {
             >
               <AlertDialogOverlay />
 
-              <AlertDialogContent bg={'#101010'} border={'1px solid white'} color={'white'}>
+              <AlertDialogContent
+                bg={"#101010"}
+                border={"1px solid white"}
+                color={"white"}
+              >
                 <AlertDialogHeader>Reject request</AlertDialogHeader>
                 <AlertDialogCloseButton />
-                <AlertDialogBody >
+                <AlertDialogBody>
                   {selectedTicket ? (
                     <>
-                      Are you sure you want to deny <Text as={'b'}>{selectedTicket.name || selectedTicket.firstname}'s</Text> request??
+                      Are you sure you want to deny{" "}
+                      <Text as={"b"}>
+                        {selectedTicket.name || selectedTicket.firstname}'s
+                      </Text>{" "}
+                      request??
                     </>
                   ) : (
-                    'No ticket selected'
+                    "No ticket selected"
                   )}
                 </AlertDialogBody>
                 <AlertDialogFooter>
-                  <Button ref={rejectRef} onClick={onClose} colorScheme='red'>
+                  <Button ref={rejectRef} onClick={onClose} colorScheme="red">
                     No
                   </Button>
-                  <Button colorScheme='blue' ml={3} onClick={() => {
-                    handleReject()
-                  }}>
+                  <Button
+                    colorScheme="blue"
+                    ml={3}
+                    onClick={() => {
+                      handleReject();
+                    }}
+                  >
                     Yes
                   </Button>
                 </AlertDialogFooter>
