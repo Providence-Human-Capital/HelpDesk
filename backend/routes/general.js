@@ -32,7 +32,7 @@ router.use(session({
 router.post('/add', async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
-    const { name, department, description, type, anydesk } = req.body
+    const { firstname, lastname, department, description, type, anydesk } = req.body
 
     const date = new Date()
 
@@ -40,7 +40,7 @@ router.post('/add', async (req, res) => {
 
     const dangerousPattern = /[<>\/\\\|:"'*?;]/g
 
-    if (dangerousPattern.test(name) || dangerousPattern.test(department) || dangerousPattern.test(description)) {
+    if (dangerousPattern.test(firstname) || dangerousPattern.test(lastname) || dangerousPattern.test(department) || dangerousPattern.test(description)) {
         return res.status(400).send('Your input has invalid characters')
     }
 
@@ -48,8 +48,8 @@ router.post('/add', async (req, res) => {
         // Insert into database
         await new Promise((resolve, reject) => {
             connect.query(
-                'INSERT INTO general (name, department, date, description, request_type, status, anydesk) VALUES (?,?,?,?,?,?,?)',
-                [name, department, date, description, type, status, anydesk],
+                'INSERT INTO general (firstname, lastname, department, date, description, request_type, status, anydesk) VALUES (?,?,?,?,?,?,?,?)',
+                [firstname, lastname, department, date, description, type, status, anydesk],
                 (error, results) => {
                     if (error) return reject(error);
                     resolve(results);
@@ -58,27 +58,27 @@ router.post('/add', async (req, res) => {
         });
 
         // Send email
-        // const transporter = nodemailer.createTransport({
-        //     service: process.env.EMAIL_SERVICE,
-        //     auth: {
-        //         user: process.env.EMAIL_NAME,  // Use environment variables
-        //         pass: process.env.EMAIL_PASS,
-        //     },
-        // });
+        const transporter = nodemailer.createTransport({
+            service: process.env.EMAIL_SERVICE,
+            auth: {
+                user: process.env.EMAIL_NAME,  // Use environment variables
+                pass: process.env.EMAIL_PASS,
+            },
+        });
 
-        // const mailOptions = {
-        //     from: process.env.EMAIL_NAME,
-        //     to: process.env.EMAIL_RECIEVER,
-        //     subject: 'New Ticket',
-        //     text: `Hi Team, \n\nThere is a new ticket from ${name} (${department}), their request description is:\n\n${description}\n\nRegards \nTicket Alerts`,
-        // };
+        const mailOptions = {
+            from: process.env.EMAIL_NAME,
+            to: process.env.EMAIL_RECIEVER,
+            subject: 'New Ticket',
+            text: `Hi Team, \n\nThere is a new ticket from ${firstname} ${lastname} (${department}), their request description is:\n\n${description}\n\nRegards \nTicket Alerts`,
+        };
 
-        // await new Promise((resolve, reject) => {
-        //     transporter.sendMail(mailOptions, (error, info) => {
-        //         if (error) return reject(error);
-        //         resolve(info);
-        //     });
-        // });
+        await new Promise((resolve, reject) => {
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) return reject(error);
+                resolve(info);
+            });
+        });
 
         res.status(200).send('Data inserted and email sent successfully');
     } catch (error) {
