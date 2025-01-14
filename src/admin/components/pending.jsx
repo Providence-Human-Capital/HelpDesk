@@ -28,6 +28,7 @@ import axios from "axios";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { useAuthStore } from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 export default function Pending({ request }) {
   // const [data, setData] = useState([])
@@ -38,19 +39,28 @@ export default function Pending({ request }) {
   const cancelRef = useRef();
   const rejectRef = useRef();
   const toast = useToast();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const username = useAuthStore((state) => state.auth);
   const displayName = username.user.username;
   const adminRole = useAuthStore((state) => state.auth.user.role);
+  const logoutAuthUser = useAuthStore((state) => state.logoutAuthUser);
 
   const { data: data, error } = useQuery({
     queryKey: ["pending"],
     queryFn: () =>
       axios
-        .get(`http://localhost:8888/${request}/pending`)
+        .get(`http://localhost:8888/${request}/pending`, {
+          withCredentials: true,
+        })
         .then((res) => res.data)
         .catch((err) => {
+          if (err.response.status === 401) {
+            logoutAuthUser();
+            navigate("/admin");
+            return;
+          }
           toast({
             title: "Error",
             description: err.response.data,
@@ -100,7 +110,8 @@ export default function Pending({ request }) {
     mutationFn: (update) => {
       return axios.put(
         `http://localhost:8888/${request}/pending/update`,
-        update
+        update,
+        { withCredentials: true }
       );
     },
     onSuccess: () => {
@@ -116,6 +127,11 @@ export default function Pending({ request }) {
       // queryClient.refetchQueries({ queryKey: ["pending"] });
     },
     onError: (err) => {
+      if (err.response.status === 401) {
+        logoutAuthUser();
+        navigate("/admin");
+        return;
+      }
       toast({
         title: "Error",
         description: err.response.data || "Failed to update the ticket",
@@ -148,7 +164,8 @@ export default function Pending({ request }) {
     mutationFn: (update) => {
       return axios.put(
         `http://localhost:8888/${request}/pending/rejected`,
-        update
+        update,
+        { withCredentials: true }
       );
     },
     onSuccess: () => {
@@ -164,6 +181,11 @@ export default function Pending({ request }) {
       // queryClient.refetchQueries({ queryKey: ["pending"] });
     },
     onError: (err) => {
+      if (err.response.status === 401) {
+        logoutAuthUser();
+        navigate("/admin");
+        return;
+      }
       toast({
         title: "Error",
         description: err.response.data || "Failed to update the ticket",
@@ -202,7 +224,7 @@ export default function Pending({ request }) {
             <Thead>
               {request === "transport" ? (
                 <Tr>
-                  <Th>ID</Th>
+                  {/* <Th>ID</Th> */}
                   <Th>Firstname</Th>
                   <Th>Lastname</Th>
                   <Th>Department</Th>
@@ -218,13 +240,13 @@ export default function Pending({ request }) {
                 </Tr>
               ) : (
                 <Tr>
-                  <Th>ID</Th>
+                  {/* <Th>ID</Th> */}
                   <Th>Name</Th>
                   <Th>Department</Th>
                   <Th>Date</Th>
                   <Th>Description</Th>
                   <Th>Type</Th>
-                  {/* <Th>Status</Th> */}
+                  <Th>Status</Th>
                   <Th>Action</Th>
                 </Tr>
               )}
@@ -239,7 +261,7 @@ export default function Pending({ request }) {
                     }}
                     className={selectedRow === info.id ? "row" : ""}
                   >
-                    <Td>{info.id}</Td>
+                    {/* <Td>{info.id}</Td> */}
                     <Td>{info.firstname}</Td>
                     <Td>{info.lastname}</Td>
                     <Td>{info.department}</Td>

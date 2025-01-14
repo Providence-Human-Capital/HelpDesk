@@ -33,6 +33,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { WarningTwoIcon } from "@chakra-ui/icons";
 import Loader from "../components/loader";
+import { useAuthStore } from "../store/authStore";
 
 export default function AdminBread() {
   const [disabled, setDisabled] = useState(true);
@@ -46,6 +47,8 @@ export default function AdminBread() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const logoutAuthUser = useAuthStore((state) => state.logoutAuthUser);
+
   let { data: breadPrice, error } = useQuery({
     queryKey: ["bread"],
     queryFn: () =>
@@ -53,6 +56,11 @@ export default function AdminBread() {
         .get("http://localhost:8888/bread/price")
         .then((res) => res.data)
         .catch((err) => {
+          if (err.response.status === 401) {
+            logoutAuthUser();
+            navigate("/admin");
+            return;
+          }
           toast({
             title: "Error",
             description: err.response.data || "An error occurred",
@@ -83,6 +91,11 @@ export default function AdminBread() {
         });
       })
       .catch((err) => {
+        if (err.response.status === 401) {
+          logoutAuthUser();
+          navigate("/admin");
+          return;
+        }
         toast({
           title: "Error updating ",
           description:

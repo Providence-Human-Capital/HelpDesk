@@ -1,15 +1,9 @@
 TODO
 
 - authenticate admin when trying to add a new one(now only admins can add more)
-- hardware / email / transfer backend route
-*** sessions/ tokens
 - admin adding ticket in background
 - admin change roles
-*** loaders throughout app (so far for user side)
 - graphql
-
-IDEAS
-- asset register management tied with transfer requests
 
 VERSION 
 - updated department name from health to health & wellness
@@ -33,12 +27,11 @@ VERSION
 - updated ui colors for admin side
 - remove action buttons on rejected/approved sections for transport
 - initialization of session/cookies and the middleware
+- conditional rendering for transport requests dashboard
+- logging user out when session expires after set time  
 
 UNFIXED ISSUES
-- not rerouting when a non admin tries to access the admin side
-- post requests not sending headers which is affecting the cookie verification process
-- globalized session and cookie for consistency
-- conditional rendering for transport requests dashboard
+- not rerouting when a non admin tries to access the admin side when hosted on xampp
 - add date of approval/rejection in dashboard
 - split fullname field into first and lastname for general request form
 

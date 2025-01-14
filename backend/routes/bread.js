@@ -6,6 +6,7 @@ const path = require('path');
 const xlsx = require('xlsx');
 const cron = require('node-cron');
 const axios = require('axios')
+const sessionVerification = require('../middleware/sessionVerification')
 const { exec } = require('child_process');
 
 const options = {
@@ -25,7 +26,7 @@ const monthFileOptions = {
 }
 
 
-router.post('/add', async (req, res) => {
+router.post('/add',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
     const { empNumber, firstname, lastname, department, white, brown, wholewheat } = req.body
@@ -81,7 +82,7 @@ router.post('/add', async (req, res) => {
     })
 })
 
-router.get('/price', async (req, res) => {
+router.get('/price',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem ') }
 
     connect.query('SELECT * FROM bread_pricing', (error, results) => {
@@ -94,7 +95,7 @@ router.get('/price', async (req, res) => {
     })
 })
 
-router.put('/price/change', async (req, res) => {
+router.put('/price/change',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem ') }
 
     const { breadPrice } = req.body

@@ -28,6 +28,7 @@ import axios from "axios";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useAuthStore } from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 export default function Unfinished({ request }) {
   // const [data, setData] = useState([])
@@ -37,18 +38,27 @@ export default function Unfinished({ request }) {
   const cancelRef = useRef();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const username = useAuthStore((state) => state.auth);
   const displayName = username.user.username;
   const adminRole = useAuthStore((state) => state.auth.user.role);
+  const logoutAuthUser = useAuthStore((state) => state.logoutAuthUser);
 
   const { data: data, error } = useQuery({
     queryKey: ["unfinished"],
     queryFn: () =>
       axios
-        .get(`http://localhost:8888/${request}/unfinished`)
+        .get(`http://localhost:8888/${request}/unfinished`, {
+          withCredentials: true,
+        })
         .then((res) => res.data)
         .catch((err) => {
+          if (err.response.status === 401) {
+            logoutAuthUser();
+            navigate("/admin");
+            return;
+          }
           toast({
             title: "Error",
             description: err.response.data,
@@ -92,7 +102,8 @@ export default function Unfinished({ request }) {
     mutationFn: (update) => {
       return axios.put(
         `http://localhost:8888/${request}/unfinished/update`,
-        update
+        update,
+        { withCredentials: true }
       );
       // .then((res) => {
       //   toast({
@@ -128,6 +139,11 @@ export default function Unfinished({ request }) {
       // queryClient.refetchQueries({ queryKey: ["pending"] });
     },
     onError: (err) => {
+      if (err.response.status === 401) {
+        logoutAuthUser();
+        navigate("/admin");
+        return;
+      }
       toast({
         title: "Error",
         description: err.response.data || "Failed to update the ticket",
@@ -173,59 +189,88 @@ export default function Unfinished({ request }) {
         <TableContainer border={"1px solid #4c4c4c"} mt={2}>
           <Table>
             <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Department</Th>
-                <Th>Date of Applicaton</Th>
-                <Th>Date Accepted</Th>
-                <Th>Description</Th>
-                <Th>Type</Th>
-                <Th>Status</Th>
-                {request === "transport" ? null : <Th>it officer</Th>}
-
-                {request === "transport" ? null : adminRole === "admin" ? (
+              {request === "transport" ? (
+                <Tr>
+                  {/* <Th>ID</Th> */}
+                  <Th>Firstname</Th>
+                  <Th>Lastname</Th>
+                  <Th>Department</Th>
+                  <Th>Date</Th>
+                  <Th>Start</Th>
+                  <Th>Destination</Th>
+                  <Th>Purpose</Th>
+                  <Th>Cargo</Th>
+                  <Th>Passengers</Th>
+                  <Th>Comments</Th>
+                </Tr>
+              ) : (
+                <Tr>
+                  {/* <Th>ID</Th> */}
+                  <Th>Name</Th>
+                  <Th>Department</Th>
+                  <Th>Date</Th>
+                  <Th>Description</Th>
+                  <Th>Type</Th>
+                  <Th>Status</Th>
+                  <Th>It Officer</Th>
                   <Th>Finish</Th>
-                ) : null}
-              </Tr>
+                </Tr>
+              )}
             </Thead>
 
             {data?.map((info) => (
               <Tbody className="row" onClick={() => handleRowClick(info.id)}>
-                <Tr
-                  key={info.id}
-                  style={{
-                    backgroundColor: selectedRow === info.id ? "#0006cf" : "",
-                  }}
-                  className={selectedRow === info.id ? "row" : ""}
-                >
-                  <Td>{info.name}</Td>
-                  <Td>{info.department}</Td>
-                  <Td>
-                    {new Date(info.date).toLocaleDateString("en-GB", options)}
-                  </Td>
-                  <Td>
-                    {new Date(info.action_date).toLocaleDateString(
-                      "en-GB",
-                      options
-                    )}
-                  </Td>
-                  <Td>{info.description}</Td>
-                  <Td>{info.request_type}</Td>
-                  <Td>{info.status}</Td>
-                  {request === "transport" ? null : <Td>{info.it_officer}</Td>}
-
-                  {request === "transport" ? null : adminRole === "admin" ? (
-                    <Td
-                      onClick={() => onOpen(info)}
-                      _hover={{ backgroundColor: "green" }}
-                      style={{ width: "1%" }}
-                    >
-                      <Center>
-                        <CheckIcon />
-                      </Center>
+                {request === "transport" ? (
+                  <Tr
+                    key={info.id}
+                    style={{
+                      backgroundColor: selectedRow === info.id ? "#0006cf" : "",
+                    }}
+                    className={selectedRow === info.id ? "row" : ""}
+                  >
+                    <Td>{info.firstname}</Td>
+                    <Td>{info.lastname}</Td>
+                    <Td>{info.department}</Td>
+                    <Td>
+                      {new Date(info.date).toLocaleDateString("en-GB", options)}
                     </Td>
-                  ) : null}
-                </Tr>
+                    <Td>{info.start}</Td>
+                    <Td>{info.destination}</Td>
+                    <Td>{info.purpose}</Td>
+                    <Td>{info.cargo}</Td>
+                    <Td>{info.passengers}</Td>
+                    <Td>{info.additional}</Td>
+                  </Tr>
+                ) : (
+                  <Tr
+                    key={info.id}
+                    style={{
+                      backgroundColor: selectedRow === info.id ? "#0006cf" : "",
+                    }}
+                    className={selectedRow === info.id ? "row" : ""}
+                  >
+                    <Td>{info.name}</Td>
+                    <Td>{info.department}</Td>
+                    <Td>
+                      {new Date(info.date).toLocaleDateString("en-GB", options)}
+                    </Td>
+                    <Td>{info.description}</Td>
+                    <Td>{info.request_type}</Td>
+                    <Td>{info.status}</Td>
+                    <Td>{info.it_officer}</Td>
+                    {adminRole === "admin" ? (
+                      <Td
+                        onClick={() => onOpen(info)}
+                        _hover={{ backgroundColor: "green" }}
+                        style={{ width: "1%" }}
+                      >
+                        <Center>
+                          <CheckIcon />
+                        </Center>
+                      </Td>
+                    ) : null}
+                  </Tr>
+                )}
               </Tbody>
             ))}
             <AlertDialog

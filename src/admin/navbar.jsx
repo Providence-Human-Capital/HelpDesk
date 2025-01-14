@@ -63,7 +63,7 @@ export default function Navbar() {
   const handleLogout = () => {
     // logout();
     axios
-      .post("http://localhost:8888/admin/logout", { withCredentials: true })
+      .post("http://localhost:8888/admin/logout", {}, { withCredentials: true })
       .then((res) => {
         console.log(res.data);
         logoutAuthUser();

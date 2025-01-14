@@ -22,7 +22,6 @@ router.use(session({
     saveUninitialized: false,
     name: 'session_id',
     cookie: {
-        // maxAge: 1000 * 60 * 60 * 24, // Session expires in 1 day
         maxAge: 2 * 60 * 60000,
         secure: false, // Set to true if using HTTPS
         httpOnly: true,
@@ -90,8 +89,9 @@ router.post('/add', async (req, res) => {
 
 //getting requests
 
-router.get('/all', async (req, res) => {
-    // console.log(req.session.username)
+router.get('/all',sessionVerification, async (req, res) => {
+    console.log(req.session.username)
+    console.log(req.headers.cookie)
     if (!req) { return res.status(400).send('There has been a problem') } // console.log(req.session)
     connect.query('SELECT * FROM general', (error, results) => {
         if (error) {
@@ -102,7 +102,7 @@ router.get('/all', async (req, res) => {
     });
 });
 
-router.get('/pending', async (req, res) => {
+router.get('/pending',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     connect.query('SELECT * FROM general WHERE status = "pending"', (error, results) => {
         if (error) {
@@ -114,7 +114,7 @@ router.get('/pending', async (req, res) => {
     });
 });
 
-router.get('/progress', async (req, res) => {
+router.get('/progress',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     connect.query('SELECT * FROM general WHERE status = "in-progress"', (error, results) => {
         if (error) {
@@ -126,7 +126,7 @@ router.get('/progress', async (req, res) => {
     });
 });
 
-router.get('/unfinished', async (req, res) => {
+router.get('/unfinished',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     connect.query('SELECT * FROM general WHERE status = "unfinished"', (error, results) => {
         if (error) {
@@ -138,7 +138,7 @@ router.get('/unfinished', async (req, res) => {
     });
 });
 
-router.get('/completed', async (req, res) => {
+router.get('/completed',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     connect.query('SELECT * FROM general WHERE status = "completed"', (error, results) => {
         if (error) {
@@ -152,7 +152,7 @@ router.get('/completed', async (req, res) => {
 
 //updating database status
 
-router.put('/pending/update', async (req, res) => {
+router.put('/pending/update',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     const { officer, id } = req.body
     //also need to get the it officer to the update the db
@@ -168,7 +168,7 @@ router.put('/pending/update', async (req, res) => {
 
 })
 
-router.put('/progress/update', async (req, res) => {
+router.put('/progress/update',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
 
@@ -185,7 +185,7 @@ router.put('/progress/update', async (req, res) => {
 })
 
 //reversing database status
-router.put('/progress/reverse', async (req, res) => {
+router.put('/progress/reverse',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
 
@@ -200,7 +200,7 @@ router.put('/progress/reverse', async (req, res) => {
 
 })
 
-router.put('/completed/reverse', async (req, res) => {
+router.put('/completed/reverse',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
 
@@ -217,7 +217,7 @@ router.put('/completed/reverse', async (req, res) => {
 })
 
 //unfinished
-router.put('/progress/unfinished', async (req, res) => {
+router.put('/progress/unfinished',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     const { id, reason } = req.body
 
@@ -231,7 +231,7 @@ router.put('/progress/unfinished', async (req, res) => {
     })
 })
 
-router.put('/unfinished/update', async (req, res) => {
+router.put('/unfinished/update',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
 
@@ -246,7 +246,7 @@ router.put('/unfinished/update', async (req, res) => {
 })
 
 // filtered
-router.post('/filter', async (req, res) => {
+router.post('/filter',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
     const { startDate, endDate } = req.body

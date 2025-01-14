@@ -96,9 +96,9 @@ export default function Dashboard() {
               With great power comes great responsibility
             </Text>
 
-            <Button mt={8} onClick={handleSession}>
+            {/* <Button mt={8} onClick={handleSession}>
               session test
-            </Button>
+            </Button> */}
           </Box>
         </Container>
       </Box>

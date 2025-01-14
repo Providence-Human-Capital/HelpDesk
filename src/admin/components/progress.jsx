@@ -29,6 +29,7 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { CheckIcon, RepeatIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { useAuthStore } from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 export default function Progress({ request }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +42,10 @@ export default function Progress({ request }) {
   const unfinishedRef = useRef();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   const adminRole = useAuthStore((state) => state.auth.user.role);
+  const logoutAuthUser = useAuthStore((state) => state.logoutAuthUser);
 
   const onOpen = (ticket) => {
     setSelectedTicket(ticket);
@@ -69,9 +73,16 @@ export default function Progress({ request }) {
     queryKey: ["progress"],
     queryFn: () =>
       axios
-        .get(`http://localhost:8888/${request}/progress`)
+        .get(`http://localhost:8888/${request}/progress`, {
+          withCredentials: true,
+        })
         .then((res) => res.data)
         .catch((err) => {
+          if (err.response.status === 401) {
+            logoutAuthUser();
+            navigate("/admin");
+            return;
+          }
           toast({
             title: "Error",
             description: err.response.data,
@@ -96,7 +107,8 @@ export default function Progress({ request }) {
     mutationFn: (finish) => {
       return axios.put(
         `http://localhost:8888/${request}/progress/update`,
-        finish
+        finish,
+        { withCredentials: true }
       );
     },
     onSuccess: () => {
@@ -112,6 +124,11 @@ export default function Progress({ request }) {
       // queryClient.refetchQueries({ queryKey: ["pending"] });
     },
     onError: (err) => {
+      if (err.response.status === 401) {
+        logoutAuthUser();
+        navigate("/admin");
+        return;
+      }
       toast({
         title: "Error",
         description: err.response.data || "Failed to update the ticket",
@@ -135,7 +152,8 @@ export default function Progress({ request }) {
     mutationFn: (reverse) => {
       return axios.put(
         `http://localhost:8888/${request}/progress/reverse`,
-        reverse
+        reverse,
+        { withCredentials: true }
       );
     },
     onSuccess: () => {
@@ -151,6 +169,11 @@ export default function Progress({ request }) {
       // queryClient.refetchQueries({ queryKey: ["pending"] });
     },
     onError: (err) => {
+      if (err.response.status === 401) {
+        logoutAuthUser();
+        navigate("/admin");
+        return;
+      }
       toast({
         title: "Error",
         description: err.response.data || "Failed to update the ticket",
@@ -174,7 +197,8 @@ export default function Progress({ request }) {
     mutationFn: (reverse) => {
       return axios.put(
         `http://localhost:8888/${request}/progress/unfinished`,
-        reverse
+        reverse,
+        { withCredentials: true }
       );
     },
     onSuccess: () => {
@@ -190,6 +214,11 @@ export default function Progress({ request }) {
       // queryClient.refetchQueries({ queryKey: ["pending"] });
     },
     onError: (err) => {
+      if (err.response.status === 401) {
+        logoutAuthUser();
+        navigate("/admin");
+        return;
+      }
       toast({
         title: "Error",
         description: err.response.data || "Failed to update the ticket",

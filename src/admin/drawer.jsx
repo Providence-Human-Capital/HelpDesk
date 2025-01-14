@@ -40,7 +40,12 @@ export default function Drawerr() {
         ref={btnRef}
         onClick={onOpen}
         cursor={"pointer"}
-        _hover={{ backgroundColor: "black", padding: "4px" }}
+        _hover={{
+          // backgroundColor: "black",
+          // padding: "4px",
+          // borderRadius: "3px",
+          color: "navy",
+        }}
         // className="admin-drawer"
       />
 
@@ -56,7 +61,7 @@ export default function Drawerr() {
           color="white"
           borderRight={"1px solid #58a6cf"}
         >
-          <DrawerCloseButton />
+          <DrawerCloseButton _hover={{ color: "#0096cf" }} />
           {/* <DrawerHeader>v2.0.0</DrawerHeader> */}
 
           <DrawerBody>

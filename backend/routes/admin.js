@@ -2,31 +2,11 @@ const express = require('express')
 const router = express.Router()
 const connect = require('../database')
 const bcrypt = require('bcrypt')
-const session = require('express-session');
-const MySQLStore = require('express-mysql-session')(session);
 const sessionVerification = require('../middleware/sessionVerification')
-
-const sessionStore = new MySQLStore({}, connect);
-
-//session
-router.use(session({
-    key: 'session_user',
-    secret: 'your-secret-key',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    name: 'session_id',
-    cookie: {
-        // maxAge: 1000 * 60 * 60 * 24, // Session expires in 1 day
-        maxAge: 2 * 60 * 60000,
-        secure: false, // Set to true if using HTTPS
-        httpOnly: true,
-    }
-}));
 
 
 router.post('/login', async (req, res) => {
-    if (!req) { return res.status(400) }
+    if (!req)  return res.status(400) 
 
     const { username, password } = req.body
     const date = new Date()
@@ -115,9 +95,9 @@ router.post('/add', sessionVerification, async (req, res) => {
 })
 
 
-router.post('/logout', sessionVerification, (req, res) => {
+router.post('/logout', sessionVerification, async (req, res) => {
 
-    console.log(req.headers)
+    console.log(req.headers.cookie)
     
     req.session.destroy(err => {
         if (err) {
@@ -125,7 +105,7 @@ router.post('/logout', sessionVerification, (req, res) => {
         }
         console.log(req.session)
         res.clearCookie('session_id');
-        // res.send('Logged out successfully!');
+        res.status(200).send('Logged out successfully!');
 
     });
 
@@ -139,7 +119,7 @@ router.get('/test', sessionVerification, (req, res) => {
     // console.log(req.cookies, 'coooooookie')
     // console.log(req.session.username)
     console.log(req.headers.cookie)
-    res.status(200)
+    res.status(200).send('got something')
 })
 
 module.exports = router

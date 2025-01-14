@@ -8,8 +8,8 @@ function sessionVerification (req, res, next){
         if(!req.cookies || !req.session.username ){
             res.status(401).send('You are not logged in, login to proceed')
             // res.send('kjsdfkjsf')
-            const err = 'You are not logged in'
-            console.log(req.session.username)
+            // const err = 'You are not logged in'
+            // console.log(req.session.username)
             next(err)
             return
         }

@@ -28,6 +28,7 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { RepeatIcon } from "@chakra-ui/icons";
 import { useAuthStore } from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 export default function Finished({ request }) {
   const [dbMessage, setdbMessage] = useState("");
@@ -36,8 +37,11 @@ export default function Finished({ request }) {
   const [selectedRow, setSelectedRow] = useState("");
   const cancelReverseRef = useRef();
   const toast = useToast();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
+
   const adminRole = useAuthStore((state) => state.auth.user.role);
+  const logoutAuthUser = useAuthStore((state) => state.logoutAuthUser);
 
   const {
     data: data,
@@ -47,9 +51,16 @@ export default function Finished({ request }) {
     queryKey: ["completed"],
     queryFn: () =>
       axios
-        .get(`http://localhost:8888/${request}/completed`)
+        .get(`http://localhost:8888/${request}/completed`, {
+          withCredentials: true,
+        })
         .then((res) => res.data)
         .catch((err) => {
+          if (err.response.status === 401) {
+            logoutAuthUser();
+            navigate("/admin");
+            return;
+          }
           toast({
             title: "Error",
             description: err.response.data,
@@ -86,7 +97,8 @@ export default function Finished({ request }) {
     mutationFn: (reverse) => {
       return axios.put(
         `http://localhost:8888/${request}/completed/reverse`,
-        reverse
+        reverse,
+        { withCredentials: true }
       );
     },
     onSuccess: () => {
@@ -102,6 +114,11 @@ export default function Finished({ request }) {
       // queryClient.refetchQueries({ queryKey: ["pending"] });
     },
     onError: (err) => {
+      if (err.response.status === 401) {
+        logoutAuthUser();
+        navigate("/admin");
+        return;
+      }
       toast({
         title: "Error",
         description: err.response.data || "Failed to update the ticket",
@@ -154,28 +171,59 @@ export default function Finished({ request }) {
         <TableContainer border={"1px solid #4c4c4c"} mt={2}>
           <Table>
             <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Department</Th>
-                <Th>Date of Applicaton</Th>
-                <Th>Date Completed</Th>
-                <Th>Description</Th>
-                <Th>Type</Th>
-                <Th>Status</Th>
-                {request === "transport" ? null : <Th>it officer</Th>}
-
-                {request === "transport" ? null : adminRole === "admin" ? (
-                  <Th>Reverse</Th>
-                ) : null}
-              </Tr>
+              {request === "transport" ? (
+                <Tr>
+                  {/* <Th>ID</Th> */}
+                  <Th>Firstname</Th>
+                  <Th>Lastname</Th>
+                  <Th>Department</Th>
+                  <Th>Date</Th>
+                  <Th>Start</Th>
+                  <Th>Destination</Th>
+                  <Th>Purpose</Th>
+                  <Th>Cargo</Th>
+                  <Th>Passengers</Th>
+                  <Th>Comments</Th>
+                </Tr>
+              ) : (
+                <Tr>
+                  <Th>Name</Th>
+                  <Th>Department</Th>
+                  <Th>Date of Applicaton</Th>
+                  <Th>Date Completed</Th>
+                  <Th>Description</Th>
+                  <Th>Type</Th>
+                  <Th>Status</Th>
+                  <Th>it officer</Th>
+                  {adminRole === "admin" ? <Th>Reverse</Th> : null}
+                </Tr>
+              )}
             </Thead>
-            {
-              // data.length == [] ?
 
-              //     <Center mt={4}>There are no finished tickets</Center>
-              //     :
-              data?.map((info) => (
-                <Tbody className="row" onClick={() => handleRowClick(info.id)}>
+            {data?.map((info) => (
+              <Tbody className="row" onClick={() => handleRowClick(info.id)}>
+                {request === "transport" ? (
+                  <Tr
+                    key={info.id}
+                    style={{
+                      backgroundColor: selectedRow === info.id ? "#0006cf" : "",
+                    }}
+                    className={selectedRow === info.id ? "row" : ""}
+                  >
+                    <Td>{info.firstname}</Td>
+                    <Td>{info.lastname}</Td>
+                    <Td>{info.department}</Td>
+                    <Td>
+                      {new Date(info.date).toLocaleDateString("en-GB", options)}
+                    </Td>
+                    <Td>{info.start}</Td>
+                    <Td>{info.destination}</Td>
+                    <Td>{info.purpose}</Td>
+                    <Td>{info.cargo}</Td>
+                    <Td>{info.passengers}</Td>
+                    <Td>{info.additional}</Td>
+                  </Tr>
+                ) : (
                   <Tr
                     key={info.id}
                     style={{
@@ -213,9 +261,9 @@ export default function Finished({ request }) {
                       </Td>
                     ) : null}
                   </Tr>
-                </Tbody>
-              ))
-            }
+                )}
+              </Tbody>
+            ))}
 
             <AlertDialog
               motionPreset="slideInBottom"

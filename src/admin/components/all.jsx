@@ -24,6 +24,7 @@ import { CheckIcon } from "@chakra-ui/icons";
 import { useQuery, QueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../../store/authStore";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 export default function All({ request }) {
   const [filterData, setFilterData] = useState(null);
@@ -35,7 +36,10 @@ export default function All({ request }) {
     handleSubmit,
     reset,
   } = useForm();
+  const navigate = useNavigate();
+
   const adminRole = useAuthStore((state) => state.auth.user.role);
+  const logoutAuthUser = useAuthStore((state) => state.logoutAuthUser);
   const queryClient = new QueryClient({});
 
   // console.log(adminRole)
@@ -47,6 +51,11 @@ export default function All({ request }) {
         .get(`http://localhost:8888/${request}/all`, { withCredentials: true })
         .then((res) => res.data)
         .catch((err) => {
+          if (err.response.status === 401) {
+            logoutAuthUser();
+            navigate("/admin");
+            return;
+          }
           toast({
             title: "Error",
             description: err.response.data || "An error occurred",
@@ -85,12 +94,19 @@ export default function All({ request }) {
     // console.log(date)
 
     axios
-      .post(`http://localhost:8888/${request}/filter`, date)
+      .post(`http://localhost:8888/${request}/filter`, date, {
+        withCredentials: true,
+      })
       .then((res) => {
         // console.log(res.data)
         setFilterData(res.data);
       })
       .catch((err) => {
+        if (err.response.status === 401) {
+          logoutAuthUser();
+          navigate("/admin");
+          return;
+        }
         toast({
           title: "Error",
           description: err.response?.data || "An error occurred",

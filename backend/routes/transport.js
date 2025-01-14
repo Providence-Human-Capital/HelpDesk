@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const connect = require('../database')
+const sessionVerification = require('../middleware/sessionVerification')
 
-router.post('/add', async (req, res) => {
+router.post('/add',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
     const { firstname, lastname, email, department, start, destination, purpose, cargo, passengers, additional } = req.body
@@ -29,7 +30,7 @@ router.post('/add', async (req, res) => {
     })
 })
 
-router.get('/all', async (req, res) => {
+router.get('/all',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
     connect.query('SELECT * FROM transport', (error, results) => {
@@ -41,7 +42,7 @@ router.get('/all', async (req, res) => {
     });
 })
 
-router.get('/pending', async (req, res) => {
+router.get('/pending',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
     connect.query('SELECT * FROM transport WHERE status = "pending"', (error, results) => {
@@ -53,7 +54,7 @@ router.get('/pending', async (req, res) => {
     });
 })
 
-router.get('/completed', async (req, res) => {
+router.get('/completed',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
     connect.query('SELECT * FROM transport WHERE status = "approved"', (error, results) => {
@@ -65,7 +66,7 @@ router.get('/completed', async (req, res) => {
     });
 })
 
-router.get('/unfinished', async (req, res) => {
+router.get('/unfinished',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
 
     connect.query('SELECT * FROM transport WHERE status = "rejected"', (error, results) => {
@@ -77,7 +78,7 @@ router.get('/unfinished', async (req, res) => {
     });
 })
 
-router.put('/pending/update', async (req, res) => {
+router.put('/pending/update',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
     console.log(id)
@@ -91,7 +92,7 @@ router.put('/pending/update', async (req, res) => {
     });
 })
 
-router.put('/pending/rejected', async (req, res) => {
+router.put('/pending/rejected',sessionVerification, async (req, res) => {
     if (!req) { return res.status(400).send('There has been a problem') }
     const { id } = req.body
 

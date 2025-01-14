@@ -4,6 +4,12 @@ const app = express()
 const cookieParser = require('cookie-parser')
 const port = 8888
 require('dotenv').config();
+const connect = require('./database')
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
+// const sessionVerification = require('../middleware/sessionVerification')
+
+const sessionStore = new MySQLStore({}, connect);
 
 app.use(express.json());
 // app.use(cors())
@@ -14,6 +20,25 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }))
+
+//session
+app.use(session({
+    key: 'session_user',
+    secret: 'your-secret-key',
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    name: 'session_id',
+    cookie: {
+        // maxAge: 1000 * 60 * 60 * 24, // Session expires in 1 day
+        // maxAge: 2 * 60 * 60000,
+        maxAge: 60000,
+        secure: false, // Set to true if using HTTPS
+        httpOnly: true,
+    }
+}));
+
+
 
 // const sender = process.env.EMAIL_NAME
 // const pass = process.env.PASS
