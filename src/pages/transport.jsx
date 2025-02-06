@@ -87,7 +87,7 @@ export default function Transport() {
   return (
     <>
       <Container maxW={"1100px"} mt={5} color={"black"}>
-        <Center>
+        {/* <Center>
           <Link to={"https://providencehumancapital.com"} target="_blank">
             <Image
               src={PHC}
@@ -96,9 +96,9 @@ export default function Transport() {
               objectFit="contain"
             />
           </Link>
-        </Center>
+        </Center> */}
 
-        <Box>
+        <Box mt={50}>
           <Center fontSize={"3xl"}>Request Transport</Center>
         </Box>
         <VStack mt={5} spacing={4}>
